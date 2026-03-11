@@ -4,7 +4,7 @@
 function initProcessusPage() {
     const container = document.getElementById('processus-container');
     const btnAdd = document.getElementById('btn-add-processus');
-    const template = document.getElementById('tpl-processus');
+    const template = document.getElementById('tpl-processus-card');
 
     if (!container || !btnAdd || !template) return;
 

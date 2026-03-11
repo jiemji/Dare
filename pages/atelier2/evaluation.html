@@ -3,12 +3,8 @@
     <p>Évaluez les menaces en associant Sources de risques et Objectifs visés.</p>
 </div>
 
-<div style="margin-bottom: 20px;">
-    <button class="btn primary" id="btn-add-menace">+ Ajouter une menace</button>
-</div>
-
-<div class="table-container" style="overflow-x: auto;">
-    <table class="data-table" style="width: 100%; border-collapse: collapse; min-width: 800px;">
+<div class="table-extended" style="overflow-x: auto;">
+    <table class="data-table" style="width: 100%; border-collapse: collapse; margin-bottom: 10px;" id="table-menaces">
         <thead>
             <tr style="background: var(--c-bg-panel); border-bottom: 2px solid var(--c-border); text-align: left;">
                 <th style="padding: 10px;">Source de risque</th>
@@ -23,6 +19,10 @@
             <!-- Lignes injectées par JS -->
         </tbody>
     </table>
+</div>
+
+<div style="margin-top: 15px; width: 100%;">
+    <button class="btn primary" id="btn-add-menace">+ Ajouter une menace</button>
 </div>
 
 <template id="tpl-menace-row">

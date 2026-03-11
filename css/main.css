@@ -45,14 +45,20 @@ body {
 
 /* Layout */
 .app-container {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 0px 1fr;
+    grid-template-rows: var(--navbar-height) 1fr;
     height: 100vh;
+}
+
+.app-container:has(.sidebar.pinned) {
+    grid-template-columns: var(--sidebar-width) 1fr;
 }
 
 /* Navbar */
 .navbar {
-    height: var(--navbar-height);
+    grid-column: 1 / 3;
+    grid-row: 1;
     background-color: var(--c-bg-panel);
     border-bottom: 2px solid var(--c-border);
     display: flex;
@@ -111,26 +117,33 @@ body {
     flex-direction: column;
 }
 
-/* Hover zone on the left edge */
-body::before {
+/* Hover zone on the left edge (invisible 3px trigger attached to the sidebar) */
+.sidebar::after {
     content: '';
     position: absolute;
-    left: 0;
-    top: var(--navbar-height);
+    top: 0;
     bottom: 0;
-    width: 15px;
+    right: -3px;
+    width: 3px;
+    background: transparent;
     z-index: 80;
 }
 
-body:hover .sidebar:not(.pinned),
 .sidebar:hover {
     left: 0;
 }
 
 .sidebar.pinned {
-    position: static;
+    position: relative; /* Falls into grid cell nicely */
     left: 0;
+    top: 0;
+    grid-column: 1;
+    grid-row: 2;
     box-shadow: none;
+}
+
+.sidebar.pinned::after {
+    display: none; /* No need for trigger when pinned */
 }
 
 .sidebar-header {
@@ -160,18 +173,15 @@ body:hover .sidebar:not(.pinned),
 
 /* Main Content */
 .main-content {
-    flex-grow: 1;
+    grid-column: 2;
+    grid-row: 2;
     padding: 20px;
     overflow-y: auto;
     background-color: var(--c-bg-app);
 }
 
-.app-container:has(.sidebar.pinned) {
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-.app-container:has(.sidebar.pinned) .navbar {
-    width: 100%;
+.app-container:not(:has(.sidebar.pinned)) .main-content {
+    grid-column: 1 / 3;
 }
 
 /* Buttons */
@@ -225,17 +235,85 @@ body:hover .sidebar:not(.pinned),
     min-width: 300px;
 }
 
-/* Cards */
-.card-square, .card-long {
+/* Flex container for dynamic page layouts */
+.main-content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 15px;
+}
+
+/* Base style for all cards/table-wrappers */
+.card-square, .card-extended, .card-long, .table-square, .table-extended {
     background: var(--c-bg-panel);
     border: 1px solid var(--c-border);
     border-radius: var(--border-radius);
     padding: 15px;
-    margin-bottom: 15px;
     box-shadow: 2px 2px 5px var(--c-shadow);
+    display: flex;
+    flex-direction: column;
 }
 
-/* Forms */
+/* Card Square: Fixed max size, multiple can sit on a line */
+.card-square {
+    flex: 1 1 400px;
+    max-width: 400px;
+}
+
+/* Card Extended: Forces a line break, takes 100% width, min 400px */
+.card-extended {
+    width: 100%;
+    min-width: 400px;
+    flex: 1 1 100%;
+}
+
+/* Card Long: Always 100% width, forces a line break */
+.card-long {
+    width: 100%;
+    flex: 1 1 100%;
+}
+
+/* Table Square: Max 400px, like card-square */
+.table-square {
+    flex: 1 1 400px;
+    max-width: 400px;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 70vh; /* Limited vertical space */
+}
+
+/* Table Extended: Takes remaining space on a shared line */
+.table-extended {
+    flex: 1 1 0%;
+    min-width: 400px;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 70vh; /* Limited vertical space */
+}
+
+/* Make table headers sticky */
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--c-bg-panel);
+}
+
+/* Helper flex wrapper to group tables side by side that need to take 100% of the parent combined */
+.flex-row-100 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 100%;
+    flex: 1 1 100%;
+}
+
+/* Standard Header / Text flow */
+.page-header, p.full-width {
+    width: 100%;
+    flex: 1 1 100%;
+}
 input, select, textarea {
     background-color: var(--c-bg-input);
     color: var(--c-text-main);

@@ -3,30 +3,32 @@
     <p>Définissez l'échelle des gravités et la grille d'évaluation des impacts.</p>
 </div>
 
-<div class="card-square">
-    <h3>Échelle des gravités</h3>
-    <table class="data-table" style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
-        <thead>
-            <tr style="background: var(--c-bg-panel); border-bottom: 2px solid var(--c-border); text-align: left;">
-                <th style="padding: 10px; width: 80px;">Valeur</th>
-                <th style="padding: 10px;">Niveau</th>
-                <th style="padding: 10px; width: 100px;">Couleur</th>
-                <th style="padding: 10px; width: 50px;"></th>
-            </tr>
-        </thead>
-        <tbody id="ref-gravite-tbody">
-            <!-- Injecté par JS -->
-        </tbody>
-    </table>
-    <button class="btn secondary" id="btn-add-gravite">+ Ajouter un niveau</button>
-</div>
+<div class="flex-row-100">
+    <div class="table-square">
+        <h3>Échelle des gravités</h3>
+        <table class="data-table" style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+            <thead>
+                <tr style="background: var(--c-bg-panel); border-bottom: 2px solid var(--c-border); text-align: left;">
+                    <th style="padding: 10px; width: 80px;">Valeur</th>
+                    <th style="padding: 10px;">Niveau</th>
+                    <th style="padding: 10px; width: 100px;">Couleur</th>
+                    <th style="padding: 10px; width: 50px;"></th>
+                </tr>
+            </thead>
+            <tbody id="ref-gravite-tbody">
+                <!-- Injecté par JS -->
+            </tbody>
+        </table>
+        <button class="btn secondary" id="btn-add-gravite">+ Ajouter un niveau</button>
+    </div>
 
-<div class="card-square" style="overflow-x: auto;">
-    <h3>Évaluation des impacts</h3>
-    <table class="data-table" style="width: 100%; border-collapse: collapse; margin-bottom: 10px;" id="table-impacts">
-        <!-- Généré dynamiquement en JS (colonnes = types d'impacts, lignes = gravités) -->
-    </table>
-    <button class="btn secondary" id="btn-add-impact">+ Ajouter un type d'impact</button>
+    <div class="table-extended">
+        <h3>Évaluation des impacts</h3>
+        <table class="data-table" style="width: 100%; border-collapse: collapse; margin-bottom: 10px;" id="table-impacts">
+            <!-- Généré dynamiquement en JS (colonnes = types d'impacts, lignes = gravités) -->
+        </table>
+        <button class="btn secondary" id="btn-add-impact">+ Ajouter un type d'impact</button>
+    </div>
 </div>
 
 <!-- Templates -->

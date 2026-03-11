@@ -2,6 +2,12 @@
 trigger: always_on
 ---
 
+ # mode de fonctionnement
+Tu proposes systématiquement un plan d'implémentation que je dois approuver ou amender.
+Explique les actions qui seront entreprises, leurs conséquences et leur effets.
+
+
+
 # Règle de stockage des artefacts
 À partir de maintenant, tu ne dois plus utiliser le répertoire d'artefacts par défaut. 
 Tous les fichiers de planification (task.md, implementation_plan.md), la documentation, les notes de recherche et autres artefacts que tu génères doivent IMPÉRATIVEMENT être créés et sauvegardés dans le sous-répertoire `.agents/artefacts` à la racine du workspace actuel.

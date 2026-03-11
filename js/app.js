@@ -42,19 +42,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Menu Burger actions
     document.getElementById('menu-new').addEventListener('click', () => {
-        if(confirm("Voulez-vous vraiment commencer une nouvelle analyse ? Les données non sauvegardées seront perdues.")) {
-            Store.clear();
-            loadWelcomeScreen();
-            burgerMenu.classList.add('hidden');
-            alert("Nouvelle analyse démarrée.");
-        }
+        burgerMenu.classList.add('hidden');
+        Store.clear(); 
+    });
+
+    document.getElementById('menu-save').addEventListener('click', () => {
+        burgerMenu.classList.add('hidden');
+        Store.exportJSON();
+    });
+
+    document.getElementById('menu-load').addEventListener('click', () => {
+        burgerMenu.classList.add('hidden');
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = (event) => Store.importJSON(event.target.result);
+            reader.readAsText(file);
+        };
+        input.click();
     });
 
     document.getElementById('btn-save').addEventListener('click', () => {
-        Store.save();
-        alert("Données sauvegardées en local.");
-    });
-    document.getElementById('menu-save').addEventListener('click', () => {
         Store.save();
         alert("Données sauvegardées en local.");
     });
@@ -94,8 +105,17 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: "motivations_ressources", label: "Motivations et Ressources", file: "pages/referentiels/motivations_ressources.html", script: "js/pages/referentiels.js" },
             { id: "vraisemblance", label: "Vraisemblance", file: "pages/referentiels/vraisemblance.html", script: "js/pages/referentiels.js" },
             { id: "matrice", label: "Matrice des risques", file: "pages/referentiels/matrice.html", script: "js/pages/referentiels.js" }
+        ],
+        aide: [
+            { id: "aide", label: "Aide & Méthodologie", file: "pages/aide.html" }
         ]
     };
+
+    // Add help action
+    document.getElementById('menu-help').addEventListener('click', () => {
+        burgerMenu.classList.add('hidden');
+        loadPage(pageStructure.aide[0]);
+    });
 
     function loadWelcomeScreen() {
         mainContent.innerHTML = `

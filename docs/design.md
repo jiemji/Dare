@@ -33,7 +33,7 @@
           
             - Composants
               
-                - Carte carrée : Information générale
+                - Carte étendue : Information générale
                   
                     - Composants
                       
@@ -59,7 +59,7 @@
                   
                     - Fonction : ajouter une carte Processus
                       
-                - Carte carrée : Processus #
+                - Carte étendue : Processus #
                   
                     - Composants
                       
@@ -300,6 +300,8 @@
       
         - Page : Plan de traitement du risque
           
+            - à définir. mettre une page filer
+              
         - Page : Cartographie des risques résiduels
           
             - à définir. mettre une page filer
@@ -326,7 +328,7 @@
               
                 - Composants
                   
-                    - Tableau : Echelle des gravités
+                    - Tableau carré : Echelle des gravités
                       
                         - Composants d'une ligne du tableau
                           
@@ -382,7 +384,7 @@
               
                 - Composants
                   
-                    - Tableau : Niveau de motivations des menaces
+                    - Tableau carré : Niveau de motivations des menaces
                       
                         - Composants d'une ligne du tableau
                           
@@ -414,7 +416,7 @@
               
                 - Composants
                   
-                    - Tableau : Niveau de ressources des menaces
+                    - Tableau carré : Niveau de ressources des menaces
                       
                         - Composants d'une ligne du tableau
                           
@@ -450,7 +452,7 @@
           
             - Composants
               
-                - Tableau : Echelle de vraisemblance
+                - Tableau carré : Echelle de vraisemblance
                   
                     - Composants d'un ligne du tableau
                       
@@ -484,7 +486,7 @@
               
                 - Composants
                   
-                    - Tableau : Echelle des risques
+                    - Tableau carré : Echelle des risques
                       
                         - Composants d'une ligne du tableau
                           

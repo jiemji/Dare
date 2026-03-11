@@ -95,8 +95,39 @@ class DataStore {
     }
 
     clear() {
-        this.data = JSON.parse(JSON.stringify(defaultData));
-        this.save();
+        if (confirm("Êtes-vous sûr de vouloir tout effacer ? Cette action est irréversible.")) {
+            this.data = JSON.parse(JSON.stringify(defaultData));
+            this.save();
+            location.reload(); // Refresh to clear all UI states
+        }
+    }
+
+    exportJSON() {
+        const dataStr = JSON.stringify(this.data, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+        
+        const date = new Date().toISOString().split('T')[0];
+        const exportFileDefaultName = `dare_analyse_${date}.json`;
+        
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+    }
+
+    importJSON(jsonData) {
+        try {
+            const parsed = JSON.parse(jsonData);
+            // Basic validation
+            if (!parsed.atelier1 || !parsed.referentiels) {
+                throw new Error("Format de fichier DARE invalide.");
+            }
+            this.data = parsed;
+            this.save();
+            location.reload(); // Refresh to load new data
+        } catch (e) {
+            alert("Erreur lors de l'import : " + e.message);
+        }
     }
 }
 
