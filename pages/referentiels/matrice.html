@@ -1,0 +1,38 @@
+<div class="page-header">
+    <h2>Référentiel : Matrice des risques</h2>
+    <p>Définissez l'échelle des risques puis associez-la à chaque croisement Gravité/Vraisemblance.</p>
+</div>
+
+<div class="card-square" style="max-width: 800px; margin-bottom: 20px;">
+    <h3>Échelle des risques</h3>
+    <table class="data-table" style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+        <thead>
+            <tr style="background: var(--c-bg-panel); border-bottom: 2px solid var(--c-border); text-align: left;">
+                <th style="padding: 10px; width: 60px;">Valeur</th>
+                <th style="padding: 10px; width: 150px;">Niveau</th>
+                <th style="padding: 10px; width: 80px;">Couleur</th>
+                <th style="padding: 10px; width: 50px;"></th>
+            </tr>
+        </thead>
+        <tbody id="ref-risques-tbody">
+            <!-- Injecté par JS -->
+        </tbody>
+    </table>
+    <button class="btn secondary" id="btn-add-risque">+ Ajouter un niveau de risque</button>
+</div>
+
+<div class="card-square" style="overflow-x: auto;">
+    <h3 style="margin-bottom: 20px;">Matrice des risques</h3>
+    <div id="ref-matrice-container">
+        <!-- Generée par JS -->
+    </div>
+</div>
+
+<template id="tpl-risque-row">
+    <tr class="risque-row" style="border-bottom: 1px solid var(--c-border);">
+        <td style="padding: 8px; font-weight: bold; text-align:center;" class="ri-valeur"></td>
+        <td style="padding: 8px;"><input type="text" class="ri-niveau" style="margin:0; width:100%;"></td>
+        <td style="padding: 8px;"><input type="color" class="ri-color" style="margin:0; width:100%; height:30px; padding:0; cursor:pointer; border:none;"></td>
+        <td style="padding: 8px; text-align: center;"><button class="btn secondary btn-del-risque" style="padding: 4px; min-width:auto;">✕</button></td>
+    </tr>
+</template>

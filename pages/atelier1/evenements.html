@@ -1,0 +1,54 @@
+<div class="page-header">
+    <h2>Atelier 1 : Évènements regrettables</h2>
+    <p>Identifiez et évaluez les évènements regrettables pour chaque processus métier.</p>
+</div>
+
+<div id="er-container">
+    <!-- Les sections par processus seront injectées ici -->
+</div>
+
+<template id="tpl-er-section">
+    <div class="processus-section" data-proc-id="" style="margin-bottom: 30px; border-top: 2px solid var(--c-border); padding-top: 15px;">
+        <h3 class="proc-title">Processus [Ref] - [Nom]</h3>
+        <div class="er-list"></div>
+        <button class="btn primary btn-add-er">+ Ajouter un événement à ce processus</button>
+    </div>
+</template>
+
+<template id="tpl-er-card">
+    <div class="card-long er-card" data-er-id="" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h4>Événement <span class="er-ref-display"></span></h4>
+            <button class="btn secondary btn-del-er" style="padding: 4px 8px;">✕</button>
+        </div>
+        
+        <div style="display:flex; gap:15px; align-items:flex-start; flex-wrap:wrap;">
+            <div style="flex:1; min-width: 250px;">
+                <label>Descriptif de l'événement</label>
+                <textarea class="er-desc" rows="2" placeholder="Description de l'impact redouté..."></textarea>
+            </div>
+            
+            <div style="width: 200px;">
+                <label>Typologie</label>
+                <select class="er-typo">
+                    <option value="Disponibilité">Disponibilité</option>
+                    <option value="Intégrité">Intégrité</option>
+                    <option value="Confidentialité">Confidentialité</option>
+                    <option value="Traçabilité">Traçabilité</option>
+                </select>
+                
+                <label style="margin-top: 10px; display:block;">Gravité</label>
+                <select class="er-gravite">
+                    <!-- Options injectées par JS -->
+                </select>
+            </div>
+            
+            <div style="width: 200px;">
+                <label>Impacts</label>
+                <div class="er-impacts-list" style="background:var(--c-bg-input); padding: 5px; border: 1px solid var(--c-border); border-radius: var(--border-radius); max-height:85px; overflow-y:auto;">
+                    <!-- Checkboxes injectées par JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

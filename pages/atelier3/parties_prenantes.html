@@ -1,0 +1,93 @@
+<div class="page-header">
+    <h2>Atelier 3 : Parties prenantes</h2>
+    <p>Identifiez les acteurs de l'écosystème et évaluez leur niveau de risque (Exposition et Fiabilité).</p>
+</div>
+
+<div style="margin-bottom: 20px;">
+    <button class="btn primary" id="btn-add-pp">+ Ajouter une partie prenante</button>
+</div>
+
+<div class="table-container" style="overflow-x: auto;">
+    <table class="data-table" style="width: 100%; border-collapse: collapse; min-width: 1000px;">
+        <thead>
+            <tr style="background: var(--c-bg-panel); border-bottom: 2px solid var(--c-border); text-align: left; font-size: 13px;">
+                <th style="padding: 10px;">Réf.</th>
+                <th style="padding: 10px;">Nom</th>
+                <th style="padding: 10px;">Type de dép.</th>
+                <th style="padding: 10px;">Dépendance</th>
+                <th style="padding: 10px;">Pénétration</th>
+                <th style="padding: 10px; background-color: var(--c-bg-input); border-left: 1px dashed var(--c-border); border-right: 1px dashed var(--c-border);">Exposition</th>
+                <th style="padding: 10px;">Maturité</th>
+                <th style="padding: 10px;">Intentions</th>
+                <th style="padding: 10px; background-color: var(--c-bg-input); border-left: 1px dashed var(--c-border); border-right: 1px dashed var(--c-border);">Fiabilité</th>
+                <th style="padding: 10px;">Commentaires</th>
+                <th style="padding: 10px; width: 40px;"></th>
+            </tr>
+        </thead>
+        <tbody id="pp-tbody">
+            <!-- Lignes injectées par JS -->
+        </tbody>
+    </table>
+</div>
+
+<template id="tpl-pp-row">
+    <tr class="pp-row" data-pp-id="" style="border-bottom: 1px solid var(--c-border); font-size: 13px;">
+        <td style="padding: 8px;" class="pp-ref"></td>
+        <td style="padding: 8px;">
+            <input type="text" class="pp-nom" style="margin:0; min-width:120px;" placeholder="Ex: Hébergeur X">
+        </td>
+        <td style="padding: 8px;">
+            <select class="pp-type" style="margin:0;">
+                <option value="Client">Client</option>
+                <option value="Utilisateur">Utilisateur</option>
+                <option value="Fournisseur">Fournisseur</option>
+                <option value="Sous-traitant">Sous-traitant</option>
+                <option value="Partenaire">Partenaire</option>
+            </select>
+        </td>
+        <td style="padding: 8px;">
+            <select class="pp-dep" style="margin:0;">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </td>
+        <td style="padding: 8px;">
+            <select class="pp-pen" style="margin:0;">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </td>
+        <td style="padding: 8px; text-align: center; font-weight: bold; background-color: var(--c-bg-input); border-left: 1px dashed var(--c-border); border-right: 1px dashed var(--c-border);" class="pp-exposition">
+            <!-- Dépendance * Pénétration -->
+        </td>
+        <td style="padding: 8px;">
+            <select class="pp-mat" style="margin:0;">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </td>
+        <td style="padding: 8px;">
+            <select class="pp-int" style="margin:0;">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </td>
+        <td style="padding: 8px; text-align: center; font-weight: bold; background-color: var(--c-bg-input); border-left: 1px dashed var(--c-border); border-right: 1px dashed var(--c-border);" class="pp-fiabilite">
+            <!-- Maturité * Intentions -->
+        </td>
+        <td style="padding: 8px;">
+            <input type="text" class="pp-comm" style="margin:0; min-width: 150px;" placeholder="Commentaires...">
+        </td>
+        <td style="padding: 8px; text-align: center;">
+            <button class="btn secondary btn-del-pp" style="padding: 4px; min-width:auto;">✕</button>
+        </td>
+    </tr>
+</template>

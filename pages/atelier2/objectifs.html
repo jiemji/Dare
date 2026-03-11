@@ -1,0 +1,32 @@
+<div class="page-header">
+    <h2>Atelier 2 : Objectifs visés</h2>
+    <p>Identifiez les objectifs que cherchent à atteindre les sources de risque.</p>
+</div>
+
+<div style="margin-bottom: 20px;">
+    <button class="btn primary" id="btn-add-ov">+ Ajouter un objectif visé</button>
+</div>
+
+<div id="ov-container">
+    <!-- Les cartes objectifs visés seront injectées ici -->
+</div>
+
+<!-- Template d'une carte objectif visé -->
+<template id="tpl-ov-card">
+    <div class="card-long ov-card" data-ov-id="" style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h4>Objectif visé <span class="ov-ref-display"></span></h4>
+            <button class="btn secondary btn-del-ov" style="padding: 4px 8px;">✕</button>
+        </div>
+        
+        <div style="display:flex; gap:15px; align-items:flex-start; flex-wrap:wrap;">
+            <div style="flex:1;">
+                <label>Libellé</label>
+                <input type="text" class="ov-libelle" placeholder="Ex: Vol de données de santé">
+                
+                <label style="margin-top: 10px; display:block;">Description</label>
+                <textarea class="ov-desc" rows="2" placeholder="Description de l'objectif..."></textarea>
+            </div>
+        </div>
+    </div>
+</template>

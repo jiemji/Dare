@@ -1,0 +1,67 @@
+<div class="page-header">
+    <h2>Référentiel : Motivations et Ressources</h2>
+    <p>Définissez les échelles utilisées pour qualifier les menaces.</p>
+</div>
+
+<div style="display:flex; gap: 20px; flex-wrap:wrap;">
+
+    <!-- MOTIVATIONS -->
+    <div class="card-square" style="flex:1; min-width: 400px;">
+        <h3>Niveau de motivation des menaces</h3>
+        <table class="data-table" style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+            <thead>
+                <tr style="background: var(--c-bg-panel); border-bottom: 2px solid var(--c-border); text-align: left;">
+                    <th style="padding: 10px; width: 60px;">Val.</th>
+                    <th style="padding: 10px; width: 120px;">Niveau</th>
+                    <th style="padding: 10px; width: 60px;">Coul.</th>
+                    <th style="padding: 10px;">Description</th>
+                    <th style="padding: 10px; width: 40px;"></th>
+                </tr>
+            </thead>
+            <tbody id="ref-motivation-tbody">
+                <!-- Injecté par JS -->
+            </tbody>
+        </table>
+        <button class="btn secondary" id="btn-add-motivation">+ Ajouter une motivation</button>
+    </div>
+
+    <!-- RESSOURCES -->
+    <div class="card-square" style="flex:1; min-width: 400px;">
+        <h3>Niveau de ressources des menaces</h3>
+        <table class="data-table" style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
+            <thead>
+                <tr style="background: var(--c-bg-panel); border-bottom: 2px solid var(--c-border); text-align: left;">
+                    <th style="padding: 10px; width: 60px;">Val.</th>
+                    <th style="padding: 10px; width: 120px;">Niveau</th>
+                    <th style="padding: 10px; width: 60px;">Coul.</th>
+                    <th style="padding: 10px;">Description</th>
+                    <th style="padding: 10px; width: 40px;"></th>
+                </tr>
+            </thead>
+            <tbody id="ref-ressources-tbody">
+                <!-- Injecté par JS -->
+            </tbody>
+        </table>
+        <button class="btn secondary" id="btn-add-ressources">+ Ajouter une ressource</button>
+    </div>
+
+</div>
+
+<!-- Templates -->
+<template id="tpl-ref-row">
+    <tr class="ref-row" data-val="" style="border-bottom: 1px solid var(--c-border);">
+        <td style="padding: 8px; font-weight: bold; text-align:center;" class="r-valeur"></td>
+        <td style="padding: 8px;">
+            <input type="text" class="r-niveau" style="margin:0;" placeholder="Niveau...">
+        </td>
+        <td style="padding: 8px;">
+            <input type="color" class="r-color" style="margin:0; width:100%; height:30px; padding:0; cursor:pointer; border:none;">
+        </td>
+        <td style="padding: 8px;">
+            <input type="text" class="r-desc" style="margin:0;" placeholder="Description...">
+        </td>
+        <td style="padding: 8px; text-align: center;">
+            <button class="btn secondary btn-del-ref" style="padding: 4px; min-width:auto;">✕</button>
+        </td>
+    </tr>
+</template>

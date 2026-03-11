@@ -1,0 +1,23 @@
+# Dare Application Checklist
+
+- [x] Project setup (HTML shell, CSS, JS entry points)
+- [x] Theme management (Light/Dark mode inspired by MacOS 7)
+- [x] Navbar and Sidebar implementation
+- [x] Page routing/loading system (client-side)
+- [x] Implement data format for LocalStorage
+- [x] First page implementation (e.g., Contexte de l'analyse)
+- [x] Atelier 1 : Processus métier
+- [x] Atelier 1 : Evènements regrettables
+- [x] Atelier 2 : Sources de risque
+- [x] Atelier 2 : Objectifs visés
+- [x] Atelier 2 : Evaluation de la menace
+- [x] Atelier 3 : Parties prenantes
+- [x] Atelier 4 : Scénarios de risques (En construction / filer)
+- [x] Atelier 4 : Cartographie des risques (En construction / filer)
+- [x] Atelier 5 : Plan de traitement du risque (En construction / filer)
+- [x] Atelier 5 : Cartographie des risques résiduels (En construction / filer)
+- [x] Livrables : Livrable 1 et 2 (En construction / filer)
+- [x] Référentiels : Impacts et Gravités
+- [x] Référentiels : Motivations et Ressources
+- [x] Référentiels : Vraisemblance
+- [x] Référentiels : Matrice des risques

@@ -1,0 +1,49 @@
+<div class="page-header">
+    <h2>Atelier 2 : Évaluation de la menace</h2>
+    <p>Évaluez les menaces en associant Sources de risques et Objectifs visés.</p>
+</div>
+
+<div style="margin-bottom: 20px;">
+    <button class="btn primary" id="btn-add-menace">+ Ajouter une menace</button>
+</div>
+
+<div class="table-container" style="overflow-x: auto;">
+    <table class="data-table" style="width: 100%; border-collapse: collapse; min-width: 800px;">
+        <thead>
+            <tr style="background: var(--c-bg-panel); border-bottom: 2px solid var(--c-border); text-align: left;">
+                <th style="padding: 10px;">Source de risque</th>
+                <th style="padding: 10px;">Objectif visé</th>
+                <th style="padding: 10px;">Ressources</th>
+                <th style="padding: 10px;">Motivation</th>
+                <th style="padding: 10px;">Commentaires</th>
+                <th style="padding: 10px; width: 50px;"></th>
+            </tr>
+        </thead>
+        <tbody id="menaces-tbody">
+            <!-- Lignes injectées par JS -->
+        </tbody>
+    </table>
+</div>
+
+<template id="tpl-menace-row">
+    <tr class="menace-row" data-men-id="" style="border-bottom: 1px solid var(--c-border);">
+        <td style="padding: 8px;">
+            <select class="men-sr" style="margin:0;"></select>
+        </td>
+        <td style="padding: 8px;">
+            <select class="men-ov" style="margin:0;"></select>
+        </td>
+        <td style="padding: 8px;">
+            <select class="men-ressources" style="margin:0;" disabled></select>
+        </td>
+        <td style="padding: 8px;">
+            <select class="men-motivation" style="margin:0;"></select>
+        </td>
+        <td style="padding: 8px;">
+            <input type="text" class="men-commentaires" style="margin:0;" placeholder="Commentaires...">
+        </td>
+        <td style="padding: 8px; text-align: center;">
+            <button class="btn secondary btn-del-men" style="padding: 4px; min-width:auto;">✕</button>
+        </td>
+    </tr>
+</template>

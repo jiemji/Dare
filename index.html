@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dare - Analyse des Risques</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Bandeau horizontal -->
+        <header class="navbar">
+            <button id="btn-burger" class="nav-btn" title="Menu Burger">☰</button>
+            <button id="btn-atelier1" class="nav-btn" data-target="atelier1">Atelier 1</button>
+            <button id="btn-atelier2" class="nav-btn" data-target="atelier2">Atelier 2</button>
+            <button id="btn-atelier3" class="nav-btn" data-target="atelier3">Atelier 3</button>
+            <button id="btn-atelier4" class="nav-btn" data-target="atelier4">Atelier 4</button>
+            <button id="btn-atelier5" class="nav-btn" data-target="atelier5">Atelier 5</button>
+            <button id="btn-livrables" class="nav-btn" data-target="livrables">Livrables</button>
+            <button id="btn-referentiels" class="nav-btn" data-target="referentiels">Référentiels</button>
+            <div class="spacer"></div>
+            <button id="btn-save" class="nav-btn attr-icon" title="Sauvegarder">💾</button>
+            <button id="btn-theme" class="nav-btn attr-icon" title="Changer de thème">🌓</button>
+        </header>
+
+        <!-- Bande latérale -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>Navigation</h3>
+                <button id="btn-pin-sidebar" class="icon-btn">📌</button>
+            </div>
+            <ul id="sidebar-menu" class="sidebar-menu">
+                <!-- Les items de menu seront générés dynamiquement ici -->
+            </ul>
+        </aside>
+
+        <!-- Contenu principal chargé dynamiquement -->
+        <main id="main-content" class="main-content">
+            <div class="welcome-screen">
+                <h1>Bienvenue dans Dare</h1>
+                <p>Application d'analyse des risques (EBIOS RM / ISO 27005).</p>
+                <div class="actions">
+                    <button class="btn primary" id="btn-new-analysis">Nouvelle Analyse</button>
+                    <button class="btn secondary" id="btn-load-analysis">Charger</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modale de menu de base (burger) -->
+    <div id="burger-menu" class="modal hidden">
+        <div class="modal-content">
+            <h2>Menu Principal</h2>
+            <button class="btn" id="menu-new">Nouvelle analyse</button>
+            <button class="btn" id="menu-load">Charger...</button>
+            <button class="btn" id="menu-save">Sauvegarder</button>
+            <button class="btn secondary" id="menu-help">Aide</button>
+            <button class="btn-close" id="close-burger">Fermer</button>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
