@@ -1,13 +1,11 @@
 # Walkthrough - Implementations Récentes
 
 ## 1. Ergonomie et Layout
-- **CSS Grid & Flexbox** : Refonte totale du layout. Le bandeau latéral est désormais fixé sous la barre de navigation.
+- **Design System** : Implémentation de 5 types de composants (`card-square`, `card-long`, `card-extended`, `table-square`, `table-extended`) avec des règles de placement et de redimensionnement précises.
+- **Titres de champs** : Harmonisation globale. Tous les labels sont positionnés au-dessus des champs de saisie.
+- **Alignement horizontal** : Les cartes de type `card-long` permettent désormais un alignement horizontal des champs pour une lecture compacte (ex: Événements).
+- **CSS Grid & Flexbox** : Refonte du layout. Le bandeau latéral est fixé sous la barre de navigation.
 - **Scrolling intelligent** : Les tableaux sont limités en hauteur (70vh) avec défilement vertical et en-têtes fixés (`sticky`).
-- **Composants Dynamiques** :
-    - `card-square` : Alignement horizontal (max 400px).
-    - `card-long` : Occupation totale de la ligne (100%).
-    - `card-extended` : Occupation totale mais extensible (min 400px).
-    - `table-square` & `table-extended` : Placement flexible pour les référentiels.
 
 ## 2. Menu Burger & Gestion des Données
 - **Nouvelle Analyse** : Réinitialise tout le `localStorage` après confirmation.

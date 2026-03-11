@@ -13,27 +13,21 @@
 
 <!-- Template d'une carte source de risque -->
 <template id="tpl-sr-card">
-    <div class="card-long sr-card" data-sr-id="" style="display:flex; flex-direction:column; gap:10px;">
+    <div class="card-square sr-card" data-sr-id="">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <h4>Source de risque <span class="sr-ref-display"></span></h4>
             <button class="btn secondary btn-del-sr" style="padding: 4px 8px;">✕</button>
         </div>
         
-        <div style="display:flex; gap:15px; align-items:flex-start; flex-wrap:wrap;">
-            <div style="flex:1; min-width: 250px;">
-                <label>Libellé</label>
-                <input type="text" class="sr-libelle" placeholder="Ex: Groupe cybercriminel">
-                
-                <label style="margin-top: 10px; display:block;">Description</label>
-                <textarea class="sr-desc" rows="2" placeholder="Description de la source de risque..."></textarea>
-            </div>
-            
-            <div style="width: 200px;">
-                <label>Ressources</label>
-                <select class="sr-ressources">
-                    <!-- Options injectées par JS -->
-                </select>
-            </div>
-        </div>
+        <label>Libellé</label>
+        <input type="text" class="sr-libelle" placeholder="Ex: Groupe cybercriminel">
+        
+        <label>Description</label>
+        <textarea class="sr-desc" rows="2" placeholder="Description de la source de risque..."></textarea>
+        
+        <label>Ressources</label>
+        <select class="sr-ressources">
+            <!-- Options injectées par JS -->
+        </select>
     </div>
 </template>

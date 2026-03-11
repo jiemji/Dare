@@ -18,39 +18,42 @@
 
 
 <template id="tpl-er-card">
-    <div class="card-long er-card" data-er-id="" style="display:flex; flex-direction:column; gap:10px;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
+    <div class="card-long er-card" data-er-id="">
+        <div style="flex: 0 0 80px;">
             <h4>Événement <span class="er-ref-display"></span></h4>
-            <button class="btn secondary btn-del-er" style="padding: 4px 8px;">✕</button>
+        </div>
+
+        <div style="flex: 2; min-width: 300px;">
+            <label>Descriptif</label>
+            <textarea class="er-desc" rows="1" placeholder="Description de l'impact redouté..."></textarea>
         </div>
         
-        <div style="display:flex; gap:15px; align-items:flex-start; flex-wrap:wrap;">
-            <div style="flex:1; min-width: 250px;">
-                <label>Descriptif de l'événement</label>
-                <textarea class="er-desc" rows="2" placeholder="Description de l'impact redouté..."></textarea>
+        <div style="flex: 0 0 180px;">
+            <label>Typologie</label>
+            <select class="er-typo">
+                <option value="Disponibilité">Disponibilité</option>
+                <option value="Intégrité">Intégrité</option>
+                <option value="Confidentialité">Confidentialité</option>
+                <option value="Traçabilité">Traçabilité</option>
+            </select>
+        </div>
+
+        <div style="flex: 0 0 180px;">
+            <label>Gravité</label>
+            <select class="er-gravite">
+                <!-- Options injectées par JS -->
+            </select>
+        </div>
+        
+        <div style="flex: 2; min-width: 250px;">
+            <label>Impacts</label>
+            <div class="er-impacts-list" style="background:var(--c-bg-input); padding: 5px; border: 1px solid var(--c-border); border-radius: var(--border-radius); max-height:40px; overflow-y:auto; font-size: 11px;">
+                <!-- Checkboxes injectées par JS -->
             </div>
-            
-            <div style="width: 200px;">
-                <label>Typologie</label>
-                <select class="er-typo">
-                    <option value="Disponibilité">Disponibilité</option>
-                    <option value="Intégrité">Intégrité</option>
-                    <option value="Confidentialité">Confidentialité</option>
-                    <option value="Traçabilité">Traçabilité</option>
-                </select>
-                
-                <label style="margin-top: 10px; display:block;">Gravité</label>
-                <select class="er-gravite">
-                    <!-- Options injectées par JS -->
-                </select>
-            </div>
-            
-            <div style="width: 200px;">
-                <label>Impacts</label>
-                <div class="er-impacts-list" style="background:var(--c-bg-input); padding: 5px; border: 1px solid var(--c-border); border-radius: var(--border-radius); max-height:85px; overflow-y:auto;">
-                    <!-- Checkboxes injectées par JS -->
-                </div>
-            </div>
+        </div>
+
+        <div style="margin-left: auto; align-self: center;">
+            <button class="btn secondary btn-del-er" style="padding: 4px 8px;">✕</button>
         </div>
     </div>
 </template>

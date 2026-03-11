@@ -244,6 +244,14 @@ body {
     gap: 15px;
 }
 
+/* Containers for cards must be flex and full width to allow internal cards to stretch/align */
+#processus-container, #er-container, #sr-container, #ov-container, .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 100%;
+}
+
 /* Base style for all cards/table-wrappers */
 .card-square, .card-extended, .card-long, .table-square, .table-extended {
     background: var(--c-bg-panel);
@@ -255,23 +263,42 @@ body {
     flex-direction: column;
 }
 
-/* Card Square: Fixed max size, multiple can sit on a line */
+/* Card Square: min 300px, max 400px, multiple can sit on a line, vertical align */
 .card-square {
-    flex: 1 1 400px;
+    flex: 1 1 300px;
     max-width: 400px;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Card Extended: Forces a line break, takes 100% width, min 400px */
+/* Card Extended: min 400px, takes available space, multiple can align, vertical align */
 .card-extended {
+    flex: 1 1 400px;
+    min-width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Card Long: Always takes full line, min 400px, horizontal align, x-scroll */
+.card-long {
+    flex: 1 1 100%;
     width: 100%;
     min-width: 400px;
-    flex: 1 1 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap; /* Horizontal alignment forced */
+    overflow-x: auto;
+    gap: 20px;
+    align-items: flex-end; /* Align inputs on the bottom of the row */
 }
 
-/* Card Long: Always 100% width, forces a line break */
-.card-long {
-    width: 100%;
-    flex: 1 1 100%;
+/* Ensure children of card-long that contain inputs keep labels above */
+.card-long > .input-group, 
+.card-long > div {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
 }
 
 /* Table Square: Max 400px, like card-square */
@@ -314,6 +341,13 @@ body {
     width: 100%;
     flex: 1 1 100%;
 }
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
 input, select, textarea {
     background-color: var(--c-bg-input);
     color: var(--c-text-main);
@@ -321,6 +355,6 @@ input, select, textarea {
     padding: 8px;
     border-radius: var(--border-radius);
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     font-family: var(--font-stack);
 }

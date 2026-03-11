@@ -1,9 +1,35 @@
 # Dare
 
-## Structure
-
-- Un bandeau horizontal avec des boutons  
-  Chaque bouton permet d'accéder un ensemble de page ou des fonctions
++ ### Système de Composants (Design System)
++ 
++ L'application utilise un système de 5 composants principaux dont le comportement est strictement défini :
++ 
++ #### 1. La Carte Carrée (`card-square`)
++ *   **Taille :** 300px min / 400px max.
++ *   **Comportement :** S'aligne horizontalement. Alignement vertical interne.
++ 
++ #### 2. La Carte Allongée (`card-long`)
++ *   **Taille :** 100% largeur (min 400px).
++ *   **Comportement :** Alignement **horizontal** des objets internes avec scroll si nécessaire. Les titres (`label`) sont au-dessus des champs.
++ 
++ #### 3. La Carte Étendue (`card-extended`)
++ *   **Taille :** 100% largeur ou partage l'espace (min 400px).
++ *   **Comportement :** Alignement vertical interne. Idéal pour les formulaires longs.
++ 
++ #### 4. Le Tableau (`table-extended`)
++ *   **Taille :** Largeur totale.
++ *   **Comportement :** Scroll vertical interne (max 70vh) avec en-têtes fixés.
++ 
++ #### 5. Le Tableau Carré (`table-square`)
++ *   **Taille :** Max 400px.
++ *   **Comportement :** Peut se coller à un tableau étendu sur la même ligne.
++ 
++ ---
++ 
++ ## Structure
++ 
++ - Un bandeau horizontal avec des boutons  
++   Chaque bouton permet d'accéder un ensemble de page ou des fonctions
   
     - Bouton : Burger Menu
       
