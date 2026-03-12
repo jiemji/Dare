@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: "cartographie", label: "Cartographie des risques", file: "pages/atelier4/cartographie.html" }
         ],
         atelier5: [
-            { id: "plan", label: "Plan de traitement", file: "pages/atelier5/plan.html" },
+            { id: "plan", label: "Plan de traitement", file: "pages/atelier5/plan.html", script: "js/pages/atelier5.js" },
             { id: "carto_resid", label: "Cartographie résiduelle", file: "pages/atelier5/cartographie_resid.html" }
         ],
         livrables: [

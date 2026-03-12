@@ -1,27 +1,36 @@
-# Walkthrough - Implementations Récentes
+# Walkthrough - Atelier 5 : Plan de traitement
 
-## 1. Ergonomie et Layout
-- **Design System** : Implémentation de 5 types de composants (`card-square`, `card-long`, `card-extended`, `table-square`, `table-extended`) avec des règles de placement et de redimensionnement précises.
-- **Titres de champs** : Harmonisation globale. Tous les labels sont positionnés au-dessus des champs de saisie.
-- **Alignement horizontal** : Les cartes de type `card-long` permettent désormais un alignement horizontal des champs pour une lecture compacte (ex: Événements).
-- **CSS Grid & Flexbox** : Refonte du layout. Le bandeau latéral est fixé sous la barre de navigation.
-- **Scrolling intelligent** : Les tableaux sont limités en hauteur (70vh) avec défilement vertical et en-têtes fixés (`sticky`).
+J'ai implémenté la page **Atelier 5 / Plan de traitement** en suivant scrupuleusement les spécifications du fichier `design.md`.
 
-## 2. Menu Burger & Gestion des Données
-- **Nouvelle Analyse** : Réinitialise tout le `localStorage` après confirmation.
-- **Sauvegarder** : Exporte l'intégralité de l'analyse dans un fichier `.json` téléchargeable.
-- **Charger** : Permet d'importer un fichier `.json` pour restaurer une session.
-- **Aide** : Nouvelle page "Aide & Méthodologie" accessible via le menu.
+## Changements réalisés
 
-## 3. CoHérence des Ateliers
-- Correction du bouton "Ajouter" dans tous les ateliers (désormais situé sous les cartes/tableaux).
-- Harmonisation visuelle des pages "filer" (Ateliers 4, 5 et Livrables).
-- Correction du bug de création de processus.
+### 1. Modèle de données (`js/data.js`)
+- Ajout d'une structure `atelier5` dans le `DataStore` pour stocker les mesures de sécurité.
+- Initialisation automatique si les données n'existent pas dans le localstorage.
 
-## Comment tester :
-1. Ouvrez `index.html`.
-2. Allez dans le **Menu Burger** (☰).
-3. Entrez des données bidon, faites **Sauvegarder** -> un fichier JSON est généré.
-4. Faites **Nouvelle Analyse** -> tout est vidé.
-5. Faites **Charger** et sélectionnez le fichier JSON -> tout revient !
-6. Vérifiez la page **Aide** dans le menu.
+### 2. Navigation et Routage (`js/app.js`)
+- Mise à jour du routage pour charger dynamiquement `js/pages/atelier5.js` lors de l'accès à la page.
+- Ajout d'un événement `pageLoaded:plan` pour ré-initialiser la vue lors de la navigation interne.
+
+### 3. Interface Utilisateur (`pages/atelier5/plan.html`)
+- Création des 5 sections d'action : **Gouvernance, Protection, Détection, Réaction, Résilience**.
+- Utilisation des "cartes longues" (`card-long`) pour les mesures de sécurité, permettant un affichage horizontal compact.
+- Alignement des labels au-dessus des champs de saisie pour une meilleure lisibilité.
+
+### 4. Logique de Page (`js/pages/atelier5.js`)
+- **Auto-incrémentation** : Les références (MES01, MES02, etc.) s'incrémentent globalement sur toute la page, quel que soit le type d'action.
+- **Persistance** : Sauvegarde immédiate dans le `localStorage` à chaque modification (descriptif, cibles, priorité).
+- **Gestion des types** : Les mesures sont correctement groupées par type d'action.
+
+## Vérification
+
+### Fonctionnalités testées :
+- [x] Chargement de la page via le menu supérieur et latéral.
+- [x] Ajout de mesures dans les différentes sections.
+- [x] Vérification de l'incrémentation (MES01 -> MES02 -> ...).
+- [x] Modification des champs et persistance après rechargement.
+- [x] Suppression de mesure avec confirmation.
+- [x] Adaptabilité du design (les cartes s'étendent sur toute la largeur).
+
+## Conclusion
+La page est maintenant fonctionnelle et intégrée au reste de l'application Dare.

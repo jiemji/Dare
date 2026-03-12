@@ -36,6 +36,9 @@
     atelier3: {
         partiesPrenantes: []
     },
+    atelier5: {
+        plans: [] // Array of { id: "MES01", type: "gouvernance", description: "...", cibles: "", priorite: "P1" }
+    },
     referentiels: {
         gravite: [
             { valeur: 4, niveau: "Critique", color: "#ff0000" },
@@ -76,6 +79,9 @@ class DataStore {
             }
             if (!loadedData.referentiels.motivation) {
                 loadedData.referentiels.motivation = JSON.parse(JSON.stringify(defaultData.referentiels.motivation));
+            }
+            if (!loadedData.atelier5) {
+                loadedData.atelier5 = JSON.parse(JSON.stringify(defaultData.atelier5));
             }
             this.data = loadedData;
         } else {

@@ -1,35 +1,36 @@
-# Component Refinement Plan
+# Implementation Plan - Atelier 5 / Plan de traitement
 
-Based on the new definitions in [composants.md](file:///g:/devapps/Dare/docs/composants.md), we will update the following:
+This plan covers the creation of the "Plan de traitement du risque" page for Atelier 5.
 
 ## Proposed Changes
 
-### CSS Layout (`css/main.css`)
+### Data Model
+#### [MODIFY] [data.js](file:///g:/devapps/Dare/js/data.js)
+- Add `atelier5` object to `defaultData` and `DataStore` to store treatment plans.
+- Structure for security measures grouped by action type (gouvernance, protection, détection, réaction, résilience).
 
-#### [MODIFY] [main.css](file:///g:/devapps/Dare/css/main.css)
-- **`.card-square`**: Add `min-width: 300px`. Ensure `flex-direction: column` for vertical alignment.
-- **`.card-long`**: Ensure `width: 100%` and `min-width: 400px`. Change `flex-direction: row` for horizontal alignment of items. Add `overflow-x: auto`.
-- **`.card-extended`**: Keep `min-width: 400px`. Allow multiple to align horizontally (using `flex: 1 1 400px`). Ensure `flex-direction: column`.
+### UI / Routing
+#### [MODIFY] [app.js](file:///g:/devapps/Dare/js/app.js)
+- Update `pageStructure.atelier5` to include the script `js/pages/atelier5.js`.
 
-### Page Components
+### New Files
+#### [NEW] [plan.html](file:///g:/devapps/Dare/pages/atelier5/plan.html)
+- Create the HTML structure with containers for the 5 action types.
+- Add a template for the security measure cards (long cards).
 
-#### [MODIFY] [sources.html](file:///g:/devapps/Dare/pages/atelier2/sources.html)
-- Change `card-long` to `card-square`.
-
-#### [MODIFY] [objectifs.html](file:///g:/devapps/Dare/pages/atelier2/objectifs.html)
-- Change `card-long` to `card-square`.
-
-#### [MODIFY] [processus.html](file:///g:/devapps/Dare/pages/atelier1/processus.html)
-- Ensure it uses `card-long`. (User request: "carte allongée > processus")
-
-#### [MODIFY] [evenements.html](file:///g:/devapps/Dare/pages/atelier1/evenements.html)
-- Ensure it uses `card-long`. (User request: "carte allongée > ... évenements")
+#### [NEW] [atelier5.js](file:///g:/devapps/Dare/js/pages/atelier5.js)
+- Implement logic to load/save security measures.
+- Implement auto-increment logic for MES## references.
+- Implement add/delete functions.
 
 ## Verification Plan
 
-### Automated Tests
-- N/A
-
 ### Manual Verification
-- Visual inspection of each modified page to ensure cards and tables behave as expected (alignment, resizing, scrolling).
-- Test horizontal scrolling on `card-long` components.
+1. Navigate to "Atelier 5" using the top navbar.
+2. Select "Plan de traitement" in the sidebar.
+3. Verify that the 5 sections (Gouvernance, Protection, Détection, Réaction, Résilience) are visible.
+4. Click "+ Ajouter une mesure" in each section and verify a card is added.
+5. Verify the reference auto-increments (MES01, MES02, etc.).
+6. Fill in some data, change the priority, and save (using the disk icon in navbar or switching pages).
+7. Reload the page and verify the data persists.
+8. Delete a measure and verify it's removed.

@@ -8,7 +8,11 @@ Privilégie une factorisation optimisée du code.
 
 Le design de l'application repose sur plusieurs élements :
 - un bandeau horizontal avec des boutons
-- des pages pour chaque atelier
+- des pages pour chaque atelier :
+    - Atelier 1 : Contexte, Processus, Événements
+    - Atelier 2 : Sources de risque, Objectifs, Menaces
+    - Atelier 3 : Parties prenantes
+    - Atelier 5 : Plan de traitement (MES##)
 - des composants limités : 
     - des cartes carrées
     - des cartes allongées

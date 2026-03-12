@@ -1,35 +1,9 @@
 # Dare
 
-+ ### Système de Composants (Design System)
-+ 
-+ L'application utilise un système de 5 composants principaux dont le comportement est strictement défini :
-+ 
-+ #### 1. La Carte Carrée (`card-square`)
-+ *   **Taille :** 300px min / 400px max.
-+ *   **Comportement :** S'aligne horizontalement. Alignement vertical interne.
-+ 
-+ #### 2. La Carte Allongée (`card-long`)
-+ *   **Taille :** 100% largeur (min 400px).
-+ *   **Comportement :** Alignement **horizontal** des objets internes avec scroll si nécessaire. Les titres (`label`) sont au-dessus des champs.
-+ 
-+ #### 3. La Carte Étendue (`card-extended`)
-+ *   **Taille :** 100% largeur ou partage l'espace (min 400px).
-+ *   **Comportement :** Alignement vertical interne. Idéal pour les formulaires longs.
-+ 
-+ #### 4. Le Tableau (`table-extended`)
-+ *   **Taille :** Largeur totale.
-+ *   **Comportement :** Scroll vertical interne (max 70vh) avec en-têtes fixés.
-+ 
-+ #### 5. Le Tableau Carré (`table-square`)
-+ *   **Taille :** Max 400px.
-+ *   **Comportement :** Peut se coller à un tableau étendu sur la même ligne.
-+ 
-+ ---
-+ 
-+ ## Structure
-+ 
-+ - Un bandeau horizontal avec des boutons  
-+   Chaque bouton permet d'accéder un ensemble de page ou des fonctions
+## Structure
+
+- Un bandeau horizontal avec des boutons  
+  Chaque bouton permet d'accéder un ensemble de page ou des fonctions
   
     - Bouton : Burger Menu
       
@@ -165,7 +139,7 @@
                   
                     - Fonction : ajoute une carte source de risque
                       
-                - Carte allongée : Source de risques #
+                - Carte carrée : Source de risques #
                   
                     - Composants
                       
@@ -196,7 +170,7 @@
                   
                     - Fonction : ajoute une carte objectif visé
                       
-                - Carte allongée : Objectif visé #
+                - Carte carrée : Objectif visé #
                   
                     - Composants
                       
@@ -326,7 +300,40 @@
       
         - Page : Plan de traitement du risque
           
-            - à définir. mettre une page filer
+            - Composants
+              
+                - Titre : Type d'action
+                  
+                - Carte allongée : Mesures de sécurité #
+                  
+                    - Composants
+                      
+                        - Champs de saisie : Référence
+                          <!-- ::xmind-pos:{"x":559,"y":-1145} -->
+                          
+                            - Incrémentation automatique à la création : MES01, MES02, MES##
+                              
+                            - La numérotation ne tient pas compte de la séparation à l'écran par procesus. Par exemple, Gouvernance > MES01, MES02, PRotection > MES03, MES04.
+                              
+                        - Champs de saisie : Descriptif de la mesure
+                          <!-- ::xmind-pos:{"x":559,"y":-1145} -->
+                          
+                        - Champs de saisie : Cibles
+                          <!-- ::xmind-pos:{"x":559,"y":-1145} -->
+                          
+                        - Liste déroulante : Priorité
+                          
+                            - Priorité : P0, P1, P2, P4
+                              
+                        - Bouton : Supprimer la mesure
+                          
+                            - Fonction : supprime la mesure et ses données
+                              
+                - Bouton : Ajouter une mesure de sécurité
+                  
+                    - Fonction : ajoute une carte mesure de sécurité dans l'espace du type d'action
+                      
+            - L'écran est découpé en 5 type d'actions : gouvernance, protection, détection, réaction, résilience
               
         - Page : Cartographie des risques résiduels
           
