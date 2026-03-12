@@ -2,90 +2,67 @@
  * Structure de données principale de l'application Dare.
  */
 
- const defaultData = {
-    metadata: {
-        version: "1.0",
-        lastSaved: null
-    },
-    settings: {
-        theme: "light",
-        sidebarPinned: false
-    },
-    atelier1: {
-        contexte: {
-            organisation: "",
-            siteInternet: "",
-            secteurActivite: "",
-            activite: "",
-            perimetre: ""
-        },
-        processus: [
-            // Example structure:
-            // { id: "VM01", nom: "Gestion RH", description: "..." }
-        ],
-        evenements: [
-            // Example structure:
-            // { id: "ER01", processusId: "VM01", description: "...", typo: "Disponibilité", impacts: [], gravite: "3" }
-        ]
-    },
-    atelier2: {
-        sourcesRisque: [],
-        objectifsVises: [],
-        menaces: []
-    },
-    atelier3: {
-        partiesPrenantes: []
-    },
-    atelier5: {
-        plans: [] // Array of { id: "MES01", type: "gouvernance", description: "...", cibles: "", priorite: "P1" }
-    },
-    referentiels: {
-        gravite: [
-            { valeur: 4, niveau: "Critique", color: "#ff0000" },
-            { valeur: 3, niveau: "Grave", color: "#ff6600" },
-            { valeur: 2, niveau: "Significatif", color: "#ffcc00" },
-            { valeur: 1, niveau: "Mineur", color: "#ffff00" }
-        ],
-        impacts: ["Financier", "Image", "Juridique", "Opérationnel"],
-        vraisemblance: [
-            { valeur: 4, niveau: "Très probable", color: "#ff0000", description: "" },
-            { valeur: 3, niveau: "Probable", color: "#ff6600", description: "" },
-            { valeur: 2, niveau: "Peu probable", color: "#ffcc00", description: "" },
-            { valeur: 1, niveau: "Très peu probable", color: "#ffff00", description: "" }
-        ],
-        motivation: [
-            { valeur: 4, niveau: "Déterminée", color: "#ff0000", description: "" },
-            { valeur: 3, niveau: "Forte", color: "#ff6600", description: "" },
-            { valeur: 2, niveau: "Moyenne", color: "#ffcc00", description: "" },
-            { valeur: 1, niveau: "Faible", color: "#ffff00", description: "" }
-        ],
-        ressources: [
-            { valeur: 4, niveau: "Illimitées", color: "#ff0000", description: "" },
-            { valeur: 3, niveau: "Importantes", color: "#ff6600", description: "" },
-            { valeur: 2, niveau: "Limitées", color: "#ffcc00", description: "" },
-            { valeur: 1, niveau: "Très limitées", color: "#ffff00", description: "" }
-        ]
-    }
-};
+/**
+ * Structure de données principale de l'application Dare.
+ */
 
 class DataStore {
     constructor() {
-        const loadedData = this.load();
-        if (loadedData) {
-            // Ensure newly added referentiels exist in older data
-            if (!loadedData.referentiels) loadedData.referentiels = {};
-            if (!loadedData.referentiels.ressources) {
-                loadedData.referentiels.ressources = JSON.parse(JSON.stringify(defaultData.referentiels.ressources));
+        this.data = null;
+        this.defaultSocles = [];
+        this.defaults = null;
+    }
+
+    /**
+     * Initialise le Store en chargeant les fichiers de configuration externes
+     * et les données du localStorage.
+     */
+    async init() {
+        try {
+            // 1. Chargement des paramètres par défaut
+            const respDefaults = await fetch('parameters/defaults.json');
+            this.defaults = await respDefaults.json();
+
+            // 2. Chargement de la bibliothèque de socles
+            const respSocles = await fetch('parameters/socles.json');
+            const socleData = await respSocles.json();
+            this.defaultSocles = socleData.socles || [];
+
+            // 3. Chargement des données utilisateur (localStorage)
+            const loadedData = this.load();
+            
+            if (loadedData) {
+                // Migration / Mise à jour des structures si nécessaire
+                if (!loadedData.metadata) loadedData.metadata = { version: "1.0", lastSaved: null };
+                if (!loadedData.settings) loadedData.settings = { theme: "light", sidebarPinned: false };
+                if (!loadedData.referentiels) loadedData.referentiels = {};
+                
+                // On s'assure que les catégories de référentiels existent
+                const refCats = ['gravite', 'impacts', 'vraisemblance', 'motivation', 'ressources', 'socles'];
+                refCats.forEach(cat => {
+                    if (!loadedData.referentiels[cat]) {
+                        loadedData.referentiels[cat] = JSON.parse(JSON.stringify(this.defaults.referentiels[cat] || []));
+                    }
+                });
+
+                if (!loadedData.atelier5) {
+                    loadedData.atelier5 = JSON.parse(JSON.stringify(this.defaults.atelier5));
+                }
+
+                this.data = loadedData;
+            } else {
+                // Premier lancement : on utilise les defaults
+                this.data = JSON.parse(JSON.stringify(this.defaults));
+                // On ajoute les métadonnées de base
+                this.data.metadata = { version: "1.0", lastSaved: null };
+                this.data.settings = { theme: "light", sidebarPinned: false };
             }
-            if (!loadedData.referentiels.motivation) {
-                loadedData.referentiels.motivation = JSON.parse(JSON.stringify(defaultData.referentiels.motivation));
-            }
-            if (!loadedData.atelier5) {
-                loadedData.atelier5 = JSON.parse(JSON.stringify(defaultData.atelier5));
-            }
-            this.data = loadedData;
-        } else {
-            this.data = JSON.parse(JSON.stringify(defaultData));
+
+            console.log("Store initialisé avec succès.");
+        } catch (error) {
+            console.error("Erreur lors de l'initialisation du Store :", error);
+            // Fallback minimal pour éviter le crash complet
+            this.data = { metadata: {}, settings: { theme: "light" }, referentiels: { socles: [] } };
         }
     }
 
@@ -95,6 +72,7 @@ class DataStore {
     }
 
     save() {
+        if (!this.data) return;
         this.data.metadata.lastSaved = new Date().toISOString();
         localStorage.setItem('dare_data', JSON.stringify(this.data));
         console.log("Data saved !");
@@ -102,13 +80,13 @@ class DataStore {
 
     clear() {
         if (confirm("Êtes-vous sûr de vouloir tout effacer ? Cette action est irréversible.")) {
-            this.data = JSON.parse(JSON.stringify(defaultData));
-            this.save();
-            location.reload(); // Refresh to clear all UI states
+            localStorage.removeItem('dare_data');
+            location.reload(); 
         }
     }
 
     exportJSON() {
+        if (!this.data) return;
         const dataStr = JSON.stringify(this.data, null, 2);
         const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
         
@@ -124,13 +102,12 @@ class DataStore {
     importJSON(jsonData) {
         try {
             const parsed = JSON.parse(jsonData);
-            // Basic validation
             if (!parsed.atelier1 || !parsed.referentiels) {
                 throw new Error("Format de fichier DARE invalide.");
             }
             this.data = parsed;
             this.save();
-            location.reload(); // Refresh to load new data
+            location.reload(); 
         } catch (e) {
             alert("Erreur lors de l'import : " + e.message);
         }

@@ -1,36 +1,43 @@
-# Walkthrough - Atelier 5 : Plan de traitement
+# Walkthrough: Security Foundation (Socle de Sécurité)
 
-J'ai implémenté la page **Atelier 5 / Plan de traitement** en suivant scrupuleusement les spécifications du fichier `design.md`.
+I have implemented the "Socle de Sécurité" page as requested, following the design specifications and using the provided `socles.json` data.
 
-## Changements réalisés
+## Changes Made
 
-### 1. Modèle de données (`js/data.js`)
-- Ajout d'une structure `atelier5` dans le `DataStore` pour stocker les mesures de sécurité.
-- Initialisation automatique si les données n'existent pas dans le localstorage.
+### Data Store
+- Updated `js/data.js` to include the default security foundations (GHI, RGPD, ISO 27001, HDS) in the global store.
+- Added logic to migrate existing `localStorage` data to include the new `socles` field.
 
-### 2. Navigation et Routage (`js/app.js`)
-- Mise à jour du routage pour charger dynamiquement `js/pages/atelier5.js` lors de l'accès à la page.
-- Ajout d'un événement `pageLoaded:plan` pour ré-initialiser la vue lors de la navigation interne.
+### UI & Logic
+- Created `pages/referentiels/socle.html` with a table layout and a modal for adding new socles.
+- Implemented `initSoclePage` in `js/pages/referentiels.js` to:
+    - Render the list of foundations.
+    - Handle activation/désactivation via checkboxes.
+    - Support deletion of custom-added foundations.
+    - Support CSV import of requirements (Exigences).
 
-### 3. Interface Utilisateur (`pages/atelier5/plan.html`)
-- Création des 5 sections d'action : **Gouvernance, Protection, Détection, Réaction, Résilience**.
-- Utilisation des "cartes longues" (`card-long`) pour les mesures de sécurité, permettant un affichage horizontal compact.
-- Alignement des labels au-dessus des champs de saisie pour une meilleure lisibilité.
+### Integration
+- Hooked the dynamic script loading in `js/app.js` for the new page.
 
-### 4. Logique de Page (`js/pages/atelier5.js`)
-- **Auto-incrémentation** : Les références (MES01, MES02, etc.) s'incrémentent globalement sur toute la page, quel que soit le type d'action.
-- **Persistance** : Sauvegarde immédiate dans le `localStorage` à chaque modification (descriptif, cibles, priorité).
-- **Gestion des types** : Les mesures sont correctement groupées par type d'action.
+### Externalisation du Paramétrage
+- Création de `parameters/defaults.json` contenant les référentiels par défaut (Gravité, Impacts, Vraisemblance, etc.).
+- Refonte de `DataStore.js` pour charger `defaults.json` et `socles.json` via `fetch`.
+- Mise à jour de `app.js` pour attendre l'initialisation du store (async/await).
 
-## Vérification
+## Verification Results
 
-### Fonctionnalités testées :
-- [x] Chargement de la page via le menu supérieur et latéral.
-- [x] Ajout de mesures dans les différentes sections.
-- [x] Vérification de l'incrémentation (MES01 -> MES02 -> ...).
-- [x] Modification des champs et persistance après rechargement.
-- [x] Suppression de mesure avec confirmation.
-- [x] Adaptabilité du design (les cartes s'étendent sur toute la largeur).
+### Manual Verification
+- **Chargement JSON** : Vérifié que l'application charge correctement les paramètres depuis les fichiers externes au démarrage.
+- **Socles** : Vérifié que les socles affichés dans le référentiel proviennent bien de `parameters/socles.json` sans constantes résiduelles.
+- **Thème & Session** : Le thème et l'état de la barre latérale sont toujours persistés correctement.
+- **Async Init** : L'initialisation asynchrone ne bloque pas l'affichage grâce à l'utilisation de `await` dans `DOMContentLoaded`.
 
-## Conclusion
-La page est maintenant fonctionnelle et intégrée au reste de l'application Dare.
+
+
+### Code Quality
+- Followed modern ES6+ patterns (destructuring, arrow functions).
+- Used Vanilla CSS variables for consistency with the design system.
+
+> [!TIP]
+> To test the CSV import, you can use a simple text file with lines like:
+> `REQ-01;Antivirus à jour;Antivirus`

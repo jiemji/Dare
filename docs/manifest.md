@@ -21,7 +21,7 @@ Le design de l'application repose sur plusieurs élements :
     - des listes à cocher
     - des boutons
 
-Ces éléments seront définis dans un fichier css et pourront être paramétrés dans un fichier json.
+Ces éléments sont définis dans un fichier css et le paramétrage (référentiels, structures par défaut) est stocké dans le dossier `parameters/` via des fichiers JSON (`defaults.json`, `socles.json`).
 
 Le style graphique doit être moderne et professionnel. il peut s'inspirer d'une version modernisée de l'interface mac OS7. 
 
@@ -30,6 +30,6 @@ Le mode clair utilisera des fonds couleurs ivoires et des accentuation dans des 
 Le mode sombre utilisera des fonds marrons foncés avec accentuation dans les tons oranges. Le texte sera blanc
 
 
- Les modes sont paramétrés dans un fichier json et nous pourrons en rajouter de nouveaux.
+ Les modes ainsi que les référentiels sont paramétrés dans des fichiers JSON externes, permettant une modification sans toucher au code source.
 
 Les fonds des champs de saisie seront d'une couleur légèrement plus claire que le fond général de la fenêtre

@@ -21,6 +21,8 @@ The application uses a custom Design System built with Vanilla CSS, Grid, and Fl
 
 ## 2. Data Management (`js/data.js`)
 - **Persistence**: Data is saved to `localStorage` under the key `dare_data`.
+- **Async Initialization**: The `Store` is initialized asynchronously via `Store.init()`, which fetches `defaults.json` and `socles.json` before application start.
+- **External Parameters**: All default referentials (Gravité, Impacts, etc.) and the foundations library are stored in `parameters/` as JSON files.
 - **Atelier 5 Expansion**: The `Store` handles security measures grouped by type (Gouvernance, Protection, Détection, Réaction, Résilience).
 - **Export/Import**: JSON-based. The `DataStore` class handles `exportJSON()` (download) and `importJSON(file)` (upload + validation).
 - **Reset**: "New Analysis" clears the `localStorage`.

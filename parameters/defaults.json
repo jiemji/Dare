@@ -1,0 +1,51 @@
+{
+    "referentiels": {
+        "gravite": [
+            { "valeur": 4, "niveau": "Critique", "color": "#ff0000" },
+            { "valeur": 3, "niveau": "Grave", "color": "#ff6600" },
+            { "valeur": 2, "niveau": "Significatif", "color": "#ffcc00" },
+            { "valeur": 1, "niveau": "Mineur", "color": "#ffff00" }
+        ],
+        "impacts": ["Financier", "Image", "Juridique", "Opérationnel"],
+        "vraisemblance": [
+            { "valeur": 4, "niveau": "Très probable", "color": "#ff0000", "description": "" },
+            { "valeur": 3, "niveau": "Probable", "color": "#ff6600", "description": "" },
+            { "valeur": 2, "niveau": "Peu probable", "color": "#ffcc00", "description": "" },
+            { "valeur": 1, "niveau": "Très peu probable", "color": "#ffff00", "description": "" }
+        ],
+        "motivation": [
+            { "valeur": 4, "niveau": "Déterminée", "color": "#ff0000", "description": "" },
+            { "valeur": 3, "niveau": "Forte", "color": "#ff6600", "description": "" },
+            { "valeur": 2, "niveau": "Moyenne", "color": "#ffcc00", "description": "" },
+            { "valeur": 1, "niveau": "Faible", "color": "#ffff00", "description": "" }
+        ],
+        "ressources": [
+            { "valeur": 4, "niveau": "Illimitées", "color": "#ff0000", "description": "" },
+            { "valeur": 3, "niveau": "Importantes", "color": "#ff6600", "description": "" },
+            { "valeur": 2, "niveau": "Limitées", "color": "#ffcc00", "description": "" },
+            { "valeur": 1, "niveau": "Très limitées", "color": "#ffff00", "description": "" }
+        ]
+    },
+    "atelier1": {
+        "contexte": {
+            "organisation": "",
+            "siteInternet": "",
+            "secteurActivite": "",
+            "activite": "",
+            "perimetre": ""
+        },
+        "processus": [],
+        "evenements": []
+    },
+    "atelier2": {
+        "sourcesRisque": [],
+        "objectifsVises": [],
+        "menaces": []
+    },
+    "atelier3": {
+        "partiesPrenantes": []
+    },
+    "atelier5": {
+        "plans": []
+    }
+}

@@ -400,13 +400,164 @@ function initRefMatricePage() {
     renderMatriceRisques();
 }
 
+// --- REFERENTIEL : SOCLE DE SECURITE ---
+function initSoclePage() {
+    const tbody = document.getElementById('ref-socle-tbody');
+    const btnAdd = document.getElementById('btn-add-socle');
+    const modal = document.getElementById('modal-add-socle');
+    const btnCancel = document.getElementById('btn-cancel-socle');
+    const btnConfirm = document.getElementById('btn-confirm-socle');
+
+    if (!tbody || !btnAdd) return;
+
+    const renderSocles = () => {
+        tbody.innerHTML = '';
+        
+        // Peristed active socles
+        const activeSocles = Store.data.referentiels.socles || [];
+        
+        // Build the combined list for display: Defaults + Custom
+        // We use a Map to handle overrides/deduplication by name
+        const displayMap = new Map();
+        
+        // 1. Add all defaults from library
+        if (Store.defaultSocles && Store.defaultSocles.length > 0) {
+            Store.defaultSocles.forEach(ds => {
+                displayMap.set(ds.nom, { ...ds, active: false });
+            });
+        }
+        
+        // 2. Add/Override with what's in Store (active or custom)
+        activeSocles.forEach(s => {
+            displayMap.set(s.nom, { ...s, active: true });
+        });
+
+        const sortedLibrary = Array.from(displayMap.values());
+
+        sortedLibrary.forEach((s) => {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = "1px solid var(--c-border)";
+
+            // Checkbox logic: always present in the library view
+            const checkboxHTML = `<input type="checkbox" class="socle-active" ${s.active ? 'checked' : ''} style="width:20px; height:20px; cursor:pointer;">`;
+
+            // Delete button logic: only for custom socles (deletable: true)
+            const deleteBtnHTML = s.deletable ? 
+                `<button class="btn secondary btn-del-socle" style="padding:4px; min-width:auto;">✕</button>` : '';
+
+            tr.innerHTML = `
+                <td style="text-align:center; padding:10px;">${checkboxHTML}</td>
+                <td style="padding:10px; font-weight:bold;">${s.nom}</td>
+                <td style="padding:10px; font-size:0.9em; opacity:0.8;">${s.description}</td>
+                <td style="text-align:center; padding:10px;">${deleteBtnHTML}</td>
+            `;
+
+            // Bind checkbox
+            const cb = tr.querySelector('.socle-active');
+            cb.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    // Add to store
+                    const exists = Store.data.referentiels.socles.find(x => x.nom === s.nom);
+                    if (!exists) {
+                        Store.data.referentiels.socles.push({ ...s, active: true });
+                    }
+                } else {
+                    // Remove from store
+                    Store.data.referentiels.socles = Store.data.referentiels.socles.filter(x => x.nom !== s.nom);
+                }
+                Store.save();
+                renderSocles();
+            });
+
+            // Bind delete (for custom socles)
+            const del = tr.querySelector('.btn-del-socle');
+            if (del) {
+                del.addEventListener('click', () => {
+                    if (confirm(`Supprimer le socle "${s.nom}" du référentiel ?`)) {
+                        Store.data.referentiels.socles = Store.data.referentiels.socles.filter(x => x.nom !== s.nom);
+                        Store.save();
+                        renderSocles();
+                    }
+                });
+            }
+
+            tbody.appendChild(tr);
+        });
+    };
+
+    btnAdd.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+    });
+
+    btnCancel.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+
+    btnConfirm.addEventListener('click', () => {
+        const nom = document.getElementById('new-socle-nom').value;
+        const desc = document.getElementById('new-socle-desc').value;
+        const fileInput = document.getElementById('new-socle-file');
+
+        if (!nom) {
+            alert("Le nom du socle est requis.");
+            return;
+        }
+
+        const newSocle = {
+            nom: nom,
+            description: desc,
+            active: true,
+            deletable: true,
+            exigences: []
+        };
+
+        const addAndClose = () => {
+            Store.data.referentiels.socles.push(newSocle);
+            Store.save();
+            renderSocles();
+            modal.classList.add('hidden');
+            // Reset form
+            document.getElementById('new-socle-nom').value = '';
+            document.getElementById('new-socle-desc').value = '';
+            fileInput.value = '';
+        };
+
+        // Optionnel: Parse CSV if file selected
+        if (fileInput.files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                const lines = text.split('\n');
+                lines.forEach(line => {
+                    const parts = line.split(';');
+                    if (parts.length >= 2) {
+                        newSocle.exigences.push({
+                            ref: parts[0].trim(),
+                            description: parts[1].trim(),
+                            libellé: parts[2] ? parts[2].trim() : parts[1].trim()
+                        });
+                    }
+                });
+                addAndClose();
+            };
+            reader.readAsText(fileInput.files[0]);
+        } else {
+            addAndClose();
+        }
+    });
+
+    renderSocles();
+}
+
 // Register global hooks
+document.addEventListener('pageLoaded:socle', initSoclePage);
 document.addEventListener('pageLoaded:impacts_gravites', initImpactsGravitesPage);
 document.addEventListener('pageLoaded:motivations_ressources', initMotivResPage);
 document.addEventListener('pageLoaded:vraisemblance', initVraisemblancePage);
 document.addEventListener('pageLoaded:matrice', initRefMatricePage);
 
 // Initial execution
+if (document.getElementById('ref-socle-tbody')) initSoclePage();
 if (document.getElementById('ref-motivation-tbody')) initMotivResPage();
 if (document.getElementById('ref-vraisemblance-tbody')) initVraisemblancePage();
 if (document.getElementById('ref-matrice-container')) initRefMatricePage();

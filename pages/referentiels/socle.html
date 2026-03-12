@@ -1,4 +1,71 @@
 <div class="page-header">
     <h2>Référentiel : Socle de sécurité</h2>
 </div>
-<div class="card-square"><p><em>Section en construction (filer).</em></p></div>
+
+<div class="card-extended">
+    <h3>Gestion des socles</h3>
+    <p class="description">Activez les socles de sécurité pour les inclure dans votre analyse. Les socles non recommandés peuvent être supprimés s'ils ont été ajoutés manuellement.</p>
+    
+    <table class="table-extended table-socles">
+        <thead>
+            <tr>
+                <th style="width: 50px; text-align: center;">Actif</th>
+                <th>Nom du socle</th>
+                <th>Description</th>
+                <th style="width: 80px; text-align: center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="ref-socle-tbody">
+            <!-- Injecté par JS -->
+        </tbody>
+    </table>
+
+    <div class="actions" style="margin-top: 20px; display: flex; justify-content: flex-end;">
+        <button class="btn primary" id="btn-add-socle">Ajouter un socle</button>
+    </div>
+</div>
+
+<!-- Modal pour l'ajout de socle -->
+<div id="modal-add-socle" class="modal hidden">
+    <div class="modal-content card-square">
+        <h3>Ajouter un nouveau socle</h3>
+        <div class="form-group">
+            <label>Nom du socle</label>
+            <input type="text" id="new-socle-nom" placeholder="ex: ISO 27002">
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea id="new-socle-desc" rows="3" placeholder="Description courte..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Import d'exigences (CSV)</label>
+            <input type="file" id="new-socle-file" accept=".csv">
+            <small>Format: Référence;Description;Libellé</small>
+        </div>
+        <div class="modal-actions">
+            <button class="btn secondary" id="btn-cancel-socle">Annuler</button>
+            <button class="btn primary" id="btn-confirm-socle">Ajouter</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-socles th {
+        background: var(--c-bg-panel);
+    }
+    .modal {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 1000;
+    }
+    .modal.hidden { display: none; }
+    .modal-content {
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .modal-actions {
+        display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;
+    }
+</style>

@@ -23,7 +23,17 @@
               
                 - L'application sauvegarde le local storage dans un fichier json
                   
-            - Page : Aide
+    - Paramétrage et Initialisation
+      
+        - L'application est pilotée par des fichiers de configuration externes (dossier `parameters/`) :
+          
+            - `defaults.json` : Contient les référentiels par défaut (gravité, impacts, vraisemblance, motivation, ressources) et les structures des ateliers.
+              
+            - `socles.json` : Contient la bibliothèque des socles de sécurité disponibles.
+              
+        - L'initialisation est asynchrone : au chargement, l'application récupère ces fichiers avant d'afficher la première page.
+          
+    - Page : Aide
               
                 - Affiche de la page d'aide (aide.html)
                   
@@ -353,8 +363,47 @@
       
         - Page : Socle de sécurité
           
-            - à définir. mettre une page filer
+            - Tableau : liste des socles
               
+                - Les socles de sécurité sont fournis dans le fichier parameters\socles.json
+                  
+                - Composants d'un ligne du tableau
+                  
+                    - Case à cocher
+                      
+                        - si la case est cochée, le socle est chargé dans le localstorage et sauvegardé dans le fichier json de l'analyse
+                          
+                        - si la case est decochée, le socle est supprimé dans le localstorage et ne sera pas sauvegardé avec le fichier json d'analyse
+                          
+                        - le case n'est présente que si le socle a une valeur "deletable"=false
+                          
+                    - Champs : Nom du socle
+                      
+                    - Champs : description
+                      
+                    - bouton : supprimer le socle du référentiel
+                      
+                        - le socle est supprimé dans le localstorage et ne sera pas sauvegardé avec le fichier json d'analyse
+                          
+                        - le bouton n'est présent que si le socle a une valeur "deletable"=true
+                          
+            - Bouton : ajouter un socle
+              
+                - fenêtre modale
+                  
+                    - champs de saisie : nom du socle
+                      
+                    - champs de saisie : description
+                      
+                    - bouton : charger un socle
+                      
+                        - import d'un fichier csv
+                          
+                            - Le socle est ajouté dans le local storage et dans le fichier d'analyse dans le fichier de l'analyse
+                              <!-- ::xmind-pos:{"x":2250,"y":-601} -->
+                              
+                                - sa valeur "deletable" est true
+                                  
         - Page : Impacts et Gravités
           
             - Echelle des gravités

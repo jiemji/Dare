@@ -1,36 +1,33 @@
-# Implementation Plan - Atelier 5 / Plan de traitement
+# Implementation Plan: Externalize Config & Socles
 
-This plan covers the creation of the "Plan de traitement du risque" page for Atelier 5.
+Refactor the application to load its default configuration and security foundations from external JSON files instead of hardcoded constants in `js/data.js`.
 
 ## Proposed Changes
 
-### Data Model
+### Configuration Files
+
+#### [NEW] [defaults.json](file:///g:/devapps/Dare/parameters/defaults.json)
+- Store `gravite`, `impacts`, `vraisemblance`, `motivation`, and `ressources` defaults.
+
+### Refactoring
+
 #### [MODIFY] [data.js](file:///g:/devapps/Dare/js/data.js)
-- Add `atelier5` object to `defaultData` and `DataStore` to store treatment plans.
-- Structure for security measures grouped by action type (gouvernance, protection, détection, réaction, résilience).
+- Remove `defaultSocles` constant.
+- Move `defaultData` content (except metadata/settings) to `defaults.json`.
+- Add an `init()` method to `DataStore` that:
+    - Fetches `parameters/defaults.json`.
+    - Fetches `parameters/socles.json`.
+    - Merges them into `this.data` if first run.
+    - Stores the library of socles for runtime use.
+- Export/Globalize `Store.init()` and ensure it can be awaited.
 
-### UI / Routing
 #### [MODIFY] [app.js](file:///g:/devapps/Dare/js/app.js)
-- Update `pageStructure.atelier5` to include the script `js/pages/atelier5.js`.
+- Update the initialization sequence to await `Store.init()` before loading the first page.
 
-### New Files
-#### [NEW] [plan.html](file:///g:/devapps/Dare/pages/atelier5/plan.html)
-- Create the HTML structure with containers for the 5 action types.
-- Add a template for the security measure cards (long cards).
+#### [MODIFY] [referentiels.js](file:///g:/devapps/Dare/js/pages/referentiels.js)
+- Update `initSoclePage` to use `Store.defaultSocles` (populated during `init()`) instead of the previous global constant.
 
-#### [NEW] [atelier5.js](file:///g:/devapps/Dare/js/pages/atelier5.js)
-- Implement logic to load/save security measures.
-- Implement auto-increment logic for MES## references.
-- Implement add/delete functions.
+## User Review Required
 
-## Verification Plan
-
-### Manual Verification
-1. Navigate to "Atelier 5" using the top navbar.
-2. Select "Plan de traitement" in the sidebar.
-3. Verify that the 5 sections (Gouvernance, Protection, Détection, Réaction, Résilience) are visible.
-4. Click "+ Ajouter une mesure" in each section and verify a card is added.
-5. Verify the reference auto-increments (MES01, MES02, etc.).
-6. Fill in some data, change the priority, and save (using the disk icon in navbar or switching pages).
-7. Reload the page and verify the data persists.
-8. Delete a measure and verify it's removed.
+> [!IMPORTANT]
+> This change will make the application initialization asynchronous. This is necessary to fetch external files. I will add a simple loading state or ensuring the first page load waits for the configuration.

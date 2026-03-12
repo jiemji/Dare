@@ -1,0 +1,52 @@
+{
+    "socles": [
+        {
+            "nom": "GHI",
+            "description": "Guide d'hygiène informatique",
+            "deletable": false,
+            "exigences": [
+                {
+                    "id": "GHI-01",
+                    "description": "Mots de passe forts",
+                    "deletable": false
+                }
+            ]
+        },
+        {
+            "nom": "RGPD",
+            "description": "Règlement général sur la protection des données",
+            "deletable": false,
+            "exigences": [
+                {
+                    "ref": "RGPD-01",
+                    "description": "Consentement",
+                    "libellé": "Consentement"
+                }
+            ]
+        },
+        {
+            "nom": "ISO 27001",
+            "description": "Norme internationale pour la gestion de la sécurité de l'information",
+            "deletable": false,
+            "exigences": [
+                {
+                    "ref": "ISO-01",
+                    "description": "Gestion des risques",
+                    "libellé": "Gestion des risques"
+                }
+            ]
+        },
+        {
+            "nom": "HDS",
+            "description": "Hébergeur de données de santé",
+            "deletable": false,
+            "exigences": [
+                {
+                    "ref": "HDS-01",
+                    "description": "Hébergement des données de santé",
+                    "libellé": "Hébergement des données de santé"
+                }
+            ]
+        }
+    ]
+}

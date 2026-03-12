@@ -1,4 +1,7 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // ---- Store Initialization ----
+    await Store.init();
+
     // ---- DOM Elements ----
     const htmlEl = document.documentElement;
     const sidebar = document.getElementById('sidebar');
@@ -15,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ---- Theme Management ----
     // Initialize theme from store
-    htmlEl.setAttribute('data-theme', Store.data.settings.theme);
+    htmlEl.setAttribute('data-theme', Store.data?.settings?.theme || 'light');
     
     btnTheme.addEventListener('click', () => {
         const currentTheme = htmlEl.getAttribute('data-theme');
@@ -100,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { id: "livrable2", label: "Livrable 2", file: "pages/livrables/l2.html" }
         ],
         referentiels: [
-            { id: "socle", label: "Socle de sécurité", file: "pages/referentiels/socle.html" },
+            { id: "socle", label: "Socle de sécurité", file: "pages/referentiels/socle.html", script: "js/pages/referentiels.js" },
             { id: "impacts_gravites", label: "Impacts et Gravités", file: "pages/referentiels/impacts_gravites.html", script: "js/pages/referentiels.js" },
             { id: "motivations_ressources", label: "Motivations et Ressources", file: "pages/referentiels/motivations_ressources.html", script: "js/pages/referentiels.js" },
             { id: "vraisemblance", label: "Vraisemblance", file: "pages/referentiels/vraisemblance.html", script: "js/pages/referentiels.js" },
