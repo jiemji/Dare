@@ -245,7 +245,7 @@ body {
 }
 
 /* Containers for cards must be flex and full width to allow internal cards to stretch/align */
-#processus-container, #er-container, #sr-container, #ov-container, .cards-container {
+#processus-container, #er-container, #sr-container, #rs-container, #ov-container, .cards-container {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;

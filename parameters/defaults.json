@@ -13,6 +13,12 @@
             { "valeur": 2, "niveau": "Peu probable", "color": "#ffcc00", "description": "" },
             { "valeur": 1, "niveau": "Très peu probable", "color": "#ffff00", "description": "" }
         ],
+        "killChain": [
+            { "valeur": 1, "phase": "Reconnaitre" },
+            { "valeur": 2, "phase": "Rentrer" },
+            { "valeur": 3, "phase": "Trouver" },
+            { "valeur": 4, "phase": "Exploiter" }
+        ],
         "motivation": [
             { "valeur": 4, "niveau": "Déterminée", "color": "#ff0000", "description": "" },
             { "valeur": 3, "niveau": "Forte", "color": "#ff6600", "description": "" },
@@ -43,7 +49,11 @@
         "menaces": []
     },
     "atelier3": {
-        "partiesPrenantes": []
+        "partiesPrenantes": [],
+        "scenariosStrategiques": []
+    },
+    "atelier4": {
+        "scenariosRisques": []
     },
     "atelier5": {
         "plans": []

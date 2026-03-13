@@ -343,8 +343,20 @@
       
         - Page : Scénarios de risques
           
-            - à définir. mettre une page filer
+            - Composants
               
+                - Cartes allongée : Scénario de risques
+                  
+                    - La carte est découpée en autant d'espaces (colonnes) côte à côte que de phases de la kill-chain, affichées par ordre croissant de gauche à droite
+                      
+                    - En haut de chaque espace figure un bouton "+" ajouter une action
+                      
+                        - fonction : ajoute un objet "action" dans la phase de la kill-chain
+                          
+                            - un objet "action" sera un champ de saisie
+                              
+                - L'écran est découpé par scénarios stratégiques
+                  
         - Page : Cartographie des risques
           
             - à définir. mettre une page filer
@@ -569,42 +581,66 @@
                       
                         - Fonction : ajoute une ligne à la fin du tableau des niveaux de ressource
                           
-        - Page : Partie Prenantes
-          
-            - à définir. mettre une page filer
-              
         - Page : Vraisemblance
           
-            - Composants
+            - Echelle des vraisemblances
               
-                - Tableau carré : Echelle de vraisemblance
+                - Composants
                   
-                    - Composants d'un ligne du tableau
+                    - Tableau carré : Echelle de vraisemblance
                       
-                        - Champs valeur : Valeur
+                        - Composants d'un ligne du tableau
                           
-                            - Les valeurs incrémente à chaque ajout d'un ligne dans le tableau
+                            - Champs valeur : Valeur
                               
-                            - Les valeurs sont supérieures à 0
-                              
-                        - Champs de saisie : Niveau
-                          
-                        - Bouton : Sélecteur de couleur
-                          
-                            - Fonction : ouvre un nuancier et permet de choisir la couleur du fond du champs niveau
-                              
-                                - Les références des couleurs sont stockées dans les paramètre pour être réutilisé sur les autres pages quand on fait appel au référentiel
+                                - Les valeurs incrémente à chaque ajout d'un ligne dans le tableau
                                   
-                        - Champs de saisie : Description
-                          
-                        - Bouton : Supprimer le niveau de motivation
-                          
-                            - Fonction : supprime la ligne de l'échelle de vraisemblance et ses données
+                                - Les valeurs sont supérieures à 0
+                                  
+                            - Champs de saisie : Niveau
                               
-                - Bouton : ajouter une ligne à l'échelle de vraisemblance
-                  
-                    - Fonction : ajoute une ligne à la fin du tableau d'échelle de vraisemblance
+                            - Bouton : Sélecteur de couleur
+                              
+                                - Fonction : ouvre un nuancier et permet de choisir la couleur du fond du champs niveau
+                                  
+                                    - Les références des couleurs sont stockées dans les paramètre pour être réutilisé sur les autres pages quand on fait appel au référentiel
+                                      
+                            - Champs de saisie : Description
+                              
+                            - Bouton : Supprimer le niveau de motivation
+                              
+                                - Fonction : supprime la ligne de l'échelle de vraisemblance et ses données
+                                  
+                    - Bouton : ajouter une ligne à l'échelle de vraisemblance
                       
+                        - Fonction : ajoute une ligne à la fin du tableau d'échelle de vraisemblance
+                          
+            - Kill-chain
+              
+                - Composants
+                  
+                    - Tableau carré : Kill-chain
+                      
+                        - Composants d'un ligne du tableau
+                          
+                            - Champs valeur : Valeur
+                              
+                                - Les valeurs incrémente à chaque ajout d'un ligne dans le tableau
+                                  
+                                - Les valeurs sont supérieures à 0
+                                  
+                            - Champs de saisie : Phase
+                              
+                                - Par défaut, les phases sont : "Reconnaitre", "Rentrer", "Trouver", "Exploiter"
+                                  
+                            - Bouton : Supprimer la phase
+                              
+                                - Fonction : supprime la phase et ses données
+                                  
+                    - Bouton : ajouter une ligne à la kill-chain
+                      
+                        - Fonction : ajoute une ligne à la fin du tableau kill-chain
+                          
         - Page : Matrice des risques
           
             - Echelle des risques
