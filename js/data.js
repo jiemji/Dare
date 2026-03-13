@@ -1,12 +1,4 @@
-/**
- * Structure de données principale de l'application Dare.
- */
-
-/**
- * Structure de données principale de l'application Dare.
- */
-
-class DataStore {
+export class DataStore {
     constructor() {
         this.data = null;
         this.defaultSocles = [];
@@ -114,4 +106,4 @@ class DataStore {
     }
 }
 
-const Store = new DataStore();
+export const Store = new DataStore();
