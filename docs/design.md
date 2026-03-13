@@ -34,9 +34,9 @@
         - L'initialisation est asynchrone : au chargement, l'application récupère ces fichiers avant d'afficher la première page.
           
     - Page : Aide
-              
-                - Affiche de la page d'aide (aide.html)
-                  
+      
+        - Affiche de la page d'aide (aide.html)
+          
     - Bouton : Atelier 1
       
         - Page : Contexte de l'analyse
@@ -294,7 +294,50 @@
                               
         - Page : Scénarios stratégiques
           
-            - à définir. mettre une page filer
+            - Composants
+              
+                - Titre : Processus #
+                  
+                - Carte allongée : Scénario stratégique #
+                  
+                    - Composants
+                      
+                        - Champs de saisie : Référence
+                          <!-- ::xmind-pos:{"x":559,"y":-1145} -->
+                          
+                            - Incrémentation automatique à la création : SS01, SS02, SS##
+                              
+                            - La numérotation ne tient pas compte de la séparation à l'écran par procesus. Par exemple, VM01 > SS01, SS02, VM2 > SS03, SS04.
+                              
+                        - Liste déroulante : Menaces
+                          
+                            - les données proviennent du tableau "Evaluation des menaces"
+                              
+                        - Liste déroulante : Parties prenantes
+                          <!-- ::xmind-pos:{"x":2678,"y":-506} -->
+                          
+                            - les données proviennent du tableau "Parties prenantes"
+                              
+                        - Champs de saisie : Cible
+                          
+                        - Champs de saisie : Scénario stratégique
+                          <!-- ::xmind-pos:{"x":559,"y":-1145} -->
+                          
+                        - Champs de saisie : Déclenchement
+                          
+                        - Liste déroulante : Gravité
+                          
+                            - les données proviennent du référentiel "Gravité"
+                              
+                        - Bouton : Supprimer le scénario stratégique
+                          
+                            - Fonction : supprime le scénario et ses données
+                              
+                - Bouton : Ajouter un scénario stratégique
+                  
+                    - Fonction : ajoute une carte scénario stratégique dans l'espace du processus
+                      
+            - L'écran est découpé par processus métier
               
     - Bouton : Atelier 4
       
