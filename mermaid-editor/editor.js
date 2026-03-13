@@ -452,20 +452,54 @@ class MermaidEditor {
         let path = `M ${start.x} ${start.y}`;
         const offset = 20;
 
-        // Better orthogonal routing: move out from side first
+        // Segment de sortie (P1)
         let p1 = { x: start.x, y: start.y };
         if (start.side === 'top') p1.y -= offset;
         else if (start.side === 'bottom') p1.y += offset;
         else if (start.side === 'left') p1.x -= offset;
         else if (start.side === 'right') p1.x += offset;
 
+        // Segment d'entrée (P2)
+        let p2 = { x: end.x, y: end.y };
+        if (end.side) {
+            if (end.side === 'top') p2.y -= offset;
+            else if (end.side === 'bottom') p2.y += offset;
+            else if (end.side === 'left') p2.x -= offset;
+            else if (end.side === 'right') p2.x += offset;
+        }
+
         path += ` L ${p1.x} ${p1.y}`;
 
-        // Then go to end
-        if (start.side === 'top' || start.side === 'bottom') {
-            path += ` L ${end.x} ${p1.y} L ${end.x} ${end.y}`;
+        // Entre p1 et p2
+        if (!end.side) {
+            // Mode création de lien (souris)
+            if (start.side === 'top' || start.side === 'bottom') {
+                path += ` L ${p2.x} ${p1.y} L ${p2.x} ${p2.y}`;
+            } else {
+                path += ` L ${p1.x} ${p2.y} L ${p2.x} ${p2.y}`;
+            }
         } else {
-            path += ` L ${p1.x} ${end.y} L ${end.x} ${end.y}`;
+            // Mode rendu final (S -> P1 -> ... -> P2 -> E)
+            if (start.side === 'left' || start.side === 'right') {
+                if (end.side === 'left' || end.side === 'right') {
+                    // S-shape horizontal
+                    const midX = (p1.x + p2.x) / 2;
+                    path += ` L ${midX} ${p1.y} L ${midX} ${p2.y} L ${p2.x} ${p2.y}`;
+                } else {
+                    // L-shape simple
+                    path += ` L ${p2.x} ${p1.y} L ${p2.x} ${p2.y}`;
+                }
+            } else {
+                if (end.side === 'top' || end.side === 'bottom') {
+                    // S-shape vertical
+                    const midY = (p1.y + p2.y) / 2;
+                    path += ` L ${p1.x} ${midY} L ${p2.x} ${midY} L ${p2.x} ${p2.y}`;
+                } else {
+                    // L-shape simple
+                    path += ` L ${p1.x} ${p2.y} L ${p2.x} ${p2.y}`;
+                }
+            }
+            path += ` L ${end.x} ${end.y}`;
         }
         
         return path;
@@ -490,7 +524,7 @@ class MermaidEditor {
             
             const d = this.calculateOrthogonalPath(
                 { ...startPort, side: link.fromSide },
-                endPort
+                { ...endPort, side: link.toSide }
             );
             
             pathEl.setAttribute("d", d);
