@@ -3,61 +3,60 @@ import { stateToMermaid } from './mermaid-logic.js';
 const GRID_SIZE = 20;
 const NODE_WIDTH = 120;
 const NODE_HEIGHT = 60;
-const SWIMLANES = [
-    { id: "recon", title: "Reconnaitre" },
-    { id: "enter", title: "Rentrer" },
-    { id: "find",  title: "Trouver" },
-    { id: "exploit", title: "Exploiter" },
-    { id: "score", title: "Score", isResult: true }
-];
-const LANE_WIDTH = 250;
+const LANE_WIDTH = 245;
 const NODE_SPACING_V = 30; // Vertical spacing between nodes in a lane
 
 const HEADER_HEIGHT = 80;
 
-class MermaidEditor {
-    constructor() {
-        this.svg = document.getElementById('canvas');
-        this.swimlanesLayer = document.getElementById('swimlanes-layer');
-        this.nodesLayer = document.getElementById('nodes-layer');
-        this.linksLayer = document.getElementById('links-layer');
-        this.scoresLayer = document.getElementById('scores-layer');
-        this.tempLayer = document.getElementById('temp-layer');
-        this.outputArea = document.getElementById('mermaid-output');
-        
-        this.state = {
-            nodes: [],
-            links: []
+export class MermaidEditor {
+    constructor(container, options = {}) {
+        this.container = container;
+        this.options = {
+            onScoreChange: options.onScoreChange || (() => { }),
+            onDataChange: options.onDataChange || (() => { }),
+            readOnly: options.readOnly || false,
+            phases: options.phases || [
+                { id: "recon", title: "Reconnaitre" },
+                { id: "enter", title: "Rentrer" },
+                { id: "find", title: "Trouver" },
+                { id: "exploit", title: "Exploiter" }
+            ],
+            initialData: options.initialData || { nodes: [], links: [] }
         };
-        
-        this.dragState = {
-            active: false,
-            target: null,
-            offset: { x: 0, y: 0 }
-        };
-        
-        this.connectionState = {
-            active: false,
-            fromPort: null,
-            tempLine: null
-        };
+
+        // Configuration des swimlanes dynamiques (Plus de colonne Score interne)
+        this.swimlanes = this.options.phases.map(p => ({
+            id: `lane_${p.valeur || p.id}`,
+            title: p.phase || p.title
+        }));
+
+        this.svg = container.querySelector('.canvas');
+        if (this.svg) this.svg.setAttribute('height', '1200');
+        this.swimlanesLayer = container.querySelector('.swimlanes-layer');
+        this.nodesLayer = container.querySelector('.nodes-layer');
+        this.linksLayer = container.querySelector('.links-layer');
+        this.scoresLayer = null; // Désactivé, le score est géré par l'application
+        this.tempLayer = container.querySelector('.temp-layer');
+        this.state = this.options.initialData;
+
+        this.dragState = { active: false, target: null, offset: { x: 0, y: 0 } };
+        this.connectionState = { active: false, fromPort: null, tempLine: null };
 
         this.init();
     }
 
     init() {
         this.renderSwimlanes();
-        document.getElementById('clear-canvas').addEventListener('click', () => this.clear());
-        document.getElementById('copy-mermaid').addEventListener('click', () => this.copyToClipboard());
-        
-        // Modal events
-        document.getElementById('modal-cancel').addEventListener('click', () => this.closeModal());
-        document.getElementById('modal-save').addEventListener('click', () => this.saveModal());
+
+
+        // Modal events (Shared modal or Instance modal? Let's use a class selector)
+        // Note: For multi-instance, we'll use a modal scoped to the app or the container
+        this.modal = document.getElementById('node-modal'); // Keep global for overlay
 
         this.svg.addEventListener('mousemove', (e) => this.handleMouseMove(e));
         this.svg.addEventListener('mouseup', () => this.handleMouseUp());
         this.svg.addEventListener('click', (e) => {
-            if (e.target === this.svg || e.target.id === 'grid-large' || e.target.tagName === 'rect') {
+            if (e.target === this.svg || e.target.tagName === 'rect' || e.target.classList.contains('grid-rect')) {
                 if (this.connectionState.active) {
                     this.resetConnection();
                 }
@@ -65,16 +64,29 @@ class MermaidEditor {
                 this.updateSelection();
             }
         });
-        
+
+        // Keydown needs careful handling for multiple instances. 
+        // We'll attach it to the SVG or the container instead of window.
+        this.container.tabIndex = 0; // Make container focusable
+        this.container.addEventListener('keydown', (e) => this.handleKeyDown(e));
+
+        this.renderAll();
+    }
+
+    renderAll() {
+        this.nodesLayer.innerHTML = '';
+        this.linksLayer.innerHTML = '';
+        this.state.nodes.forEach(n => this.renderNode(n));
+        this.renderLinks();
         this.updateMermaid();
     }
 
     renderSwimlanes() {
         this.swimlanesLayer.innerHTML = '';
-        
-        SWIMLANES.forEach((lane, index) => {
+
+        this.swimlanes.forEach((lane, index) => {
             const x = index * LANE_WIDTH;
-            
+
             // Header BG
             const header = document.createElementNS("http://www.w3.org/2000/svg", "rect");
             header.setAttribute("class", "swimlane-header-bg");
@@ -108,7 +120,7 @@ class MermaidEditor {
                 circle.setAttribute("cx", x + LANE_WIDTH / 2);
                 circle.setAttribute("cy", 55);
                 circle.setAttribute("r", 14);
-                
+
                 const cross = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 cross.setAttribute("class", "btn-add-svg-text");
                 cross.setAttribute("x", x + LANE_WIDTH / 2);
@@ -123,7 +135,7 @@ class MermaidEditor {
             }
 
             // Separator Line (except last one)
-            if (index < SWIMLANES.length - 1) {
+            if (index < this.swimlanes.length - 1) {
                 const sep = document.createElementNS("http://www.w3.org/2000/svg", "line");
                 sep.setAttribute("class", "swimlane-separator");
                 sep.setAttribute("x1", x + LANE_WIDTH);
@@ -134,24 +146,29 @@ class MermaidEditor {
             }
         });
 
-        this.svg.setAttribute('width', SWIMLANES.length * LANE_WIDTH);
+        this.svg.setAttribute('width', this.swimlanes.length * LANE_WIDTH);
+
+        // Handle horizontal scrolling if many lanes
+        if (this.swimlanes.length > 5) {
+            this.container.querySelector('.canvas-container').style.overflowX = 'auto';
+        }
     }
 
     addNodeToLane(laneIndex) {
-        const lane = SWIMLANES[laneIndex];
-        if (lane.isResult) return; // Cannot add nodes to result lane
-        
+        const lane = this.swimlanes[laneIndex];
+        if (lane.isResult) return;
+
         // LTR : index 0 est à gauche
         const laneX = laneIndex * LANE_WIDTH;
         const centerX = laneX + LANE_WIDTH / 2 - NODE_WIDTH / 2;
-        
+
         // Placement horizontal fixe au centre de la colonne (aligné sur la grille)
         const nx = Math.round(centerX / GRID_SIZE) * GRID_SIZE;
-        
+
         // Calcul du Y : trouver le nœud le plus bas dans cette colonne
         const laneNodes = this.state.nodes.filter(n => n.laneId === lane.id);
 
-        let ny = HEADER_HEIGHT + 20; // Offset initial sous l'en-tête
+        let ny = HEADER_HEIGHT + 60; // Offset augmenté pour éviter toute troncature sous l'en-tête
         if (laneNodes.length > 0) {
             const lowest = Math.max(...laneNodes.map(n => n.y + n.height));
             ny = lowest + NODE_SPACING_V;
@@ -173,10 +190,10 @@ class MermaidEditor {
 
     reorganizeLane(laneId, deletedY) {
         const shiftAmount = NODE_HEIGHT + NODE_SPACING_V;
-        
+
         // Sélectionner tous les nœuds de la même colonne situés en dessous
         const nodesToShift = this.state.nodes.filter(n => n.laneId === laneId && n.y > deletedY);
-        
+
         nodesToShift.forEach(node => {
             node.y -= shiftAmount;
             const el = document.getElementById(node.id);
@@ -189,32 +206,32 @@ class MermaidEditor {
     moveNode(nodeId, direction) {
         const index = this.state.nodes.findIndex(n => n.id === nodeId);
         if (index === -1) return;
-        
+
         const node = this.state.nodes[index];
         const laneNodes = this.state.nodes
             .filter(n => n.laneId === node.laneId)
             .sort((a, b) => a.y - b.y);
-            
+
         const laneIndex = laneNodes.findIndex(n => n.id === nodeId);
-        
+
         let targetIndex = -1;
         if (direction === 'up' && laneIndex > 0) {
             targetIndex = laneIndex - 1;
         } else if (direction === 'down' && laneIndex < laneNodes.length - 1) {
             targetIndex = laneIndex + 1;
         }
-        
+
         if (targetIndex !== -1) {
             const targetNode = laneNodes[targetIndex];
             // Swap Y positions
             const tempY = node.y;
             node.y = targetNode.y;
             targetNode.y = tempY;
-            
+
             // Update DOM
             document.getElementById(node.id).setAttribute("transform", `translate(${node.x}, ${node.y})`);
             document.getElementById(targetNode.id).setAttribute("transform", `translate(${targetNode.x}, ${targetNode.y})`);
-            
+
             this.renderLinks();
             this.updateMermaid();
         }
@@ -230,7 +247,7 @@ class MermaidEditor {
         rect.setAttribute("class", `node-rect val-${node.value}`);
         rect.setAttribute("width", node.width);
         rect.setAttribute("height", node.height);
-        
+
         const textArea = document.createElementNS("http://www.w3.org/2000/svg", "text");
         textArea.setAttribute("class", "node-text");
         textArea.setAttribute("x", node.width / 2);
@@ -285,7 +302,7 @@ class MermaidEditor {
             circle.setAttribute("cy", p.y);
             circle.setAttribute("r", 6); // Increased radius from 5 to 6
             circle.setAttribute("data-side", p.side);
-            
+
             circle.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (this.connectionState.active) {
@@ -317,6 +334,7 @@ class MermaidEditor {
             this.openModal(node);
         });
 
+        this.options.onDataChange(this.state);
         this.nodesLayer.appendChild(g);
     }
 
@@ -325,7 +343,7 @@ class MermaidEditor {
         const modal = document.getElementById('node-modal');
         const textInput = document.getElementById('modal-text');
         textInput.value = node.text;
-        
+
         const radio = document.querySelector(`input[name="node-value"][value="${node.value}"]`);
         if (radio) radio.checked = true;
 
@@ -340,27 +358,27 @@ class MermaidEditor {
 
     saveModal() {
         if (!this.editingNode) return;
-        
+
         const text = document.getElementById('modal-text').value;
         const value = parseInt(document.querySelector('input[name="node-value"]:checked')?.value || 1);
-        
+
         this.editingNode.text = text;
         this.editingNode.value = value;
-        
+
         // Update DOM
         const g = document.getElementById(this.editingNode.id);
         if (g) {
             const textEl = g.querySelector('.node-text');
             const valEl = g.querySelector('.node-value-text');
             const rect = g.querySelector('.node-rect');
-            
+
             if (textEl) textEl.textContent = text;
             if (valEl) valEl.textContent = value;
             if (rect) {
                 rect.setAttribute("class", `node-rect val-${value}`);
             }
         }
-        
+
         this.updateMermaid();
         this.closeModal();
     }
@@ -378,7 +396,7 @@ class MermaidEditor {
     startConnection(nodeId, port) {
         this.connectionState.active = true;
         this.connectionState.fromPort = { nodeId, ...port };
-        
+
         this.connectionState.tempLine = document.createElementNS("http://www.w3.org/2000/svg", "path");
         this.connectionState.tempLine.setAttribute("class", "link-path");
         this.connectionState.tempLine.setAttribute("stroke-dasharray", "5,5");
@@ -388,11 +406,11 @@ class MermaidEditor {
     endConnection(toId, toPort) {
         if (!this.connectionState.active) return;
         const from = this.connectionState.fromPort;
-        
+
         if (from.nodeId !== toId) {
             // Check if link already exists
-            const exists = this.state.links.some(l => 
-                l.fromId === from.nodeId && l.toId === toId && 
+            const exists = this.state.links.some(l =>
+                l.fromId === from.nodeId && l.toId === toId &&
                 l.fromSide === from.side && l.toSide === toPort.side
             );
 
@@ -409,7 +427,7 @@ class MermaidEditor {
                 this.updateMermaid();
             }
         }
-        
+
         this.resetConnection();
     }
 
@@ -432,7 +450,7 @@ class MermaidEditor {
             const fromNode = this.state.nodes.find(n => n.id === this.connectionState.fromPort.nodeId);
             const startX = fromNode.x + this.connectionState.fromPort.x;
             const startY = fromNode.y + this.connectionState.fromPort.y;
-            
+
             const path = this.calculateOrthogonalPath(
                 { x: startX, y: startY, side: this.connectionState.fromPort.side },
                 { x: mouseX, y: mouseY }
@@ -501,7 +519,7 @@ class MermaidEditor {
             }
             path += ` L ${end.x} ${end.y}`;
         }
-        
+
         return path;
     }
 
@@ -510,7 +528,7 @@ class MermaidEditor {
         this.state.links.forEach((link, index) => {
             const fromNode = this.state.nodes.find(n => n.id === link.fromId);
             const toNode = this.state.nodes.find(n => n.id === link.toId);
-            
+
             if (!fromNode || !toNode) return;
 
             const startPort = this.getPortCoords(fromNode, link.fromSide);
@@ -521,12 +539,12 @@ class MermaidEditor {
 
             const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
             pathEl.setAttribute("class", "link-path");
-            
+
             const d = this.calculateOrthogonalPath(
                 { ...startPort, side: link.fromSide },
                 { ...endPort, side: link.toSide }
             );
-            
+
             pathEl.setAttribute("d", d);
 
             // Invisible wide path for easier clicking/selection/deletion
@@ -560,32 +578,37 @@ class MermaidEditor {
     }
 
     updateMermaid() {
-        this.outputArea.value = stateToMermaid(this.state.nodes, this.state.links);
-        this.calculateAndRenderScores();
+        if (this.outputArea) {
+            this.outputArea.value = stateToMermaid(this.state.nodes, this.state.links);
+        }
+        this.calculateTotalScore();
+        this.options.onDataChange(this.state);
     }
 
-    calculateAndRenderScores() {
-        this.scoresLayer.innerHTML = '';
-        
-        const exploitNodes = this.state.nodes.filter(n => n.laneId === 'exploit');
-        const scoreLaneIndex = SWIMLANES.findIndex(l => l.id === 'score');
-        const scoreX = scoreLaneIndex * LANE_WIDTH + LANE_WIDTH / 2;
+    calculateTotalScore() {
+        const exploitLane = this.swimlanes[this.swimlanes.length - 1];
+        if (!exploitLane) return;
+
+        const exploitNodes = this.state.nodes.filter(n => n.laneId === exploitLane.id);
+        let maxScore = 0;
 
         exploitNodes.forEach(node => {
             const finalScore = this.getNodeScore(node);
-            
-            if (finalScore !== null) {
-                this.renderScoreCircle(scoreX, node.y + NODE_HEIGHT / 2, finalScore);
+            if (finalScore !== null && finalScore > maxScore) {
+                maxScore = finalScore;
             }
         });
-    }
 
+        if (maxScore > 0) {
+            this.options.onScoreChange(maxScore);
+        }
+    }
     getNodeScore(startNode) {
         const paths = [];
         this.explorePathsBackwards(startNode, startNode.value, paths);
-        
+
         if (paths.length === 0) return null;
-        
+
         // Le score final est le MAXIMUM des résultats de chaque chemin
         return Math.max(...paths);
     }
@@ -611,13 +634,13 @@ class MermaidEditor {
 
     renderScoreCircle(cx, cy, value) {
         const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        
+
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         circle.setAttribute("class", `score-circle val-${value}`);
         circle.setAttribute("cx", cx);
         circle.setAttribute("cy", cy);
         circle.setAttribute("r", 20);
-        
+
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
         text.setAttribute("class", "score-text");
         text.setAttribute("x", cx);
@@ -630,68 +653,65 @@ class MermaidEditor {
         g.appendChild(text);
         this.scoresLayer.appendChild(g);
     }
+    handleKeyDown(e) {
+        // Check if user is typing in an input or textarea
+        const target = e.target;
+        const isTyping = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
 
-    clear() {
-        this.state.nodes = [];
-        this.state.links = [];
-        this.nodesLayer.innerHTML = '';
-        this.linksLayer.innerHTML = '';
-        this.updateMermaid();
-    }
+        if (e.key === 'Escape') {
+            if (this.connectionState.active) {
+                this.resetConnection();
+            } else {
+                this.selectedId = null;
+                this.updateSelection();
+            }
+        } else if (e.key === 'Delete' || e.key === 'Backspace') {
+            if (this.selectedId && !isTyping) {
+                e.preventDefault();
+                const index = this.state.nodes.findIndex(n => n.id === this.selectedId);
+                if (index !== -1) {
+                    const nodeToDelete = this.state.nodes[index];
+                    const laneId = nodeToDelete.laneId;
+                    const deletedY = nodeToDelete.y;
 
-    copyToClipboard() {
-        this.outputArea.select();
-        document.execCommand('copy');
-        alert("Copié dans le presse-papier !");
-    }
-}
+                    this.state.nodes.splice(index, 1);
+                    if (laneId) this.reorganizeLane(laneId, deletedY);
 
-// Add Keyboard handler for delete
-window.addEventListener('keydown', (e) => {
-    const editor = window.mermaidEditor;
-    if (!editor) return;
-
-    // Check if user is typing in an input or textarea
-    const target = e.target;
-    const isTyping = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
-
-    if (e.key === 'Escape') {
-        if (editor.connectionState.active) {
-            editor.resetConnection();
-        } else {
-            editor.selectedId = null;
-            editor.updateSelection();
-        }
-    } else if (e.key === 'Delete' || e.key === 'Backspace') {
-        // Only delete if NOT typing in an input field
-        if (editor.selectedId && !isTyping) {
-            e.preventDefault(); // Prevent accidental navigation or character removal
-            const index = editor.state.nodes.findIndex(n => n.id === editor.selectedId);
-            if (index !== -1) {
-                const nodeToDelete = editor.state.nodes[index];
-                const laneId = nodeToDelete.laneId;
-                const deletedY = nodeToDelete.y;
-
-                // Remove node
-                editor.state.nodes.splice(index, 1);
-                
-                // Reorganize lane
-                if (laneId) {
-                    editor.reorganizeLane(laneId, deletedY);
+                    this.state.links = this.state.links.filter(l =>
+                        l.fromId !== this.selectedId && l.toId !== this.selectedId
+                    );
+                    const el = this.container.querySelector(`#${this.selectedId}`);
+                    if (el) el.remove();
+                    this.selectedId = null;
+                    this.renderLinks();
+                    this.updateMermaid();
                 }
-
-                // Remove associated links
-                editor.state.links = editor.state.links.filter(l => 
-                    l.fromId !== editor.selectedId && l.toId !== editor.selectedId
-                );
-                const el = document.getElementById(editor.selectedId);
-                if (el) el.remove();
-                editor.selectedId = null;
-                editor.renderLinks();
-                editor.updateMermaid();
             }
         }
     }
-});
 
-window.mermaidEditor = new MermaidEditor();
+    getData() {
+        return this.state;
+    }
+
+    static createEditorMarkup() {
+        return `
+            <div class="editor-main">
+                <div class="canvas-container" style="flex: 1; width: 100%;">
+                    <svg class="canvas">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="var(--accent-color)" />
+                            </marker>
+                        </defs>
+                        <g class="swimlanes-layer"></g>
+                        <g class="links-layer"></g>
+                        <g class="nodes-layer"></g>
+                        <g class="scores-layer"></g>
+                        <g class="temp-layer"></g>
+                    </svg>
+                </div>
+            </div>
+        `;
+    }
+}

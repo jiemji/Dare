@@ -1,150 +1,81 @@
 import { Store } from '../data.js';
 import { UI, Sanitize } from '../components.js';
+import { MermaidEditor } from '../../mermaid-editor/editor.js';
 
-/**
- * Crée le DOM pour une carte de scénario de risque
- * La carte est découpée en phases de la kill-chain (verticalement)
- */
 /**
  * Crée le DOM pour une carte de scénario de risque
  */
 function createRiskScenarioDom(rs, rsList) {
-    const card = UI.card('long', `Scénario de Risque ${rs.id || ''}`);
-    card.setAttribute('data-rs-id', rs.id);
-    
-    // Style pour s'assurer que la carte s'étire bien et prend tout l'espace
-    card.style.display = 'flex';
-    card.style.flexDirection = 'column';
-    card.style.width = '100%';
-    card.style.flex = '1 1 100%';
-    card.style.maxWidth = 'none';
+    // Colonne de gauche : Formulaires
+    const leftCol = document.createElement('div');
+    leftCol.style.display = 'flex';
+    leftCol.style.flexDirection = 'column';
+    leftCol.style.gap = '15px';
 
-    // Conteneur des phases (côte à côte, ordre croissant)
-    const phasesContainer = document.createElement('div');
-    phasesContainer.style.display = 'flex';
-    phasesContainer.style.flexDirection = 'row'; // Ordre naturel de gauche à droite
-    phasesContainer.style.gap = '15px';
-    phasesContainer.style.width = '100%';
-    phasesContainer.style.minHeight = '150px';
-    phasesContainer.style.overflowX = 'auto'; // Support pour le défilement horizontal si nécessaire
-    phasesContainer.style.paddingBottom = '10px';
+    leftCol.appendChild(UI.inputGroup('Biens supports', rs.biensSupports || '', (val) => {
+        rs.biensSupports = val;
+        Store.save();
+    }));
 
-    const phases = [...Store.data.referentiels.killChain].sort((a,b) => a.valeur - b.valeur);
-    
-    phases.forEach(p => {
-        const col = document.createElement('div');
-        col.className = 'killchain-phase-col';
-        col.style.flex = '1';
-        col.style.minWidth = '220px';
-        col.style.display = 'flex';
-        col.style.flexDirection = 'column';
-        col.style.gap = '10px';
-        col.style.padding = '12px';
-        col.style.backgroundColor = 'var(--c-bg-panel)';
-        col.style.borderRadius = 'var(--border-radius)';
-        col.style.border = '1px solid var(--c-border)';
-        col.style.borderTop = '4px solid var(--c-accent)';
+    leftCol.appendChild(UI.inputGroup('Mesures de sécurité relevées', rs.mesuresExistantes || '', (val) => {
+        rs.mesuresExistantes = val;
+        Store.save();
+    }, { multiline: true }));
 
-        const colHeader = document.createElement('div');
-        colHeader.style.display = 'flex';
-        colHeader.style.justifyContent = 'space-between';
-        colHeader.style.alignItems = 'center';
-        colHeader.style.marginBottom = '5px';
+    leftCol.appendChild(UI.inputGroup('Mesures de sécurité proposées', rs.mesuresProposees || '', (val) => {
+        rs.mesuresProposees = val;
+        Store.save();
+    }, { multiline: true }));
 
-        const colTitle = document.createElement('h5');
-        colTitle.textContent = p.phase;
-        colTitle.style.fontSize = '12px';
-        colTitle.style.margin = '0';
-        colTitle.style.textTransform = 'uppercase';
-        colTitle.style.letterSpacing = '0.5px';
-        colTitle.style.fontWeight = 'bold';
-        colHeader.appendChild(colTitle);
+    // Colonne de droite : Éditeur Mermaid
+    const rightCol = document.createElement('div');
+    rightCol.className = 'editor-container-integrated';
+    rightCol.innerHTML = MermaidEditor.createEditorMarkup();
 
-        const btnAdd = UI.button('+', () => {
-            if(!rs.phases[p.valeur]) rs.phases[p.valeur] = [];
-            rs.phases[p.valeur].push("");
-            Store.save();
-            renderPhaseActions();
-        }, 'secondary');
-        btnAdd.style.padding = '2px 8px';
-        btnAdd.style.fontSize = '14px';
-        btnAdd.style.minWidth = 'auto';
-        btnAdd.title = "Ajouter une action";
-        colHeader.appendChild(btnAdd);
-
-        col.appendChild(colHeader);
-
-        const actionsList = document.createElement('div');
-        actionsList.style.display = 'flex';
-        actionsList.style.flexDirection = 'column';
-        actionsList.style.gap = '8px';
-
-        const renderPhaseActions = () => {
-            actionsList.innerHTML = '';
-            const actions = rs.phases[p.valeur] || [];
-            actions.forEach((act, idx) => {
-                const actDiv = document.createElement('div');
-                actDiv.style.display = 'flex';
-                actDiv.style.gap = '5px';
-                actDiv.style.alignItems = 'center';
-                actDiv.style.backgroundColor = 'var(--c-bg-main)';
-                actDiv.style.padding = '4px';
-                actDiv.style.borderRadius = '4px';
-                actDiv.style.border = '1px solid var(--c-border)';
-
-                const inp = document.createElement('input');
-                inp.type = 'text';
-                inp.placeholder = 'Action...';
-                inp.value = act;
-                inp.style.fontSize = '12px';
-                inp.style.padding = '4px';
-                inp.style.flex = '1';
-                inp.style.border = 'none';
-                inp.style.background = 'transparent';
-                inp.oninput = () => {
-                    rs.phases[p.valeur][idx] = inp.value;
-                    Store.save();
-                };
-                actDiv.appendChild(inp);
-
-                const btnDel = UI.button('×', () => {
-                    rs.phases[p.valeur].splice(idx, 1);
-                    Store.save();
-                    renderPhaseActions();
-                }, 'secondary');
-                btnDel.style.padding = '2px 6px';
-                btnDel.style.fontSize = '12px';
-                btnDel.style.minWidth = 'auto';
-                btnDel.style.border = 'none';
-                actDiv.appendChild(btnDel);
-
-                actionsList.appendChild(actDiv);
-            });
-        };
-
-        renderPhaseActions();
-        col.appendChild(actionsList);
-        phasesContainer.appendChild(col);
-    });
-
-    card.appendChild(phasesContainer);
-
-    const footer = document.createElement('div');
-    footer.style.marginTop = '15px';
-    footer.style.textAlign = 'right';
-    const btnDelCard = UI.button('Supprimer ce scénario', () => {
-        if(confirm('Supprimer ce scénario de risque ?')){
-            const index = rsList.indexOf(rs);
-            if(index > -1) {
-                rsList.splice(index, 1);
+    // Construction de la carte à rabat
+    const card = UI.foldingCard(`Scénario de Risque ${rs.id || ''}`, {
+        isExpanded: false,
+        likelihood: {
+            value: rs.vraisemblance || "1",
+            options: Store.data.referentiels.vraisemblance.map(v => ({ value: v.valeur, label: `${v.valeur} - ${v.niveau}` })),
+            onChange: (val) => {
+                rs.vraisemblance = val;
                 Store.save();
-                card.remove();
+            }
+        },
+        onDelete: () => {
+            if(confirm('Supprimer ce scénario de risque ?')){
+                const index = rsList.indexOf(rs);
+                if(index > -1) {
+                    rsList.splice(index, 1);
+                    Store.save();
+                    card.remove();
+                }
+            }
+        },
+        contentLeft: leftCol,
+        contentRight: rightCol,
+        onToggle: (isExpanded) => {
+            if (isExpanded && !card._editor) {
+                // Initialisation différée de l'éditeur lors du premier déploiement
+                card._editor = new MermaidEditor(rightCol, {
+                    phases: Store.data.referentiels.killChain,
+                    initialData: rs.diagramData || { nodes: [], links: [] },
+                    onScoreChange: (score) => {
+                        rs.vraisemblance = score.toString();
+                        if (card._likelihoodSelect) card._likelihoodSelect.value = rs.vraisemblance;
+                        Store.save();
+                    },
+                    onDataChange: (data) => {
+                        rs.diagramData = data;
+                        Store.save();
+                    }
+                });
             }
         }
-    }, 'secondary');
-    footer.appendChild(btnDelCard);
-    card.appendChild(footer);
+    });
 
+    card.setAttribute('data-rs-id', rs.id);
     return card;
 }
 
@@ -171,6 +102,7 @@ export function init() {
         section.style.marginBottom = '30px';
         
         const header = document.createElement('div');
+        header.className = 'ss-section-header';
         header.style.display = 'flex';
         header.style.justifyContent = 'space-between';
         header.style.alignItems = 'center';
@@ -204,7 +136,11 @@ export function init() {
             const newRS = {
                 id: newRef,
                 ssId: ss.id,
-                phases: {}
+                vraisemblance: "1",
+                biensSupports: "",
+                mesuresExistantes: "",
+                mesuresProposees: "",
+                diagramData: { nodes: [], links: [] }
             };
             rsData.push(newRS);
             Store.save();
@@ -216,6 +152,9 @@ export function init() {
 
         const rsCardsContainer = document.createElement('div');
         rsCardsContainer.className = 'cards-container';
+        rsCardsContainer.style.display = 'flex';
+        rsCardsContainer.style.flexDirection = 'column';
+        rsCardsContainer.style.gap = '20px';
         
         const ssScenarios = rsData.filter(r => r.ssId === ss.id);
         ssScenarios.forEach(rs => {

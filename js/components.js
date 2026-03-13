@@ -108,5 +108,78 @@ export const UI = {
         }
         
         return card;
+    },
+
+    /**
+     * Creates a folding card for risk scenarios.
+     */
+    foldingCard(title, options = {}) {
+        const card = document.createElement('div');
+        card.className = 'folding-card';
+        if (options.isExpanded) card.classList.add('is-expanded');
+
+        // Header
+        const header = document.createElement('div');
+        header.className = 'folding-header';
+        
+        const h3 = document.createElement('h3');
+        h3.textContent = title;
+        header.appendChild(h3);
+
+        const controls = document.createElement('div');
+        controls.className = 'header-controls';
+        
+        // Likelihood selector (Vraisemblance)
+        if (options.likelihood) {
+            const select = this.selectGroup('Vraisemblance', options.likelihood.value, options.likelihood.options, options.likelihood.onChange);
+            select.style.marginBottom = '0'; // Flat in header
+            select.querySelector('label').style.display = 'inline-block';
+            select.querySelector('label').style.marginRight = '10px';
+            select.querySelector('select').style.width = 'auto';
+            select.querySelector('select').style.marginBottom = '0';
+            controls.appendChild(select);
+            card._likelihoodSelect = select.querySelector('select');
+        }
+
+        // Delete button
+        if (options.onDelete) {
+            const btnDel = this.button('Supprimer ce scénario', (e) => {
+                e.stopPropagation();
+                options.onDelete();
+            }, 'secondary');
+            controls.appendChild(btnDel);
+        }
+
+        // Toggle Expand
+        const toggle = document.createElement('span');
+        toggle.className = 'toggle-icon';
+        toggle.innerHTML = '▼';
+        controls.appendChild(toggle);
+
+        header.appendChild(controls);
+        header.onclick = () => {
+            card.classList.toggle('is-expanded');
+            if (options.onToggle) options.onToggle(card.classList.contains('is-expanded'));
+        };
+
+        card.appendChild(header);
+
+        // Content
+        const content = document.createElement('div');
+        content.className = 'folding-content';
+
+        const left = document.createElement('div');
+        left.className = 'content-left';
+        if (options.contentLeft) left.appendChild(options.contentLeft);
+
+        const right = document.createElement('div');
+        right.className = 'content-right';
+        if (options.contentRight) right.appendChild(options.contentRight);
+
+        content.appendChild(left);
+        content.appendChild(right);
+        card.appendChild(content);
+
+        return card;
     }
 };
