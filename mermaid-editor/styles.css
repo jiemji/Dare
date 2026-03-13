@@ -402,7 +402,7 @@
 }
 
 .content-right .editor-main {
-    height: 600px;
+    height: 545px;
 }
 
 .content-right .canvas-container {
@@ -412,11 +412,32 @@
 .content-left textarea {
     font-size: 18px;
     min-height: 140px;
-    resize: vertical;
-    /* Permet l'étirement vers le bas uniquement */
 }
 
 .content-left input {
     min-height: 140px;
+}
 
+/* Personnalisation des barres de défilement (Scrollbars) */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: var(--c-border) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--c-border);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--c-accent);
 }

@@ -1,48 +1,48 @@
-# Documentation Technique - Éditeur de Cyber Kill-Chain
+# Documentation Technique - Mermaid Editor Intégré
 
-Ce document résume l'architecture et les fonctionnalités de l'éditeur de schéma Mermaid spécialisé pour les scénarios d'attaque.
+Ce document détaille le fonctionnement interne et la configuration de l'éditeur Mermaid tel qu'intégré dans l'application Dare.
 
-## 1. Architecture Générale
-L'éditeur repose sur un canvas **SVG** unique géré par la classe `MermaidEditor`. L'utilisation du SVG permet une synchronisation parfaite entre l'interface (swimlanes) et les éléments de dessin (nœuds et liens).
+## Architecture
 
-### Couches SVG (Layers)
-- **swimlanes-layer** : Contient les fonds d'en-tête, les titres, les séparateurs verticaux et les boutons d'ajout `(+)`.
-- **links-layer** : Calque dédié au tracé des flèches orthogonales.
-- **nodes-layer** : Calque contenant les groupes `<g>` des formes (rectangles, textes, ports de connexion).
-- **temp-layer** : Utilisé pour l'affichage temporaire du lien en cours de création.
+L'éditeur est une classe JavaScript modulaire (`MermaidEditor`) qui pilote un canevas SVG. Il est conçu pour être instancié plusieurs fois sur une même page sans collision.
 
-## 2. Logique des Swimlanes (LTR)
-Le layout est organisé de gauche à droite sur l'axe X :
-- **Index 0** : Reconnaitre ($X = 0$)
-- **Index 1** : Rentrer ($X = 250px$)
-- **Index 2** : Trouver ($X = 500px$)
-- **Index 3** : Exploiter ($X = 750px$)
+### Fichiers Clés
+- `editor.js` : Cœur de la logique SVG, gestion des nœuds, des liens et du calcul de score.
+- `styles.css` : Définition visuelle du canevas, des nœuds et du layout intégré.
+- `mermaid-logic.js` : Traducteur de l'état interne de l'éditeur vers le format texte Mermaid.
 
-Chaque colonne a une largeur fixe de **250px** (`LANE_WIDTH`). Les nœuds sont centrés horizontalement dans leur colonne respective.
+## Configuration (editor.js)
 
-## 3. Gestion Verticale et Réorganisation
-- **Empilage** : Lors de l'ajout, le `Y` est calculé en trouvant le nœud le plus bas dans la colonne et en ajoutant un espacement (`NODE_SPACING_V = 30px`).
-- **Remontée Automatique (Shift Up)** : La méthode `reorganizeLane(laneId, deletedY)` est appelée lors d'une suppression. Elle identifie tous les nœuds de la même colonne situés sous le point de suppression et réduit leur `Y` de la hauteur d'un bloc (`NODE_HEIGHT + spacing`), assurant ainsi qu'aucun vide ne subsiste.
+Les dimensions et comportements de base sont régis par des constantes en début de fichier `editor.js` :
 
-## 4. Algorithme de Calcul du Score (Backtracking)
-Implémenté dans `getNodeScore(node)` et `explorePathsBackwards` :
-1. **Source** : Chaque nœud de la swimlane `exploit`.
-2. **Exploration** : Parcours récursif de tous les chemins entrants (`links.toId`).
-3. **Logique de Chemin** : `currentMin = Math.min(pathNodes.values)`.
-4. **Résultat Final** : `Max(allPathMins)`.
-5. **Rendu** : Cercles SVG dans `scores-layer`, rafraîchis à chaque modification de l'état.
+- `LANE_WIDTH` (default: 245) : Largeur de chaque phase de la Kill-Chain.
+- `NODE_WIDTH` (120) / `NODE_HEIGHT` (60) : Dimensions des blocs d'action.
+- `GRID_SIZE` (20) : Pas de l'alignement magnétique (Snap to grid).
+- `HEADER_HEIGHT` (80) : Hauteur de l'en-tête de colonne.
 
-## 5. Interactivité
-- **Drag & Drop** : Désactivé pour garantir la structure stricte des colonnes.
-- **Édition** : Gérée via une modal HTML (`#node-modal`). Les changements (texte, valeur) sont répercutés dans l'état et le DOM.
-- **Liens** : Tracés orthogonaux calculés en fonction de la position relative des ports de départ et d'arrivée.
-- **Permutation Manuelle** : La méthode `moveNode(nodeId, direction)` permet d'échanger la position `Y` d'un nœud avec son voisin direct (Haut/Bas). Ce mécanisme préserve l'alignement strict tout en offrant une flexibilité d'ordonnancement.
-- **Mermaid** : La fonction `stateToMermaid` convertit l'état interne en syntaxe Mermaid via des `subgraph` basés sur les `laneId`.
+## Intégration (Atelier 4)
 
-## 5. Raccourcis Clavier
-- `Suppr` / `Backspace` : Supprime le nœud sélectionné et déclenche la réorganisation.
-- `Echap` : Annule l'action en cours ou désélectionne.
-- `Double-clic` (Lien) : Supprime la flèche sélectionnée.
+L'éditeur est instancié dans `createRiskScenarioDom` via le composant `UI.foldingCard`.
 
----
-*Note : Cette documentation est destinée à faciliter l'intégration de cette page dans l'application principale une fois finalisée.*
+### Options d'Initialisation
+```javascript
+new MermaidEditor(container, {
+    phases: [...], // Référentiel Kill-Chain
+    initialData: {...}, // État sauvegardé (nœuds/liens)
+    onScoreChange: (score) => { ... }, // Callback vers le sélecteur Vraisemblance
+    onDataChange: (data) => { ... } // Callback pour la persistance dans le Store
+});
+```
+
+## Personnalisation Visuelle (styles.css)
+
+L'éditeur utilise les variables CSS globales de l'application (`main.css`) pour s'adapter automatiquement au thème (Clair / Sombre) :
+- `--c-accent` : Couleur des liens et des titres de colonnes.
+- `--c-bg-input` : Fond du canevas.
+- `--c-border` : Couleur des séparateurs et des scrollbars.
+
+### Layout 20/80
+Le partage de l'espace dans la carte à rabat est contrôlé par les classes `.content-left` (flex: 2) et `.content-right` (flex: 8).
+
+## Gestion du Score
+L'éditeur n'affiche plus de score visuel sur le canevas. Le score "Vraisemblance" est calculé en parcourant les chemins à l'envers depuis la dernière colonne (Exploiter). Le résultat est ensuite remonté à l'application mère qui l'affiche dans son en-tête.
