@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mermaid Schema Editor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="main-header">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>Cyber Kill-Chain Editor</span>
+            </div>
+            <div class="global-actions">
+                <button id="clear-canvas" class="btn btn-secondary">Effacer tout</button>
+            </div>
+        </header>
+
+        <main class="editor-main">
+            <div id="canvas-container" class="canvas-container">
+                <svg id="canvas" class="canvas" width="2000" height="2000">
+                    <defs>
+                        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                        </pattern>
+                        <pattern id="grid-large" width="100" height="100" patternUnits="userSpaceOnUse">
+                            <rect width="100" height="100" fill="url(#grid)"/>
+                            <path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                        </pattern>
+                        
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="var(--accent-color)" />
+                        </marker>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid-large)" />
+                    <g id="swimlanes-layer"></g>
+                    <g id="links-layer"></g>
+                    <g id="nodes-layer"></g>
+                    <g id="scores-layer"></g>
+                    <g id="temp-layer"></g>
+                </svg>
+            </div>
+
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3>Syntaxe Mermaid</h3>
+                    <button id="copy-mermaid" class="btn-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
+                </div>
+                <div class="code-editor">
+                    <textarea id="mermaid-output" readonly>graph TD
+    A[Node 1] --> B[Node 2]</textarea>
+                </div>
+                <div class="help-section">
+                    <h4>Aide</h4>
+                    <ul>
+                        <li>Faites glisser les formes pour les déplacer.</li>
+                        <li>Cliquez sur un point (petit cercle) pour initier une flèche.</li>
+                        <li>Relâchez sur un autre point pour connecter.</li>
+                        <li>Double-cliquez pour éditer le texte.</li>
+                    </ul>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <div id="node-modal" class="modal">
+        <div class="modal-content">
+            <h3>Propriétés du nœud</h3>
+            <div class="form-group">
+                <label for="modal-text">Texte :</label>
+                <input type="text" id="modal-text" placeholder="Entrez le texte...">
+            </div>
+            <div class="form-group">
+                <label>Valeur (1-4) :</label>
+                <div class="value-selector">
+                    <label class="val-opt"><input type="radio" name="node-value" value="1"> <span class="dot val-1"></span> 1</label>
+                    <label class="val-opt"><input type="radio" name="node-value" value="2"> <span class="dot val-2"></span> 2</label>
+                    <label class="val-opt"><input type="radio" name="node-value" value="3"> <span class="dot val-3"></span> 3</label>
+                    <label class="val-opt"><input type="radio" name="node-value" value="4"> <span class="dot val-4"></span> 4</label>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="modal-cancel" class="btn btn-secondary">Annuler</button>
+                <button id="modal-save" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="editor.js" type="module"></script>
+</body>
+</html>
