@@ -527,14 +527,12 @@ class MermaidEditor {
 
     updateMermaid() {
         this.outputArea.value = stateToMermaid(this.state.nodes, this.state.links);
-        // Force un léger délai pour s'assurer que l'état est stable (optionnel mais plus sûr)
-        setTimeout(() => this.calculateAndRenderScores(), 0);
+        this.calculateAndRenderScores();
     }
 
     calculateAndRenderScores() {
         this.scoresLayer.innerHTML = '';
         
-        // On cherche les nœuds dans la swimlane "exploit"
         const exploitNodes = this.state.nodes.filter(n => n.laneId === 'exploit');
         const scoreLaneIndex = SWIMLANES.findIndex(l => l.id === 'score');
         const scoreX = scoreLaneIndex * LANE_WIDTH + LANE_WIDTH / 2;
@@ -558,12 +556,11 @@ class MermaidEditor {
         return Math.max(...paths);
     }
 
-    explorePathsBackwards(currentNode, currentMin, results) {
+    explorePathsBackwards(currentNode, currentMin, results, depth = 0) {
         const incomingLinks = this.state.links.filter(l => l.toId === currentNode.id);
         const newMin = Math.min(currentMin, currentNode.value);
 
         if (incomingLinks.length === 0) {
-            // Fin d'un chemin à rebours
             results.push(newMin);
             return;
         }
@@ -571,7 +568,9 @@ class MermaidEditor {
         incomingLinks.forEach(link => {
             const prevNode = this.state.nodes.find(n => n.id === link.fromId);
             if (prevNode) {
-                this.explorePathsBackwards(prevNode, newMin, results);
+                this.explorePathsBackwards(prevNode, newMin, results, depth + 1);
+            } else {
+                results.push(newMin);
             }
         });
     }
