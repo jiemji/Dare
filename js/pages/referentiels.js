@@ -1,4 +1,5 @@
-// Logique pour les Référentiels (Centralisée dans un fichier pour tous les onglets référentiels)
+import { Store } from '../data.js';
+import { UI, Sanitize } from '../components.js';
 
 // --- REFERENTIEL : IMPACTS ET GRAVITES ---
 function initImpactsGravitesPage() {
@@ -6,39 +7,42 @@ function initImpactsGravitesPage() {
     const btnAddG = document.getElementById('btn-add-gravite');
     const tableI = document.getElementById('table-impacts');
     const btnAddI = document.getElementById('btn-add-impact');
-    const tplG = document.getElementById('tpl-gravite-row');
     
     if(!tbodyG || !tableI) return;
 
     // -- Gestion Echelle des Gravités --
     const renderGravites = () => {
         tbodyG.innerHTML = '';
-        // Sort descending for display
         const gravites = [...Store.data.referentiels.gravite].sort((a,b) => b.valeur - a.valeur);
         
         gravites.forEach(g => {
-            const clone = tplG.content.cloneNode(true);
-            const row = clone.querySelector('.gravite-row');
-            row.setAttribute('data-val', g.valeur);
+            const tr = document.createElement('tr');
+            tr.className = 'gravite-row';
+            tr.setAttribute('data-val', g.valeur);
             
-            clone.querySelector('.g-valeur').textContent = g.valeur;
-            const inpNiv = clone.querySelector('.g-niveau');
-            const inpCol = clone.querySelector('.g-color');
-            const btnDel = clone.querySelector('.btn-del-gravite');
+            const tdVal = document.createElement('td');
+            tdVal.className = 'g-valeur';
+            tdVal.textContent = g.valeur;
+            tr.appendChild(tdVal);
             
+            const tdNiv = document.createElement('td');
+            const inpNiv = document.createElement('input');
+            inpNiv.type = 'text';
+            inpNiv.className = 'g-niveau';
             inpNiv.value = g.niveau;
+            tdNiv.appendChild(inpNiv);
+            tr.appendChild(tdNiv);
+            
+            const tdCol = document.createElement('td');
+            const inpCol = document.createElement('input');
+            inpCol.type = 'color';
+            inpCol.className = 'g-color';
             inpCol.value = g.color;
+            tdCol.appendChild(inpCol);
+            tr.appendChild(tdCol);
             
-            const saveG = () => {
-                g.niveau = inpNiv.value;
-                g.color = inpCol.value;
-                renderImpactsTable(); // Update impact table headers colors
-            };
-            
-            inpNiv.addEventListener('input', saveG);
-            inpCol.addEventListener('change', saveG);
-            
-            btnDel.addEventListener('click', () => {
+            const tdDel = document.createElement('td');
+            const btnDel = UI.button('✕', () => {
                 if(confirm(`Supprimer le niveau de gravité ${g.valeur} ?`)) {
                     Store.data.referentiels.gravite = Store.data.referentiels.gravite.filter(x => x.valeur !== g.valeur);
                     Store.save();
@@ -46,11 +50,24 @@ function initImpactsGravitesPage() {
                     renderImpactsTable();
                 }
             });
-            tbodyG.appendChild(clone);
+            tdDel.appendChild(btnDel);
+            tr.appendChild(tdDel);
+            
+            const saveG = () => {
+                g.niveau = inpNiv.value;
+                g.color = inpCol.value;
+                Store.save();
+                renderImpactsTable();
+            };
+            
+            inpNiv.oninput = saveG;
+            inpCol.onchange = saveG;
+            
+            tbodyG.appendChild(tr);
         });
     };
 
-    btnAddG.addEventListener('click', () => {
+    btnAddG.onclick = () => {
         const gravites = Store.data.referentiels.gravite;
         let maxVal = 0;
         gravites.forEach(g => { if(g.valeur > maxVal) maxVal = g.valeur; });
@@ -63,95 +80,102 @@ function initImpactsGravitesPage() {
         Store.save();
         renderGravites();
         renderImpactsTable();
-    });
+    };
 
     // -- Gestion Tableau des impacts --
-    // Structure locale pour stocker les cellules de la matrice d'impacts:
-    // array of objects: { gravite: 4, typeImpact: "Financier", description: "Perte > 1M€" }
-    // Pour simplifier, on stocke ça dans data.referentiels.grilleImpacts = [] (nouveau tableau si absent)
     if(!Store.data.referentiels.grilleImpacts) {
         Store.data.referentiels.grilleImpacts = [];
     }
 
     const renderImpactsTable = () => {
+        tableI.innerHTML = '';
         const typesImpacts = Store.data.referentiels.impacts || [];
         const gravites = [...Store.data.referentiels.gravite].sort((a,b) => b.valeur - a.valeur);
         
-        let html = '';
+        // Header
+        const thead = document.createElement('tr');
+        thead.style.background = 'var(--c-bg-panel)';
+        thead.style.borderBottom = '2px solid var(--c-border)';
+        thead.style.textAlign = 'left';
         
-        // En-tête (Types d'impacts en colonnes)
-        html += '<tr style="background: var(--c-bg-panel); border-bottom: 2px solid var(--c-border); text-align: left;">';
-        html += '<th style="padding: 10px; width: 150px;">Niveau (Gravité)</th>';
+        const thG = document.createElement('th');
+        thG.style.padding = '10px';
+        thG.style.width = '150px';
+        thG.textContent = 'Niveau (Gravité)';
+        thead.appendChild(thG);
         
         typesImpacts.forEach(t => {
-            html += `<th style="padding: 10px; position:relative;">
-                        ${t}
-                        <button class="btn secondary btn-del-type-impact" data-type="${t}" style="position:absolute; right:5px; top:5px; padding:2px 5px; font-size:10px;">✕</button>
-                     </th>`;
-        });
-        html += '</tr>';
-        
-        // Lignes (Une par niveau de gravité)
-        gravites.forEach(g => {
-            html += `<tr style="border-bottom: 1px solid var(--c-border);">`;
-            html += `<td style="padding: 8px; font-weight:bold; background-color:${g.color}33; border-left: 5px solid ${g.color};">
-                        ${g.niveau} (${g.valeur})
-                     </td>`;
+            const th = document.createElement('th');
+            th.style.padding = '10px';
+            th.style.position = 'relative';
+            th.textContent = t;
             
-            typesImpacts.forEach(t => {
-                // Find existing cell data
-                const cell = Store.data.referentiels.grilleImpacts.find(c => c.gravite === g.valeur && c.typeImpact === t);
-                const desc = cell ? cell.description : "";
-                
-                html += `<td style="padding: 5px;">
-                            <textarea class="impact-cell-input" data-g="${g.valeur}" data-t="${t}" rows="2" style="margin:0; width:100%; border:1px dashed var(--c-border); font-size:12px;">${desc}</textarea>
-                         </td>`;
-            });
-            html += `</tr>`;
-        });
-        
-        tableI.innerHTML = html;
-        bindImpactsEvents();
-    };
-
-    const bindImpactsEvents = () => {
-        // Delete Type d'impact
-        tableI.querySelectorAll('.btn-del-type-impact').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const typ = e.target.getAttribute('data-type');
-                if(confirm(`Supprimer la colonne "${typ}" et toutes ses descriptions ?`)) {
-                    Store.data.referentiels.impacts = Store.data.referentiels.impacts.filter(i => i !== typ);
-                    Store.data.referentiels.grilleImpacts = Store.data.referentiels.grilleImpacts.filter(c => c.typeImpact !== typ);
+            const btnDel = UI.button('✕', () => {
+                if(confirm(`Supprimer la colonne "${t}" et toutes ses descriptions ?`)) {
+                    Store.data.referentiels.impacts = Store.data.referentiels.impacts.filter(i => i !== t);
+                    Store.data.referentiels.grilleImpacts = Store.data.referentiels.grilleImpacts.filter(c => c.typeImpact !== t);
                     Store.save();
                     renderImpactsTable();
                 }
             });
+            btnDel.style.position = 'absolute';
+            btnDel.style.right = '5px';
+            btnDel.style.top = '5px';
+            btnDel.style.padding = '2px 5px';
+            btnDel.style.fontSize = '10px';
+            th.appendChild(btnDel);
+            thead.appendChild(th);
         });
+        tableI.appendChild(thead);
         
-        // Cell Edit
-        tableI.querySelectorAll('.impact-cell-input').forEach(ta => {
-            ta.addEventListener('change', (e) => {
-                const gVal = parseInt(e.target.getAttribute('data-g'), 10);
-                const tStr = e.target.getAttribute('data-t');
-                const val = e.target.value;
+        // Rows
+        gravites.forEach(g => {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid var(--c-border)';
+            
+            const tdG = document.createElement('td');
+            tdG.style.padding = '8px';
+            tdG.style.fontWeight = 'bold';
+            tdG.style.backgroundColor = `${g.color}33`;
+            tdG.style.borderLeft = `5px solid ${g.color}`;
+            tdG.textContent = `${g.niveau} (${g.valeur})`;
+            tr.appendChild(tdG);
+            
+            typesImpacts.forEach(t => {
+                const td = document.createElement('td');
+                td.style.padding = '5px';
                 
-                let cellIndex = Store.data.referentiels.grilleImpacts.findIndex(c => c.gravite === gVal && c.typeImpact === tStr);
+                const cell = Store.data.referentiels.grilleImpacts.find(c => c.gravite === g.valeur && c.typeImpact === t);
+                const ta = document.createElement('textarea');
+                ta.rows = 2;
+                ta.style.margin = '0';
+                ta.style.width = '100%';
+                ta.style.border = '1px dashed var(--c-border)';
+                ta.style.fontSize = '12px';
+                ta.value = cell ? cell.description : "";
                 
-                if(cellIndex >= 0) {
-                    Store.data.referentiels.grilleImpacts[cellIndex].description = val;
-                } else {
-                    Store.data.referentiels.grilleImpacts.push({
-                        gravite: gVal,
-                        typeImpact: tStr,
-                        description: val
-                    });
-                }
-                Store.save(); // On save on blur/change
+                ta.onchange = () => {
+                    let cellIndex = Store.data.referentiels.grilleImpacts.findIndex(c => c.gravite === g.valeur && c.typeImpact === t);
+                    if(cellIndex >= 0) {
+                        Store.data.referentiels.grilleImpacts[cellIndex].description = ta.value;
+                    } else {
+                        Store.data.referentiels.grilleImpacts.push({
+                            gravite: g.valeur,
+                            typeImpact: t,
+                            description: ta.value
+                        });
+                    }
+                    Store.save();
+                };
+                
+                td.appendChild(ta);
+                tr.appendChild(td);
             });
+            tableI.appendChild(tr);
         });
     };
 
-    btnAddI.addEventListener('click', () => {
+    btnAddI.onclick = () => {
         const val = prompt("Nom du nouveau type d'impact (ex: Environnemental):");
         if(val && val.trim() !== '') {
             if(!Store.data.referentiels.impacts) Store.data.referentiels.impacts = [];
@@ -159,34 +183,16 @@ function initImpactsGravitesPage() {
             Store.save();
             renderImpactsTable();
         }
-    });
+    };
 
-    // Initial render
     renderGravites();
     renderImpactsTable();
 }
 
-// RUN HOOKS OR INIT IMMEDIATELY
-if (document.getElementById('ref-gravite-tbody')) initImpactsGravitesPage();
-
-// --- REFERENTIEL : VRAISEMBLANCE ---
-function initVraisemblancePage() {
-    initGenericRefPage('vraisemblance', 'ref-vraisemblance-tbody', 'btn-add-vraisemblance');
-}
-
-// --- REFERENTIEL : MOTIVATIONS ET RESSOURCES ---
-function initMotivResPage() {
-    initGenericRefPage('motivation', 'ref-motivation-tbody', 'btn-add-motivation');
-    initGenericRefPage('ressources', 'ref-ressources-tbody', 'btn-add-ressources');
-}
-
 // --- GENERIC REF LIST BUILDER ---
-// Works for structure: { valeur: X, niveau: "", color: "", description: "" }
 function initGenericRefPage(storeKey, tbodyId, btnAddId) {
     const tbody = document.getElementById(tbodyId);
     const btnAdd = document.getElementById(btnAddId);
-    // On réutilise le template row de motivations_ressources s'il existe (la structure est la même)
-    // S'il n'est pas trouvé par ID car on n'a copié qu'un des fichiers, on génèrera le HTML direct
     
     if(!tbody || !btnAdd) return;
 
@@ -196,20 +202,61 @@ function initGenericRefPage(storeKey, tbodyId, btnAddId) {
         
         list.forEach(item => {
             const tr = document.createElement('tr');
-            tr.style.cssText = "border-bottom: 1px solid var(--c-border);";
+            tr.style.borderBottom = "1px solid var(--c-border)";
             
-            tr.innerHTML = `
-                <td style="padding: 8px; font-weight: bold; text-align:center;">${item.valeur}</td>
-                <td style="padding: 8px;"><input type="text" class="r-niveau" value="${item.niveau || ''}" style="margin:0; width:100%;"></td>
-                <td style="padding: 8px;"><input type="color" class="r-color" value="${item.color || '#cccccc'}" style="margin:0; width:100%; height:30px; padding:0; cursor:pointer; border:none;"></td>
-                <td style="padding: 8px;"><input type="text" class="r-desc" value="${item.description || ''}" style="margin:0; width:100%;"></td>
-                <td style="padding: 8px; text-align: center;"><button class="btn secondary btn-del-item" style="padding: 4px; min-width:auto;">✕</button></td>
-            `;
+            const tdVal = document.createElement('td');
+            tdVal.style.padding = '8px';
+            tdVal.style.fontWeight = 'bold';
+            tdVal.style.textAlign = 'center';
+            tdVal.textContent = item.valeur;
+            tr.appendChild(tdVal);
             
-            const inpNiv = tr.querySelector('.r-niveau');
-            const inpCol = tr.querySelector('.r-color');
-            const inpDesc = tr.querySelector('.r-desc');
-            const btnDel = tr.querySelector('.btn-del-item');
+            const tdNiv = document.createElement('td');
+            const inpNiv = document.createElement('input');
+            inpNiv.type = 'text';
+            inpNiv.className = 'r-niveau';
+            inpNiv.value = item.niveau || "";
+            inpNiv.style.margin = '0';
+            inpNiv.style.width = '100%';
+            tdNiv.appendChild(inpNiv);
+            tr.appendChild(tdNiv);
+            
+            const tdCol = document.createElement('td');
+            const inpCol = document.createElement('input');
+            inpCol.type = 'color';
+            inpCol.className = 'r-color';
+            inpCol.value = item.color || "#cccccc";
+            inpCol.style.margin = '0';
+            inpCol.style.width = '100%';
+            inpCol.style.height = '30px';
+            inpCol.style.cursor = 'pointer';
+            inpCol.style.border = 'none';
+            tdCol.appendChild(inpCol);
+            tr.appendChild(tdCol);
+            
+            const tdDesc = document.createElement('td');
+            const inpDesc = document.createElement('input');
+            inpDesc.type = 'text';
+            inpDesc.className = 'r-desc';
+            inpDesc.value = item.description || "";
+            inpDesc.style.margin = '0';
+            inpDesc.style.width = '100%';
+            tdDesc.appendChild(inpDesc);
+            tr.appendChild(tdDesc);
+            
+            const tdDel = document.createElement('td');
+            tdDel.style.textAlign = 'center';
+            const btnDel = UI.button('✕', () => {
+                if(confirm(`Supprimer l'élément (Valeur ${item.valeur}) ?`)) {
+                    Store.data.referentiels[storeKey] = Store.data.referentiels[storeKey].filter(x => x.valeur !== item.valeur);
+                    Store.save();
+                    renderData();
+                }
+            });
+            btnDel.style.padding = '4px';
+            btnDel.style.minWidth = 'auto';
+            tdDel.appendChild(btnDel);
+            tr.appendChild(tdDel);
             
             const saveItem = () => {
                 item.niveau = inpNiv.value;
@@ -218,17 +265,9 @@ function initGenericRefPage(storeKey, tbodyId, btnAddId) {
                 Store.save();
             };
             
-            inpNiv.addEventListener('input', saveItem);
-            inpCol.addEventListener('change', saveItem);
-            inpDesc.addEventListener('input', saveItem);
-            
-            btnDel.addEventListener('click', () => {
-                if(confirm(`Supprimer l'élément (Valeur ${item.valeur}) ?`)) {
-                    Store.data.referentiels[storeKey] = Store.data.referentiels[storeKey].filter(x => x.valeur !== item.valeur);
-                    Store.save();
-                    renderData();
-                }
-            });
+            inpNiv.oninput = saveItem;
+            inpCol.onchange = saveItem;
+            inpDesc.oninput = saveItem;
             
             tbody.appendChild(tr);
         });
@@ -250,6 +289,15 @@ function initGenericRefPage(storeKey, tbodyId, btnAddId) {
     });
 
     renderData();
+}
+
+function initVraisemblancePage() {
+    initGenericRefPage('vraisemblance', 'ref-vraisemblance-tbody', 'btn-add-vraisemblance');
+}
+
+function initMotivResPage() {
+    initGenericRefPage('motivation', 'ref-motivation-tbody', 'btn-add-motivation');
+    initGenericRefPage('ressources', 'ref-ressources-tbody', 'btn-add-ressources');
 }
 
 // --- REFERENTIEL : MATRICE DES RISQUES ---
@@ -324,32 +372,26 @@ function initRefMatricePage() {
         const vraisemb = [...Store.data.referentiels.vraisemblance].sort((a,b) => a.valeur - b.valeur);
         const echelleRisques = Store.data.referentiels.risques;
 
-        // Ensure we have a default options list for the selects
         let optionsHTML = `<option value="">--</option>`;
         echelleRisques.forEach(r => {
             optionsHTML += `<option value="${r.valeur}">${r.niveau}</option>`;
         });
 
         let html = '<table class="data-table" style="border-collapse: collapse; width: 100%;">';
-        
-        // Header row
         html += '<tr><td></td>';
         vraisemb.forEach(v => {
             html += `<th style="text-align:center; padding: 10px; background:${v.color}33; border: 1px solid var(--c-border); border-bottom: 4px solid ${v.color};">${v.niveau} (V=${v.valeur})</th>`;
         });
         html += '</tr>';
 
-        // Body rows
         gravites.forEach(g => {
             html += '<tr>';
             html += `<th style="text-align:right; padding: 10px; background:${g.color}33; border: 1px solid var(--c-border); border-right: 4px solid ${g.color}; width: 220px;">${g.niveau} (G=${g.valeur})</th>`;
             
             vraisemb.forEach(v => {
-                // Find saved risk configuration for this specific cell cell
                 const savedCell = Store.data.referentiels.grilleRisques.find(c => c.g === g.valeur && c.v === v.valeur);
                 const selectedVal = savedCell ? savedCell.r : "";
                 
-                // Find matching color
                 let bgCol = "var(--c-bg-panel)";
                 if (selectedVal) {
                     const matchR = echelleRisques.find(er => er.valeur == selectedVal);
@@ -368,14 +410,12 @@ function initRefMatricePage() {
         html += '</table>';
         container.innerHTML = html;
 
-        // Bind selects
         container.querySelectorAll('.matrice-select').forEach(sel => {
             sel.addEventListener('change', (e) => {
                 const gVal = parseInt(e.target.getAttribute('data-g'), 10);
                 const vVal = parseInt(e.target.getAttribute('data-v'), 10);
                 const rVal = parseInt(e.target.value, 10);
 
-                // Update background color immediately for UI responsiveness
                 let bgCol = "var(--c-bg-panel)";
                 if (!isNaN(rVal)) {
                     const matchR = echelleRisques.find(er => er.valeur == rVal);
@@ -383,7 +423,6 @@ function initRefMatricePage() {
                 }
                 sel.parentElement.style.backgroundColor = bgCol;
 
-                // Save to grid data
                 let cellIndex = Store.data.referentiels.grilleRisques.findIndex(c => c.g === gVal && c.v === vVal);
                 if (cellIndex >= 0) {
                     if (isNaN(rVal)) Store.data.referentiels.grilleRisques.splice(cellIndex, 1);
@@ -412,22 +451,15 @@ function initSoclePage() {
 
     const renderSocles = () => {
         tbody.innerHTML = '';
-        
-        // Peristed active socles
         const activeSocles = Store.data.referentiels.socles || [];
-        
-        // Build the combined list for display: Defaults + Custom
-        // We use a Map to handle overrides/deduplication by name
         const displayMap = new Map();
         
-        // 1. Add all defaults from library
         if (Store.defaultSocles && Store.defaultSocles.length > 0) {
             Store.defaultSocles.forEach(ds => {
                 displayMap.set(ds.nom, { ...ds, active: false });
             });
         }
         
-        // 2. Add/Override with what's in Store (active or custom)
         activeSocles.forEach(s => {
             displayMap.set(s.nom, { ...s, active: true });
         });
@@ -438,10 +470,7 @@ function initSoclePage() {
             const tr = document.createElement('tr');
             tr.style.borderBottom = "1px solid var(--c-border)";
 
-            // Checkbox logic: always present in the library view
             const checkboxHTML = `<input type="checkbox" class="socle-active" ${s.active ? 'checked' : ''} style="width:20px; height:20px; cursor:pointer;">`;
-
-            // Delete button logic: only for custom socles (deletable: true)
             const deleteBtnHTML = s.deletable ? 
                 `<button class="btn secondary btn-del-socle" style="padding:4px; min-width:auto;">✕</button>` : '';
 
@@ -452,24 +481,20 @@ function initSoclePage() {
                 <td style="text-align:center; padding:10px;">${deleteBtnHTML}</td>
             `;
 
-            // Bind checkbox
             const cb = tr.querySelector('.socle-active');
             cb.addEventListener('change', (e) => {
                 if (e.target.checked) {
-                    // Add to store
                     const exists = Store.data.referentiels.socles.find(x => x.nom === s.nom);
                     if (!exists) {
                         Store.data.referentiels.socles.push({ ...s, active: true });
                     }
                 } else {
-                    // Remove from store
                     Store.data.referentiels.socles = Store.data.referentiels.socles.filter(x => x.nom !== s.nom);
                 }
                 Store.save();
                 renderSocles();
             });
 
-            // Bind delete (for custom socles)
             const del = tr.querySelector('.btn-del-socle');
             if (del) {
                 del.addEventListener('click', () => {
@@ -516,13 +541,11 @@ function initSoclePage() {
             Store.save();
             renderSocles();
             modal.classList.add('hidden');
-            // Reset form
             document.getElementById('new-socle-nom').value = '';
             document.getElementById('new-socle-desc').value = '';
             fileInput.value = '';
         };
 
-        // Optionnel: Parse CSV if file selected
         if (fileInput.files.length > 0) {
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -549,15 +572,10 @@ function initSoclePage() {
     renderSocles();
 }
 
-// Register global hooks
-document.addEventListener('pageLoaded:socle', initSoclePage);
-document.addEventListener('pageLoaded:impacts_gravites', initImpactsGravitesPage);
-document.addEventListener('pageLoaded:motivations_ressources', initMotivResPage);
-document.addEventListener('pageLoaded:vraisemblance', initVraisemblancePage);
-document.addEventListener('pageLoaded:matrice', initRefMatricePage);
-
-// Initial execution
-if (document.getElementById('ref-socle-tbody')) initSoclePage();
-if (document.getElementById('ref-motivation-tbody')) initMotivResPage();
-if (document.getElementById('ref-vraisemblance-tbody')) initVraisemblancePage();
-if (document.getElementById('ref-matrice-container')) initRefMatricePage();
+export function init() {
+    if (document.getElementById('ref-socle-tbody')) initSoclePage();
+    if (document.getElementById('ref-gravite-tbody')) initImpactsGravitesPage();
+    if (document.getElementById('ref-vraisemblance-tbody')) initVraisemblancePage();
+    if (document.getElementById('ref-motivation-tbody')) initMotivResPage();
+    if (document.getElementById('ref-matrice-container')) initRefMatricePage();
+}

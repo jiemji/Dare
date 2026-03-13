@@ -1,178 +1,65 @@
-// Logique spécifique à l'atelier 2
+import { Store } from '../data.js';
+import { UI, Sanitize } from '../components.js';
 
-// --- SOURCES DE RISQUE --- //
-function initSourcesRisquePage() {
-    const container = document.getElementById('sr-container');
-    const btnAdd = document.getElementById('btn-add-sr');
-    const template = document.getElementById('tpl-sr-card');
-
-    if (!container || !btnAdd || !template) return;
-
-    const sourcesList = Store.data.atelier2.sourcesRisque;
-    container.innerHTML = '';
-    
-    sourcesList.forEach(sr => {
-        container.appendChild(createSRDom(sr, template));
-    });
-
-    btnAdd.addEventListener('click', () => {
-        let maxRef = 0;
-        sourcesList.forEach(s => {
-            const num = parseInt(s.id.replace('SR', ''), 10);
-            if (!isNaN(num) && num > maxRef) maxRef = num;
-        });
-        
-        const newRef = `SR${(maxRef + 1).toString().padStart(2, '0')}`;
-        const newSR = { id: newRef, libelle: "", description: "", ressources: "1" };
-        
-        sourcesList.push(newSR);
-        Store.save();
-        container.appendChild(createSRDom(newSR, template));
-    });
-}
-
-function createSRDom(sr, template) {
-    const clone = template.content.cloneNode(true);
-    const card = clone.querySelector('.sr-card');
-    
+function createSRDom(sr) {
+    const card = UI.card('square', `Source : ${sr.id}`);
     card.setAttribute('data-sr-id', sr.id);
-    clone.querySelector('.sr-ref-display').textContent = sr.id;
     
-    const inpLibelle = clone.querySelector('.sr-libelle');
-    const inpDesc = clone.querySelector('.sr-desc');
-    const selRessources = clone.querySelector('.sr-ressources');
-    const btnDel = clone.querySelector('.btn-del-sr');
-    
-    // Populate Ressources
-    selRessources.innerHTML = '';
-    Store.data.referentiels.ressources.forEach(r => {
-        const opt = document.createElement('option');
-        opt.value = r.valeur;
-        opt.textContent = `${r.valeur} - ${r.niveau}`;
-        selRessources.appendChild(opt);
-    });
-    
-    inpLibelle.value = sr.libelle;
-    inpDesc.value = sr.description;
-    selRessources.value = sr.ressources;
-    
-    const saveChanges = () => {
-        sr.libelle = inpLibelle.value;
-        sr.description = inpDesc.value;
-        sr.ressources = selRessources.value;
-    };
-    
-    inpLibelle.addEventListener('input', saveChanges);
-    inpDesc.addEventListener('input', saveChanges);
-    selRessources.addEventListener('change', saveChanges);
-    
-    btnDel.addEventListener('click', () => {
+    card.appendChild(UI.inputGroup('Libellé de la source', sr.libelle, (val) => {
+        sr.libelle = val;
+        Store.save();
+    }));
+
+    card.appendChild(UI.inputGroup('Description / Commentaires', sr.description, (val) => {
+        sr.description = val;
+        Store.save();
+    }, { multiline: true }));
+
+    const ressourcesOpts = Store.data.referentiels.ressources.map(r => ({
+        value: r.valeur,
+        label: `${r.valeur} - ${r.niveau}`
+    }));
+    card.appendChild(UI.selectGroup('Ressources', sr.ressources, ressourcesOpts, (val) => {
+        sr.ressources = val;
+        Store.save();
+    }));
+
+    card.appendChild(UI.button('Supprimer Source', () => {
         if(confirm(`Supprimer la source de risque ${sr.id} ?`)){
             card.remove();
             Store.data.atelier2.sourcesRisque = Store.data.atelier2.sourcesRisque.filter(s => s.id !== sr.id);
-            // Cascade delete on menaces
             Store.data.atelier2.menaces = Store.data.atelier2.menaces.filter(m => m.srId !== sr.id);
             Store.save();
         }
-    });
+    }));
     
-    return clone;
+    return card;
 }
 
-// --- OBJECTIFS VISES --- //
-function initObjectifsVisesPage() {
-    const container = document.getElementById('ov-container');
-    const btnAdd = document.getElementById('btn-add-ov');
-    const template = document.getElementById('tpl-ov-card');
-
-    if (!container || !btnAdd || !template) return;
-
-    const ovList = Store.data.atelier2.objectifsVises;
-    container.innerHTML = '';
-    
-    ovList.forEach(ov => {
-        container.appendChild(createOVDom(ov, template));
-    });
-
-    btnAdd.addEventListener('click', () => {
-        let maxRef = 0;
-        ovList.forEach(o => {
-            const num = parseInt(o.id.replace('OV', ''), 10);
-            if (!isNaN(num) && num > maxRef) maxRef = num;
-        });
-        
-        const newRef = `OV${(maxRef + 1).toString().padStart(2, '0')}`;
-        const newOV = { id: newRef, libelle: "", description: "" };
-        
-        ovList.push(newOV);
-        Store.save();
-        container.appendChild(createOVDom(newOV, template));
-    });
-}
-
-function createOVDom(ov, template) {
-    const clone = template.content.cloneNode(true);
-    const card = clone.querySelector('.ov-card');
-    
+function createOVDom(ov) {
+    const card = UI.card('square', `Objectif : ${ov.id}`);
     card.setAttribute('data-ov-id', ov.id);
-    clone.querySelector('.ov-ref-display').textContent = ov.id;
     
-    const inpLibelle = clone.querySelector('.ov-libelle');
-    const inpDesc = clone.querySelector('.ov-desc');
-    const btnDel = clone.querySelector('.btn-del-ov');
+    card.appendChild(UI.inputGroup('Libellé', ov.libelle, (val) => {
+        ov.libelle = val;
+        Store.save();
+    }));
+
+    card.appendChild(UI.inputGroup('Description', ov.description, (val) => {
+        ov.description = val;
+        Store.save();
+    }, { multiline: true }));
     
-    inpLibelle.value = ov.libelle;
-    inpDesc.value = ov.description;
-    
-    const saveChanges = () => {
-        ov.libelle = inpLibelle.value;
-        ov.description = inpDesc.value;
-    };
-    
-    inpLibelle.addEventListener('input', saveChanges);
-    inpDesc.addEventListener('input', saveChanges);
-    
-    btnDel.addEventListener('click', () => {
+    card.appendChild(UI.button('Supprimer Objectif', () => {
         if(confirm(`Supprimer l'objectif visé ${ov.id} ?`)){
             card.remove();
             Store.data.atelier2.objectifsVises = Store.data.atelier2.objectifsVises.filter(o => o.id !== ov.id);
-            // Cascade delete on menaces
             Store.data.atelier2.menaces = Store.data.atelier2.menaces.filter(m => m.ovId !== ov.id);
             Store.save();
         }
-    });
+    }));
     
-    return clone;
-}
-
-// --- EVALUATION DE LA MENACE --- //
-function initEvaluationMenacePage() {
-    const tbody = document.getElementById('menaces-tbody');
-    const btnAdd = document.getElementById('btn-add-menace');
-    const template = document.getElementById('tpl-menace-row');
-
-    if (!tbody || !btnAdd || !template) return;
-
-    const menacesList = Store.data.atelier2.menaces;
-    tbody.innerHTML = '';
-    
-    menacesList.forEach(menace => {
-        tbody.appendChild(createMenaceDom(menace, template));
-    });
-
-    btnAdd.addEventListener('click', () => {
-        const newMenace = { 
-            id: Date.now().toString(), 
-            srId: "", 
-            ovId: "", 
-            motivation: "1", 
-            commentaires: "" 
-        };
-        
-        menacesList.push(newMenace);
-        Store.save();
-        tbody.appendChild(createMenaceDom(newMenace, template));
-    });
+    return card;
 }
 
 function createMenaceDom(menace, template) {
@@ -187,7 +74,6 @@ function createMenaceDom(menace, template) {
     const inpComm = clone.querySelector('.men-commentaires');
     const btnDel = clone.querySelector('.btn-del-men');
     
-    // Populate SR
     selSr.innerHTML = '<option value="">-- Choisir SR --</option>';
     Store.data.atelier2.sourcesRisque.forEach(sr => {
         const opt = document.createElement('option');
@@ -196,7 +82,6 @@ function createMenaceDom(menace, template) {
         selSr.appendChild(opt);
     });
     
-    // Populate OV
     selOv.innerHTML = '<option value="">-- Choisir OV --</option>';
     Store.data.atelier2.objectifsVises.forEach(ov => {
         const opt = document.createElement('option');
@@ -205,7 +90,6 @@ function createMenaceDom(menace, template) {
         selOv.appendChild(opt);
     });
     
-    // Populate Ressources (Display only)
     selRessources.innerHTML = '<option value="">--</option>';
     Store.data.referentiels.ressources.forEach(r => {
         const opt = document.createElement('option');
@@ -214,7 +98,6 @@ function createMenaceDom(menace, template) {
         selRessources.appendChild(opt);
     });
     
-    // Populate Motivation
     selMotivation.innerHTML = '';
     Store.data.referentiels.motivation.forEach(m => {
         const opt = document.createElement('option');
@@ -223,13 +106,11 @@ function createMenaceDom(menace, template) {
         selMotivation.appendChild(opt);
     });
     
-    // Set values
     selSr.value = menace.srId;
     selOv.value = menace.ovId;
     selMotivation.value = menace.motivation;
     inpComm.value = menace.commentaires;
     
-    // Update linked ressources when SR changes
     const updateRessourcesDisplay = () => {
         const sr = Store.data.atelier2.sourcesRisque.find(s => s.id === selSr.value);
         if (sr && sr.ressources) {
@@ -240,7 +121,6 @@ function createMenaceDom(menace, template) {
     };
     updateRessourcesDisplay();
     
-    // Events
     const saveChanges = () => {
         menace.srId = selSr.value;
         menace.ovId = selOv.value;
@@ -267,12 +147,95 @@ function createMenaceDom(menace, template) {
     return clone;
 }
 
-// Attach to events
-document.addEventListener('pageLoaded:sources', initSourcesRisquePage);
-document.addEventListener('pageLoaded:objectifs', initObjectifsVisesPage);
-document.addEventListener('pageLoaded:evaluation', initEvaluationMenacePage);
+function initSourcesRisquePage() {
+    const container = document.getElementById('sr-container');
+    const btnAdd = document.getElementById('btn-add-sr');
 
-// Note: since app.js executes script tags once, we can init immediately if the elements are already in the DOM
-if(document.getElementById('sr-container')) initSourcesRisquePage();
-if(document.getElementById('ov-container')) initObjectifsVisesPage();
-if(document.getElementById('menaces-tbody')) initEvaluationMenacePage();
+    if (!container || !btnAdd) return;
+
+    const sourcesList = Store.data.atelier2.sourcesRisque;
+    container.innerHTML = '';
+    
+    sourcesList.forEach(sr => {
+        container.appendChild(createSRDom(sr));
+    });
+
+    btnAdd.onclick = () => {
+        let maxRef = 0;
+        sourcesList.forEach(s => {
+            const num = parseInt(s.id.replace('SR', ''), 10);
+            if (!isNaN(num) && num > maxRef) maxRef = num;
+        });
+        
+        const newRef = `SR${(maxRef + 1).toString().padStart(2, '0')}`;
+        const newSR = { id: newRef, libelle: "", description: "", ressources: "1" };
+        
+        sourcesList.push(newSR);
+        Store.save();
+        container.appendChild(createSRDom(newSR));
+    };
+}
+
+function initObjectifsVisesPage() {
+    const container = document.getElementById('ov-container');
+    const btnAdd = document.getElementById('btn-add-ov');
+
+    if (!container || !btnAdd) return;
+
+    const ovList = Store.data.atelier2.objectifsVises;
+    container.innerHTML = '';
+    
+    ovList.forEach(ov => {
+        container.appendChild(createOVDom(ov));
+    });
+
+    btnAdd.onclick = () => {
+        let maxRef = 0;
+        ovList.forEach(o => {
+            const num = parseInt(o.id.replace('OV', ''), 10);
+            if (!isNaN(num) && num > maxRef) maxRef = num;
+        });
+        
+        const newRef = `OV${(maxRef + 1).toString().padStart(2, '0')}`;
+        const newOV = { id: newRef, libelle: "", description: "" };
+        
+        ovList.push(newOV);
+        Store.save();
+        container.appendChild(createOVDom(newOV));
+    };
+}
+
+function initEvaluationMenacePage() {
+    const tbody = document.getElementById('menaces-tbody');
+    const btnAdd = document.getElementById('btn-add-menace');
+    const template = document.getElementById('tpl-menace-row');
+
+    if (!tbody || !btnAdd || !template) return;
+
+    const menacesList = Store.data.atelier2.menaces;
+    tbody.innerHTML = '';
+    
+    menacesList.forEach(menace => {
+        tbody.appendChild(createMenaceDom(menace, template));
+    });
+
+    btnAdd.onclick = () => {
+        const newMenace = { 
+            id: Date.now().toString(), 
+            srId: "", 
+            ovId: "", 
+            motivation: "1", 
+            commentaires: "" 
+        };
+        
+        menacesList.push(newMenace);
+        Store.save();
+        tbody.appendChild(createMenaceDom(newMenace, template));
+    };
+}
+
+export function init() {
+    if(document.getElementById('sr-container')) initSourcesRisquePage();
+    if(document.getElementById('ov-container')) initObjectifsVisesPage();
+    if(document.getElementById('menaces-tbody')) initEvaluationMenacePage();
+}

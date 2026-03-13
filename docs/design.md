@@ -1,4 +1,4 @@
-# Dare
+# Dare - design structure
 
 ## Structure
 
