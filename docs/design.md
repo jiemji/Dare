@@ -409,6 +409,8 @@
                       
                     - **Effacer** : Un bouton "poubelle" en bas à droite permet de réinitialiser entièrement le diagramme après confirmation.
                       
+                    - **Capture** : Un bouton "appareil photo" en bas à gauche permet d'exporter le diagramme en cours sous forme d'image JPEG.
+                      
                 - **Gestion du Score (Vraisemblance)** :
                   
                     - Le score de vraisemblance de la carte est synchronisé avec la valeur maximale trouvée dans le diagramme Mermaid.

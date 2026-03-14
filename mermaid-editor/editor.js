@@ -93,7 +93,64 @@ export class MermaidEditor {
             btnClear.onclick = () => this.clear();
         }
 
+        // Snapshot button
+        const btnSnapshot = this.container.querySelector('.btn-snapshot-canvas');
+        if (btnSnapshot) {
+            btnSnapshot.onclick = () => this.exportAsImage();
+        }
+
         this.renderAll();
+    }
+
+    exportAsImage() {
+        const svg = this.svg;
+        const width = svg.width.baseVal.value;
+        const height = svg.height.baseVal.value;
+
+        // Clone SVG to modify it for export
+        const clonedSvg = svg.cloneNode(true);
+        
+        // Inject styles to ensure the export looks like the screen
+        // We capture the relevant styles from the document
+        const styles = Array.from(document.styleSheets)
+            .filter(sheet => {
+                try { return sheet.href === null || sheet.href.includes('styles.css'); } catch(e) { return false; }
+            })
+            .map(sheet => {
+                try { return Array.from(sheet.cssRules).map(rule => rule.cssText).join(''); } catch(e) { return ''; }
+            }).join('');
+
+        const styleEl = document.createElementNS("http://www.w3.org/2000/svg", "style");
+        styleEl.textContent = styles;
+        clonedSvg.insertBefore(styleEl, clonedSvg.firstChild);
+
+        // Serialize
+        const serializer = new XMLSerializer();
+        const svgData = serializer.serializeToString(clonedSvg);
+        const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+        const url = URL.createObjectURL(svgBlob);
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+
+        const img = new Image();
+        img.onload = () => {
+            // Background color (matching the theme or white for export)
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--c-bg-input').trim() || "#ffffff";
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.drawImage(img, 0, 0);
+            URL.revokeObjectURL(url);
+
+            const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+            const link = document.createElement("a");
+            link.download = `scenario_${this.instanceId}.jpg`;
+            link.href = dataUrl;
+            link.click();
+        };
+        img.src = url;
     }
 
     clear() {
@@ -753,6 +810,7 @@ export class MermaidEditor {
                         <g class="scores-layer"></g>
                         <g class="temp-layer"></g>
                     </svg>
+                    <button class="btn-snapshot-canvas" title="Exporter en JPEG">📷</button>
                     <button class="btn-clear-canvas" title="Effacer tout le dessin">🗑️</button>
                 </div>
             </div>
