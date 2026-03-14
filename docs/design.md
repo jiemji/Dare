@@ -731,7 +731,7 @@
       
         - Fonction : changement du thème / style
           
-- **Barre latérale** : Affiche la totalité de l'arborescence de manière fixe.
+- **Barre latérale** : Affiche la totalité de l'arborescence de manière **fixe** (non repliable).
   Elle regroupe les Ateliers et leurs Pages respectives.
-  Le clic sur un item d'atelier (titre) est informatif, le clic sur une page charge le contenu.
+  Un pied de page (`.sidebar-footer`) contient le bouton **[ Fichier ]** pour les actions globales.
   

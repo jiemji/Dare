@@ -1,0 +1,708 @@
+{
+  "referentiels": {
+    "gravite": [
+      {
+        "valeur": 4,
+        "niveau": "Critique",
+        "color": "#ff0000"
+      },
+      {
+        "valeur": 3,
+        "niveau": "Grave",
+        "color": "#ff6600"
+      },
+      {
+        "valeur": 2,
+        "niveau": "Significatif",
+        "color": "#ffcc00"
+      },
+      {
+        "valeur": 1,
+        "niveau": "Mineur",
+        "color": "#ffff00"
+      }
+    ],
+    "impacts": [
+      "Financier",
+      "Image",
+      "Juridique",
+      "Opérationnel"
+    ],
+    "vraisemblance": [
+      {
+        "valeur": 4,
+        "niveau": "Très probable",
+        "color": "#ff0000",
+        "description": ""
+      },
+      {
+        "valeur": 3,
+        "niveau": "Probable",
+        "color": "#ff6600",
+        "description": ""
+      },
+      {
+        "valeur": 2,
+        "niveau": "Peu probable",
+        "color": "#ffcc00",
+        "description": ""
+      },
+      {
+        "valeur": 1,
+        "niveau": "Très peu probable",
+        "color": "#ffff00",
+        "description": ""
+      }
+    ],
+    "killChain": [
+      {
+        "valeur": 1,
+        "phase": "Reconnaitre"
+      },
+      {
+        "valeur": 2,
+        "phase": "Rentrer"
+      },
+      {
+        "valeur": 3,
+        "phase": "Trouver"
+      },
+      {
+        "valeur": 4,
+        "phase": "Exploiter"
+      }
+    ],
+    "motivation": [
+      {
+        "valeur": 4,
+        "niveau": "Déterminée",
+        "color": "#ed0c0c",
+        "description": ""
+      },
+      {
+        "valeur": 3,
+        "niveau": "Forte",
+        "color": "#ff6600",
+        "description": ""
+      },
+      {
+        "valeur": 2,
+        "niveau": "Moyenne",
+        "color": "#ffcc00",
+        "description": ""
+      },
+      {
+        "valeur": 1,
+        "niveau": "Faible",
+        "color": "#ffff00",
+        "description": ""
+      }
+    ],
+    "ressources": [
+      {
+        "valeur": 4,
+        "niveau": "Illimitées",
+        "color": "#ff0000",
+        "description": ""
+      },
+      {
+        "valeur": 3,
+        "niveau": "Importantes",
+        "color": "#ff6600",
+        "description": ""
+      },
+      {
+        "valeur": 2,
+        "niveau": "Limitées",
+        "color": "#ffcc00",
+        "description": ""
+      },
+      {
+        "valeur": 1,
+        "niveau": "Très limitées",
+        "color": "#ffff00",
+        "description": ""
+      }
+    ],
+    "risques": [
+      {
+        "valeur": 1,
+        "niveau": "Négligeable",
+        "color": "#aaaaaa"
+      },
+      {
+        "valeur": 2,
+        "niveau": "Acceptable",
+        "color": "#22c55e"
+      },
+      {
+        "valeur": 3,
+        "niveau": "Tolérable",
+        "color": "#eab308"
+      },
+      {
+        "valeur": 4,
+        "niveau": "Inacceptable",
+        "color": "#ef4444"
+      }
+    ],
+    "grilleImpacts": [
+      {
+        "gravite": 4,
+        "typeImpact": "Financier",
+        "description": ""
+      },
+      {
+        "gravite": 4,
+        "typeImpact": "Image",
+        "description": ""
+      },
+      {
+        "gravite": 4,
+        "typeImpact": "Juridique",
+        "description": ""
+      },
+      {
+        "gravite": 4,
+        "typeImpact": "Opérationnel",
+        "description": ""
+      },
+      {
+        "gravite": 3,
+        "typeImpact": "Financier",
+        "description": ""
+      },
+      {
+        "gravite": 3,
+        "typeImpact": "Image",
+        "description": ""
+      },
+      {
+        "gravite": 3,
+        "typeImpact": "Juridique",
+        "description": ""
+      },
+      {
+        "gravite": 3,
+        "typeImpact": "Opérationnel",
+        "description": ""
+      },
+      {
+        "gravite": 2,
+        "typeImpact": "Financier",
+        "description": ""
+      },
+      {
+        "gravite": 2,
+        "typeImpact": "Image",
+        "description": ""
+      },
+      {
+        "gravite": 2,
+        "typeImpact": "Juridique",
+        "description": ""
+      },
+      {
+        "gravite": 2,
+        "typeImpact": "Opérationnel",
+        "description": ""
+      },
+      {
+        "gravite": 1,
+        "typeImpact": "Financier",
+        "description": ""
+      },
+      {
+        "gravite": 1,
+        "typeImpact": "Image",
+        "description": ""
+      },
+      {
+        "gravite": 1,
+        "typeImpact": "Juridique",
+        "description": ""
+      },
+      {
+        "gravite": 1,
+        "typeImpact": "Opérationnel",
+        "description": ""
+      }
+    ],
+    "grilleRisques": [],
+    "socles": [],
+    "typesActifs": [
+      {
+        "id": "materiel",
+        "label": "Matériel (Serveur, Poste, etc.)",
+        "exigences": [
+          "Maintien en condition opérationnelle",
+          "Disponibilité physique",
+          "Inventaire et marquage"
+        ]
+      },
+      {
+        "id": "logiciel",
+        "label": "Logiciel / Application",
+        "exigences": [
+          "Gestion des patchs de sécurité",
+          "Contrôles d'accès applicatifs",
+          "Journalisation des actions"
+        ]
+      },
+      {
+        "id": "reseau",
+        "label": "Equipement réseau",
+        "exigences": [
+          "Segmentation (VLAN)",
+          "Filtrage de flux (Firewall)",
+          "Durcissement (Hardening)"
+        ]
+      }
+    ],
+    "protocoles": [
+      "HTTPS",
+      "SSH",
+      "SFTP",
+      "TLS",
+      "IPsec",
+      "RDP",
+      "SMB",
+      "SNMP",
+      "Autre"
+    ],
+    "authentifications": [
+      "Mot de passe",
+      "MFA/2FA",
+      "Certificat",
+      "Clé SSH",
+      "Kerberos",
+      "Aucune",
+      "Autre"
+    ],
+    "typesDependancePP": [
+      {
+        "id": "fournisseur",
+        "label": "Fournisseur / Editeur",
+        "exigences": [
+          "Assurance cybersécurité",
+          "SLA / Disponibilité",
+          "Plan de réversibilité",
+          "Droit d'audit"
+        ]
+      },
+      {
+        "id": "partenaire",
+        "label": "Partenaire métier",
+        "exigences": [
+          "Convention de service",
+          "Confidentialité des échanges",
+          "Intégrité des données",
+          "Gestion des habilitations"
+        ]
+      },
+      {
+        "id": "prestataire",
+        "label": "Prestataire de service IT",
+        "exigences": [
+          "Contrôle d'accès logique",
+          "Durcissement des postes",
+          "Journalisation",
+          "Périmètre d'intervention"
+        ]
+      },
+      {
+        "id": "client",
+        "label": "Client / Usager",
+        "exigences": [
+          "Portail d'authentification",
+          "Conditions Générales d'Utilisation",
+          "Protection des données personnelles"
+        ]
+      }
+    ]
+  },
+  "atelier1": {
+    "contexte": {
+      "organisation": "",
+      "siteInternet": "",
+      "secteurActivite": "",
+      "activite": "",
+      "perimetre": ""
+    },
+    "typsEvenements": [
+      "Disponibilité",
+      "Intégrité",
+      "Confidentialité",
+      "Traçabilité"
+    ],
+    "processus": [
+      {
+        "id": "VM01",
+        "nom": "RH",
+        "description": ""
+      },
+      {
+        "id": "VM02",
+        "nom": "Comptabilité",
+        "description": ""
+      }
+    ],
+    "evenements": [
+      {
+        "id": "ER01",
+        "processusId": "VM01",
+        "description": "",
+        "typo": "Disponibilité",
+        "impacts": [],
+        "gravite": "1"
+      },
+      {
+        "id": "ER02",
+        "processusId": "VM02",
+        "description": "",
+        "typo": "Disponibilité",
+        "impacts": [],
+        "gravite": "1"
+      }
+    ],
+    "inventaire": [
+      {
+        "id": "BS01",
+        "nom": "Serveur",
+        "typeId": "materiel",
+        "description": "",
+        "valeursMetiers": [
+          "Traçabilité"
+        ],
+        "relations": [
+          {
+            "actifId": "BS03",
+            "protocole": "HTTPS",
+            "auth": "Aucune"
+          }
+        ],
+        "exigences": [
+          {
+            "label": "Maintien en condition opérationnelle",
+            "info": ""
+          },
+          {
+            "label": "Disponibilité physique",
+            "info": ""
+          },
+          {
+            "label": "Inventaire et marquage",
+            "info": ""
+          }
+        ],
+        "constat": "",
+        "processusIds": [
+          "VM01"
+        ]
+      },
+      {
+        "id": "BS02",
+        "nom": "Poste",
+        "typeId": "materiel",
+        "description": "",
+        "valeursMetiers": [],
+        "relations": [
+          {
+            "actifId": "BS03",
+            "protocole": "HTTPS",
+            "auth": "Aucune"
+          },
+          {
+            "actifId": "BS01",
+            "protocole": "HTTPS",
+            "auth": "Certificat"
+          }
+        ],
+        "exigences": [
+          {
+            "label": "Maintien en condition opérationnelle",
+            "info": ""
+          },
+          {
+            "label": "Disponibilité physique",
+            "info": ""
+          },
+          {
+            "label": "Inventaire et marquage",
+            "info": ""
+          }
+        ],
+        "constat": "",
+        "processusIds": [
+          "VM02",
+          "VM01"
+        ]
+      },
+      {
+        "id": "BS03",
+        "nom": "Firewall",
+        "typeId": "reseau",
+        "description": "",
+        "valeursMetiers": [],
+        "relations": [],
+        "exigences": [
+          {
+            "label": "Segmentation (VLAN)",
+            "info": ""
+          },
+          {
+            "label": "Filtrage de flux (Firewall)",
+            "info": ""
+          },
+          {
+            "label": "Durcissement (Hardening)",
+            "info": ""
+          }
+        ],
+        "constat": "",
+        "processusIds": [
+          "VM01"
+        ]
+      }
+    ]
+  },
+  "atelier2": {
+    "sourcesRisque": [
+      {
+        "id": "SR01",
+        "libelle": "",
+        "description": "",
+        "ressources": "1"
+      },
+      {
+        "id": "SR02",
+        "libelle": "",
+        "description": "",
+        "ressources": "1"
+      }
+    ],
+    "objectifsVises": [
+      {
+        "id": "OV01",
+        "libelle": "",
+        "description": ""
+      },
+      {
+        "id": "OV02",
+        "libelle": "",
+        "description": ""
+      },
+      {
+        "id": "OV03",
+        "libelle": "",
+        "description": ""
+      }
+    ],
+    "menaces": [
+      {
+        "id": "1773525226271",
+        "srId": "SR01",
+        "ovId": "OV01",
+        "motivation": "1",
+        "commentaires": ""
+      },
+      {
+        "id": "1773525226826",
+        "srId": "SR01",
+        "ovId": "OV02",
+        "motivation": "1",
+        "commentaires": ""
+      }
+    ]
+  },
+  "atelier3": {
+    "partiesPrenantes": [
+      {
+        "id": "PP01",
+        "nom": "",
+        "type": "Fournisseur",
+        "dependance": 1,
+        "penetration": 2,
+        "maturite": 1,
+        "intentions": 1,
+        "commentaires": "",
+        "typePPId": "client",
+        "exigencesList": [
+          {
+            "label": "Portail d'authentification",
+            "val": ""
+          },
+          {
+            "label": "Conditions Générales d'Utilisation",
+            "val": ""
+          },
+          {
+            "label": "Protection des données personnelles",
+            "val": ""
+          }
+        ]
+      },
+      {
+        "id": "PP02",
+        "nom": "",
+        "typePPId": "fournisseur",
+        "constats": "",
+        "exigencesList": [
+          {
+            "label": "Assurance cybersécurité",
+            "val": ""
+          },
+          {
+            "label": "SLA / Disponibilité",
+            "val": ""
+          },
+          {
+            "label": "Plan de réversibilité",
+            "val": ""
+          },
+          {
+            "label": "Droit d'audit",
+            "val": ""
+          }
+        ],
+        "mesuresProposees": "",
+        "dependance": 1,
+        "penetration": 1,
+        "maturite": 1,
+        "intentions": 1,
+        "commentaires": ""
+      }
+    ],
+    "scenariosStrategiques": [
+      {
+        "id": "SS01",
+        "processusId": "VM01",
+        "menaceId": "",
+        "ppId": "",
+        "cible": "",
+        "scenario": "",
+        "declenchement": "",
+        "gravite": "1"
+      }
+    ]
+  },
+  "atelier4": {
+    "scenariosRisques": [
+      {
+        "id": "RS01",
+        "ssId": "SS01",
+        "vraisemblance": "3",
+        "biensSupports": "",
+        "mesuresExistantes": "",
+        "mesuresProposees": "",
+        "diagramData": {
+          "nodes": [
+            {
+              "id": "node_1773525061486_601",
+              "x": 60,
+              "y": 100,
+              "width": 120,
+              "height": 60,
+              "text": "Nouveau",
+              "value": 2,
+              "laneId": "lane_1"
+            },
+            {
+              "id": "node_1773525063072_11",
+              "x": 60,
+              "y": 200,
+              "width": 120,
+              "height": 60,
+              "text": "Nouveau",
+              "value": 3,
+              "laneId": "lane_1"
+            },
+            {
+              "id": "node_1773525064886_626",
+              "x": 300,
+              "y": 100,
+              "width": 120,
+              "height": 60,
+              "text": "Nouveau",
+              "value": 3,
+              "laneId": "lane_2"
+            },
+            {
+              "id": "node_1773525070703_329",
+              "x": 800,
+              "y": 100,
+              "width": 120,
+              "height": 60,
+              "text": "Nouveau",
+              "value": 4,
+              "laneId": "lane_4"
+            }
+          ],
+          "links": [
+            {
+              "id": "link_1773525069573",
+              "fromId": "node_1773525061486_601",
+              "fromSide": "right",
+              "toId": "node_1773525064886_626",
+              "toSide": "left"
+            },
+            {
+              "id": "link_1773525073596",
+              "fromId": "node_1773525064886_626",
+              "fromSide": "right",
+              "toId": "node_1773525070703_329",
+              "toSide": "left"
+            },
+            {
+              "id": "link_1773525108644",
+              "fromId": "node_1773525063072_11",
+              "fromSide": "right",
+              "toId": "node_1773525064886_626",
+              "toSide": "bottom"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "atelier5": {
+    "plans": [
+      {
+        "id": "MES01",
+        "type": "gouvernance",
+        "description": "",
+        "cibles": "",
+        "priorite": "P1"
+      },
+      {
+        "id": "MES02",
+        "type": "gouvernance",
+        "description": "",
+        "cibles": "",
+        "priorite": "P1"
+      },
+      {
+        "id": "MES03",
+        "type": "gouvernance",
+        "description": "",
+        "cibles": "",
+        "priorite": "P1"
+      },
+      {
+        "id": "MES04",
+        "type": "protection",
+        "description": "",
+        "cibles": "",
+        "priorite": "P1"
+      }
+    ]
+  },
+  "metadata": {
+    "version": "1.0",
+    "lastSaved": "2026-03-14T22:31:31.772Z"
+  },
+  "settings": {
+    "theme": "dark",
+    "sidebarPinned": false
+  }
+}

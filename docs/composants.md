@@ -57,3 +57,8 @@ Plusieurs cartes peuvent s'aligner horizontalement (côte à côte) sur la même
 - **Emplacement** : Fixe en bas de la barre latérale (Sidebar Footer).
 - **Style** : Bouton large avec icône dossier, apparence "heavy" (bordure 2px, ombre marquée).
 - **Fonction** : Déclenche l'ouverture de la modale de gestion globale (Nouvelle analyse, Import, Export).
+
+### 9. Modales (`modal`)
+- **Structure** : Conteneur fixe occupant tout l'écran avec un fond semi-transparent et une boîte de contenu centrée.
+- **Visibilité** : Utilise une double approche pour la compatibilité CSS (classe `.hidden` pour l'état par défaut et classe `.active` pour forcer l'affichage en cas de conflit avec d'autres styles injectés).
+- **Comportement** : Se ferme en cliquant à l'extérieur (bouton close ou backdrop).
