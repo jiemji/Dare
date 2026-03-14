@@ -39,3 +39,7 @@
 - **Implemented**: Workshops 1 to 5 (partial) and all Referentials.
 - **Navigation Refactor**: Transitioned to a fixed unified sidebar.
 - **Stakeholder Refactor**: Converted to 3-column folding cards for consistency with Assets.
+- **Global Action Fix**: Replaced burger menu with "[ Fichier ]" button.
+- **Lessons Learned**:
+  - **CSS Scoping**: Editor-specific styles (like Mermaid's) can leak and override global UI classes (e.g., `.modal`). Always use dual classes for visibility (e.g., `.hidden` + `.active`) if multiple style systems overlap.
+  - **DOM Lifecycle**: Ensure all critical DOM elements are declared at the very start of `app.js` to avoid "missing element" errors during event listener attachment.
