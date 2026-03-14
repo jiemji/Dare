@@ -262,11 +262,31 @@
               
                 - Bouton : ajouter une partie prenante
                   
-                    - Fonction : ajoute une ligne dans le tableau
+                    - Fonction : ajoute une carte à rabat (Folding Card)
                       
-                - Tableau : Liste des parties prenantes
+                - Carte à Rabat : Partie Prenante # (Composant `folding-card` en 3 colonnes)
                   
-                    - Colonnes : Réf, Nom, Type, Commentaires
+                    - **En-tête (Visible)** :
+                      
+                        - Champs de saisie : Nom de la partie prenante
+                          
+                        - Liste déroulante : Type de dépendance (Données provenant de `referentiels.typesDependancePP`)
+                          
+                    - **Contenu repliable (3 colonnes)** :
+                      
+                        - **Colonne 1 (Constats)** :
+                          
+                            - Champs de saisie (multiligne) : Constats / Observations
+                              
+                        - **Colonne 2 (Exigences)** :
+                          
+                            - Tableau des exigences : Liste des exigences paramétrées pour le type de dépendance sélectionné.
+                              
+                        - **Colonne 3 (Actions)** :
+                          
+                            - Champs de saisie (multiligne) : Mesures de sécurité proposées
+                              
+                        - Bouton : Supprimer la partie prenante
                       
         - Page : Évaluation des parties prenantes (Scoring)
           

@@ -1,33 +1,32 @@
-# Walkthrough - Refonte Sémantique et Cartes à Rabat
+# Walkthrough - Navigation Fixe et Refonte des Parties Prenantes
 
-Cette mise à jour finalise le renommage sémantique global et la mise en place du nouveau composant "Carte à Rabat" (Folding Card).
+Cette mise à jour apporte des améliorations majeures à l'ergonomie et à la cohérence visuelle de l'application.
 
 ## Changements Majeurs
 
-### 1. Refonte Sémantique
-- **Processus métier** -> **Valeurs métiers** (dans les pages et cartes).
-- **Chaines de valeurs** : Refonte sémantique des processus métiers.
-- **Parties prenantes** : Séparation en deux pages distinctes (Gestion et Évaluation).
-- **Navigation Unifiée** : 
-    - Barre latérale affichant l'arborescence complète (Ateliers > Pages).
-    - Nouveau bouton permanent **[ Fichier ]** en bas à gauche pour les opérations globales (Nouvelle analyse, Import/Export).
-    - Barre supérieure épurée affichant uniquement le titre de l'application et les réglages.
+### 1. Navigation Fixe & Stable
+- **Barre Latérale Permanente** : La barre latérale est désormais fixe et ne masque plus le contenu. Elle ne dispose plus de bouton "épingler" car elle fait partie intégrante du layout global.
+- **Correction du Grid** : Le contenu principal est strictement limité à sa colonne, évitant tout chevauchement avec la navigation.
+- **Menu [ Fichier ]** : Toujours disponible en bas de la barre latérale pour les actions globales.
 
-### 2. Nouveau Composant : Carte à Rabat (`folding-card`)
-- **Structure** : En-tête interactive avec contrôles (inputs/boutons) et corps repliable.
-- **Mises en page** :
-    - **Atelier 1 (Inventaire)** : Layout en 3 colonnes égales (1/3 chacune) avec support complet du pliage/dépliage.
-    - **Atelier 4 (Scénarios)** : Layout mixte (30% gauche / 70% droite).
-- **Optimisation** : Correction des conflits CSS (`!important`) empêchant le repliage des cartes d'actifs.
+### 2. Refonte des Parties Prenantes
+- **Migration vers les Cartes à Rabat** : La gestion des parties prenantes utilise désormais le composant `folding-card` en 3 colonnes, identique à l'inventaire des actifs.
+- **Exigences Dynamiques** : En choisissant un type de dépendance (Fournisseur, Client, Prestataire IT, etc.), une liste d'exigences spécifiques est générée en colonne 2.
+- **Structure des colonnes** :
+    - **C1** : Constats et observations.
+    - **C2** : Tableau d'évaluation des exigences de sécurité.
+    - **C3** : Mesures de sécurité proposées.
+
+### 3. Fiabilité des Données
+- **Migration Automatique** : Les nouveaux référentiels (types de dépendances) sont automatiquement injectés dans les analyses existantes lors du chargement.
 
 ## Vérification Visuelle
 
-### Atelier 1 : Inventaire des Biens Supports
-Les actifs s'affichent désormais sous forme de cartes repliables. L'en-tête permet de modifier le nom, le type et la description sans avoir à déplier la carte. Une fois dépliée, la carte révèle les 3 colonnes de détails.
+### Atelier 3 : Gestion des Parties Prenantes
+Vérifiez que l'ajout d'une partie prenante crée une carte repliable. Modifiez le type de dépendance et observez la mise à jour instantanée du tableau d'exigences en colonne centrale.
 
-### Atelier 4 : Scénarios de Risques
-Les scénarios utilisent le même composant mais avec une disposition optimisée pour l'édition graphique, permettant d'avoir le contexte du scénario à gauche et le schéma Kill-Chain à droite.
+### Layout Global
+La barre latérale doit rester visible en permanence sans superposition sur le contenu de la page.
 
 ## Documentation
-- [design.md](file:///g:/devapps/Dare/docs/design.md) mis à jour avec la nouvelle sémantique.
-- [composants.md](file:///g:/devapps/Dare/docs/composants.md) complété avec la description technique de la `folding-card`.
+- [design.md](file:///g:/devapps/Dare/docs/design.md) et [composants.md](file:///g:/devapps/Dare/docs/composants.md) ont été mis à jour pour refléter ces changements.
