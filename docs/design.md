@@ -31,7 +31,7 @@
               
             - `socles.json` : Contient la bibliothèque des socles de sécurité disponibles.
               
-        - L'initialisation est asynchrone : au chargement, l'application récupère ces fichiers avant d'afficher la première page. Ce processus gère également la migration des données vers les nouvelles structures de référentiels.
+        - L'initialisation est asynchrone : au chargement, l'application récupère ces fichiers avant d'afficher la première page. Ce mécanisme gère également la migration des données vers les nouvelles structures de référentiels.
           
     - Page : Aide
       
@@ -61,15 +61,15 @@
                           
                         - Champs de saisie : Périmètre de l'analyse
                           
-        - Page : Processus métier
+        - Page : Valeurs métiers
           
             - Composants
               
-                - Bouton : ajouter une processus métier
+                - Bouton : ajouter une valeur métier
                   
-                    - Fonction : ajouter une carte Processus
+                    - Fonction : ajouter une carte Valeur métier
                       
-                - Carte étendue : Processus #
+                - Carte étendue : Valeur métier #
                   
                     - Composants
                       
@@ -78,21 +78,21 @@
                           
                             - Incrémentation automatique à la création : VM01, VM02, VM##
                               
-                        - Champs de saisie : Nom de processus
+                        - Champs de saisie : Nom de la valeur métier
                           <!-- ::xmind-pos:{"x":559,"y":-1145} -->
                           
                         - Champs de saisie enrichie : Description de l'activité
                           <!-- ::xmind-pos:{"x":559,"y":-1145} -->
                           
-                        - Bouton : Supprimer le processus
+                        - Bouton : Supprimer la valeur métier
                           
-                            - Fonction : supprime le processus et ses données
+                            - Fonction : supprime la valeur métier et ses données
                               
         - Page : Evènements regrettables
           
             - Composants
               
-                - Titre : Processus #
+                - Titre : Valeur métier #
                   
                 - Carte allongée : Evénement #
                   
@@ -103,7 +103,7 @@
                           
                             - Incrémentation automatique à la création : ER01, ER02, ER##
                               
-                            - La numérotation ne tient pas compte de la séparation à l'écran par procesus. Par exemple, VM01 > ER01, ER02, VM2 > ER03, ER04.
+                            - La numérotation ne tient pas compte de la séparation à l'écran par valeur métier. Par exemple, VM01 > ER01, ER02, VM2 > ER03, ER04.
                               
                         - Champs de saisie : Descriptif de l'événement
                           <!-- ::xmind-pos:{"x":559,"y":-1145} -->
@@ -153,7 +153,7 @@
                       
                         - **Colonne 1 (Dépendances)** :
                           
-                            - Liste à cocher : Valeurs métiers supportées (Données provenant de `atelier1.processus`)
+                            - Liste à cocher : Valeurs métiers supportées (Données provenant des valeurs métiers définies)
                               
                             - Tableau des relations :
                               
@@ -336,7 +336,7 @@
           
             - Composants
               
-                - Titre : Processus #
+                - Titre : Valeur métier #
                   
                 - Carte allongée : Scénario stratégique #
                   
@@ -347,7 +347,7 @@
                           
                             - Incrémentation automatique à la création : SS01, SS02, SS##
                               
-                            - La numérotation ne tient pas compte de la séparation à l'écran par procesus. Par exemple, VM01 > SS01, SS02, VM2 > SS03, SS04.
+                            - La numérotation ne tient pas compte de la séparation à l'écran par valeur métier. Par exemple, VM01 > SS01, SS02, VM2 > SS03, SS04.
                               
                         - Liste déroulante : Menaces
                           
@@ -375,9 +375,9 @@
                               
                 - Bouton : Ajouter un scénario stratégique
                   
-                    - Fonction : ajoute une carte scénario stratégique dans l'espace du processus
+                    - Fonction : ajoute une carte scénario stratégique dans l'espace de la valeur métier
                       
-            - L'écran est découpé par processus métier
+            - L'écran est découpé par valeur métier
               
     - Bouton : Atelier 4
       
@@ -446,7 +446,7 @@
                           
                             - Incrémentation automatique à la création : MES01, MES02, MES##
                               
-                            - La numérotation ne tient pas compte de la séparation à l'écran par procesus. Par exemple, Gouvernance > MES01, MES02, PRotection > MES03, MES04.
+                            - La numérotation ne tient pas compte de la séparation à l'écran par type d'action. Par exemple, Gouvernance > MES01, MES02, PRotection > MES03, MES04.
                               
                         - Champs de saisie : Descriptif de la mesure
                           <!-- ::xmind-pos:{"x":559,"y":-1145} -->
