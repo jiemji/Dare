@@ -133,7 +133,39 @@
               
         - Page : Inventaire
           
-            - à définir. mettre une page filer
+            - Composants
+              
+                - Bouton : Ajouter un bien support
+                  
+                    - Fonction : ajoute une carte "Bien Support"
+                      
+                - Carte carrée : Bien Support #
+                  
+                    - Composants
+                      
+                        - Champs de saisie : Référence
+                          
+                            - Incrémentation automatique : BS01, BS02, BS##
+                              
+                        - Champs de saisie : Nom de l'actif
+                          
+                        - Liste déroulante : Processus métier
+                          
+                            - Données provenant de la liste des processus métiers
+                              
+                        - Liste déroulante : Type d'actif
+                          
+                            - Données provenant du référentiel "Types d'actifs" (parameters/defaults.json)
+                              
+                        - Tableau : Exigences
+                          
+                            - Colonne 1 : Exigences (Liste paramétrée dans parameters/defaults.json)
+                              
+                            - Colonne 2 : Information (Champ de saisie)
+                              
+                        - Bouton : Supprimer le bien support
+                          
+                            - Fonction : supprime le bien et ses données
               
         - Page : Cartographie
           

@@ -30,6 +30,23 @@
             { "valeur": 3, "niveau": "Importantes", "color": "#ff6600", "description": "" },
             { "valeur": 2, "niveau": "Limitées", "color": "#ffcc00", "description": "" },
             { "valeur": 1, "niveau": "Très limitées", "color": "#ffff00", "description": "" }
+        ],
+        "typesActifs": [
+            { 
+                "id": "materiel", 
+                "label": "Matériel (Serveur, Poste, etc.)", 
+                "exigences": ["Maintien en condition opérationnelle", "Disponibilité physique", "Inventaire et marquage"] 
+            },
+            { 
+                "id": "logiciel", 
+                "label": "Logiciel / Application", 
+                "exigences": ["Gestion des patchs de sécurité", "Contrôles d'accès applicatifs", "Journalisation des actions"] 
+            },
+            { 
+                "id": "reseau", 
+                "label": "Equipement réseau", 
+                "exigences": ["Segmentation (VLAN)", "Filtrage de flux (Firewall)", "Durcissement (Hardening)"] 
+            }
         ]
     },
     "atelier1": {
@@ -41,7 +58,8 @@
             "perimetre": ""
         },
         "processus": [],
-        "evenements": []
+        "evenements": [],
+        "inventaire": []
     },
     "atelier2": {
         "sourcesRisque": [],
