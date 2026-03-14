@@ -10,8 +10,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mainContent = document.getElementById('main-content');
     
     const btnTheme = document.getElementById('btn-theme');
-    const btnPinSidebar = document.getElementById('btn-pin-sidebar');
-    
     const sidebarMenu = document.getElementById('sidebar-menu');
     let currentModule = null;
     
@@ -23,17 +21,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
         htmlEl.setAttribute('data-theme', newTheme);
         Store.data.settings.theme = newTheme;
-        Store.save();
-    });
-
-    // ---- Sidebar Pinned State ----
-    if (Store.data.settings.sidebarPinned) {
-        sidebar.classList.add('pinned');
-    }
-    
-    btnPinSidebar.addEventListener('click', () => {
-        sidebar.classList.toggle('pinned');
-        Store.data.settings.sidebarPinned = sidebar.classList.contains('pinned');
         Store.save();
     });
 

@@ -32,23 +32,17 @@
 - **Style**: Modernized Mac OS 7 inspiration.
 - **Themes**: Light (Ivory/Bordeaux) and Dark (Deep Brown/Orange).
 - **Core Components**:
-  - Cards: `.card-square`, `.card-long`, `.card-extended`.
+  - Cards: `.card-square`, `.card-long`, `.card-extended`, `.folding-card` (3-cols / Scenarios).
   - Tables: `.table-square`, `.table-extended`.
-- **Layout Rules**: 
-  - Labels are always above input fields.
-  - Tables use sticky headers and localized scrolling (`70vh`).
+  - Navigation: Unified tree-view sidebar with `.sidebar-footer` for global actions.
 
 ## Key Features & Logic
 - **Async Initialization**: On startup, `app.js` awaits `Store.init()`, which fetches `defaults.json` and `socles.json`.
-- **Socle de Sécurité**: 
-    - Managed via `referentiels/socle.html`.
-    - Unchecking a socle removes it from `localStorage`.
-    - Checking a socle adds it to the active analysis data.
-    - Support for CSV import of requirements.
-- **Persistence**: Fully functional with JSON export/import via `localStorage` (key: `dare_data`).
+- **Navigation Structure**: Full tree generated at startup; all ateliers visible simultaneously.
+- **Fichier Menu**: Replaces the burger menu in the navbar for a localized entry point in the sidebar.
 
 ## Current State (March 2026)
-- **Implemented**: Workshops 1, 2, 3, 4 (Mermaid Editor), 5 (partial) and all Referentials.
-- **Simplification (March 2026)**: Codebase refactored to use a declarative component-based approach with data-binding.
-- **Recent Fixes**: Resolved major CSS collisions and data migration issues during refactoring.
+- **Implemented**: Workshops 1 to 5 (partial) and all Referentials.
+- **Navigation Refactor**: Transitioned from horizontal tab-based navigation to a unified sidebar hierarchy.
+- **Semantic Refactor**: "Processus métier" rebranded as "Valeurs métiers" / "Chaines de valeurs".
 
