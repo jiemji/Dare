@@ -31,7 +31,7 @@ export class MermaidEditor {
         }));
 
         this.svg = container.querySelector('.canvas');
-        if (this.svg) this.svg.setAttribute('height', '1200');
+        if (this.svg) this.svg.setAttribute('height', '500');
         this.swimlanesLayer = container.querySelector('.swimlanes-layer');
         this.nodesLayer = container.querySelector('.nodes-layer');
         this.linksLayer = container.querySelector('.links-layer');
@@ -58,12 +58,12 @@ export class MermaidEditor {
 
 
         // Modal events
-        this.modal = document.getElementById('node-modal'); 
-        
+        this.modal = document.getElementById('node-modal');
+
         // Modal buttons (global elements, we attach per-instance but filter by editingNode)
         const btnSave = document.getElementById('modal-save');
         const btnCancel = document.getElementById('modal-cancel');
-        
+
         if (btnSave) {
             btnSave.addEventListener('click', () => {
                 if (this.editingNode) this.saveModal();
@@ -189,6 +189,11 @@ export class MermaidEditor {
 
         // Calcul du Y : trouver le nœud le plus bas dans cette colonne
         const laneNodes = this.state.nodes.filter(n => n.laneId === lane.id);
+
+        if (laneNodes.length >= 4) {
+            alert("Limite atteinte : maximum 4 formes par étape.");
+            return;
+        }
 
         let ny = HEADER_HEIGHT + 60; // Offset augmenté pour éviter toute troncature sous l'en-tête
         if (laneNodes.length > 0) {
@@ -369,12 +374,15 @@ export class MermaidEditor {
         const radio = document.querySelector(`input[name="node-value"][value="${node.value}"]`);
         if (radio) radio.checked = true;
 
+        modal.classList.remove('hidden');
         modal.classList.add('active');
         textInput.focus();
     }
 
     closeModal() {
-        document.getElementById('node-modal').classList.remove('active');
+        const modal = document.getElementById('node-modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('active');
         this.editingNode = null;
     }
 
