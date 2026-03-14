@@ -407,6 +407,8 @@
                       
                     - **Persistance** : Les données du diagramme (nœuds, liens) sont stockées en JSON dans l'objet du scénario.
                       
+                    - **Effacer** : Un bouton "poubelle" en bas à droite permet de réinitialiser entièrement le diagramme après confirmation.
+                      
                 - **Gestion du Score (Vraisemblance)** :
                   
                     - Le score de vraisemblance de la carte est synchronisé avec la valeur maximale trouvée dans le diagramme Mermaid.

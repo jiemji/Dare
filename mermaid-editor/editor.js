@@ -4,7 +4,7 @@ const GRID_SIZE = 20;
 const NODE_WIDTH = 120;
 const NODE_HEIGHT = 60;
 const LANE_WIDTH = 245;
-const NODE_SPACING_V = 30; // Vertical spacing between nodes in a lane
+const NODE_SPACING_V = 40; // Vertical spacing between nodes in a lane (aligned to GRID_SIZE)
 
 const HEADER_HEIGHT = 80;
 
@@ -15,12 +15,7 @@ export class MermaidEditor {
             onScoreChange: options.onScoreChange || (() => { }),
             onDataChange: options.onDataChange || (() => { }),
             readOnly: options.readOnly || false,
-            phases: options.phases || [
-                { id: "recon", title: "Reconnaitre" },
-                { id: "enter", title: "Rentrer" },
-                { id: "find", title: "Trouver" },
-                { id: "exploit", title: "Exploiter" }
-            ],
+            phases: options.phases || [],
             initialData: options.initialData || { nodes: [], links: [] }
         };
 
@@ -92,7 +87,23 @@ export class MermaidEditor {
         this.container.tabIndex = 0; // Make container focusable
         this.container.addEventListener('keydown', (e) => this.handleKeyDown(e));
 
+        // Clear button
+        const btnClear = this.container.querySelector('.btn-clear-canvas');
+        if (btnClear) {
+            btnClear.onclick = () => this.clear();
+        }
+
         this.renderAll();
+    }
+
+    clear() {
+        if (confirm("Voulez-vous vraiment effacer tout le dessin ?")) {
+            this.state.nodes = [];
+            this.state.links = [];
+            this.selectedId = null;
+            this.renderAll();
+            this.options.onDataChange(this.state);
+        }
     }
 
     renderAll() {
@@ -742,6 +753,7 @@ export class MermaidEditor {
                         <g class="scores-layer"></g>
                         <g class="temp-layer"></g>
                     </svg>
+                    <button class="btn-clear-canvas" title="Effacer tout le dessin">🗑️</button>
                 </div>
             </div>
         `;

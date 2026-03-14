@@ -442,3 +442,29 @@
 ::-webkit-scrollbar-thumb:hover {
     background-color: var(--c-accent);
 }
+
+.btn-clear-canvas {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background-color: var(--c-bg-panel);
+    border: 2px solid var(--c-border);
+    border-radius: var(--border-radius);
+    color: var(--c-text-main);
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 2px 2px 5px var(--c-shadow);
+    z-index: 100;
+    transition: all 0.2s;
+}
+
+.btn-clear-canvas:hover {
+    background-color: var(--c-accent);
+    color: white;
+    transform: scale(1.1);
+}
