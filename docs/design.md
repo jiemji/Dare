@@ -276,6 +276,8 @@
                   
                     - Fonction : ajoute une ligne "partie prenante" dans le tableau
                       
+                    - **Layout Équilibré** : Dans l'Atelier 4, la carte utilise un partage 50/50 (`flex: 1` pour chaque colonne) pour maximiser le confort de saisie et de lecture du diagramme (1005px).
+                      
                 - Tableau : Parties prenantes
                   
                     - Composants d'une ligne du tableau
