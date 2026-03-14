@@ -89,7 +89,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             { id: "evaluation", label: "Évaluation de la menace", file: "pages/atelier2/evaluation.html", script: "pages/atelier2.js" }
         ],
         atelier3: [
-            { id: "parties_prenantes", label: "Parties prenantes", file: "pages/atelier3/parties_prenantes.html", script: "pages/atelier3.js" },
+            { id: "parties_prenantes", label: "Parties prenantes", file: "pages/atelier3/parties_prenantes.html", script: "pages/atelier3_list.js" },
+            { id: "evaluation_pp", label: "Évaluation des parties prenantes", file: "pages/atelier3/evaluation_parties_prenantes.html", script: "pages/atelier3_evaluation.js" },
             { id: "scenarios_strat", label: "Scénarios stratégiques", file: "pages/atelier3/scenarios_strat.html", script: "pages/atelier3_scenarios.js" }
         ],
         atelier4: [

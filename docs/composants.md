@@ -36,3 +36,12 @@ Plusieurs cartes peuvent s'aligner horizontalement (côte à côte) sur la même
 ### Résumé des règles de "collage" horizontal :
 - **Autorisé :** `[Carrée] + [Carrée]`, `[Etendue] + [Etendue]`, `[Carrée] + [Etendue]`, `[Tableau Carré] + [Tableau Standard]`, `[Tableau Standard] + [Tableau Carré]`.
 - **Interdit (Saut de ligne forcé) :** Tout ce qui suit une `Carte Allongée`, une `Carte Étendue` ou un `Tableau Standard` (sauf si c'est un tableau carré). Tout tableau ou carte étendue/allongée qui tenterait de se mettre après une `Carte Carrée`.
+
+### 6. La Carte à Rabat (`folding-card`)
+*   **Structure** : Une en-tête cliquable (header) et un contenu repliable (content).
+*   **Comportement** :
+    *   L'en-tête peut contenir des titres, des boutons d'action ou des sélecteurs.
+    *   Le contenu s'affiche uniquement lorsque la carte est "étendue" (`is-expanded`).
+    *   Supporte des mises en page internes complexes : 3 colonnes égales (`three-columns`) ou format Scénario de Risque (30% gauche, 70% droite).
+    *   Prend **100% de la largeur** disponible.
+*   **Usage** : Inventaire des biens supports (Atelier 1) et Scénarios de risques (Atelier 4).

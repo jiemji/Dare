@@ -207,7 +207,11 @@ export const UI = {
         if (options.columns) content.classList.add('three-columns');
 
         if (options.content) {
-            content.appendChild(options.content);
+            if (options.content instanceof DocumentFragment) {
+                content.appendChild(options.content);
+            } else {
+                content.appendChild(options.content);
+            }
         } else {
             // Legacy/Dual column support (Atelier 4)
             const left = document.createElement('div');

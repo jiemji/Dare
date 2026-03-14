@@ -50,7 +50,7 @@ function createBsDom(bs, bsList) {
     ];
 
     // --- CONTENU (3 Colonnes) ---
-    const content = tap(document.createElement('div'), el => el.className = 'three-columns');
+    const content = document.createDocumentFragment();
     
     // Colonne 1 : Dépendances & Relations
     const col1 = tap(document.createElement('div'), el => el.className = 'column');

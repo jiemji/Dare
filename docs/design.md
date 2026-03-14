@@ -139,7 +139,7 @@
                   
                     - Fonction : ajoute une carte "Bien Support" (Carte à rabat)
                       
-                - Carte à rabat : Bien Support #
+                - Carte à rabat : Bien Support # (Composant `folding-card` en 3 colonnes)
                   
                     - **En-tête (Visible)** :
                       
@@ -274,63 +274,27 @@
                               
     - Bouton : Atelier 3
       
-        - Page : Partie prenantes
+        - Page : Parties prenantes
           
             - Composants
               
                 - Bouton : ajouter une partie prenante
                   
-                    - Fonction : ajoute une ligne "partie prenante" dans le tableau
+                    - Fonction : ajoute une ligne dans le tableau
                       
-                    - **Layout Équilibré** : Dans l'Atelier 4, la carte utilise un partage 50/50 (`flex: 1` pour chaque colonne) pour maximiser le confort de saisie et de lecture du diagramme (1005px).
-                      
-                - Tableau : Parties prenantes
+                - Tableau : Liste des parties prenantes
                   
-                    - Composants d'une ligne du tableau
+                    - Colonnes : Réf, Nom, Type, Commentaires
                       
-                        - Champs de saisie : Référence
-                          <!-- ::xmind-pos:{"x":559,"y":-1145} -->
-                          
-                            - Incrémentation automatique à la création : PP01, PP02, PP##
-                              
-                        - Champs de saisie : Nom
-                          
-                            - La liste provient des données "Sources de risques"
-                              
-                        - Liste déroulante : Type de dépendance
-                          
-                            - Type de dépendance : Client, Utilisateur, Fournisseur, Sous-traitant, Partenaire
-                              
-                        - Liste déroulante : Dépendance
-                          
-                            - Dépendance : 1,2,3,4
-                              
-                        - Liste déroulante : Pénétration
-                          
-                            - Pénétration : 1,2, 3, 4
-                              
-                        - Champs de saisie : Exposition
-                          
-                            - Calcul : Dépendance * Pénétration
-                              
-                        - Liste déroulante : Maturité
-                          
-                            - Maturité : 1,2,3,4
-                              
-                        - Liste déroulante : Intentions
-                          
-                            - Intentions: 1,2, 3, 4
-                              
-                        - Champs de saisie : Fiabilité
-                          
-                            - Calcul : Maturité * Intentions
-                              
-                        - Champs de saisie : Commentaires
-                          <!-- ::xmind-pos:{"x":559,"y":-1145} -->
-                          
-                        - Bouton : Supprimer la partie prenante
-                          
-                            - Fonction : supprime la menace et ses données
+        - Page : Évaluation des parties prenantes
+          
+            - Composants
+              
+                - Tableau : Évaluation
+                  
+                    - Colonnes : Réf, Nom, Dépendance, Pénétration, Exposition (calculée), Maturité, Intentions, Fiabilité (calculée)
+                      
+                    - Les calculs sont automatiques et persistés.
                               
         - Page : Scénarios stratégiques
           
