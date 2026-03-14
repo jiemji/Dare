@@ -276,6 +276,8 @@
                   
                     - Fonction : ajoute une ligne "partie prenante" dans le tableau
                       
+                    - **Layout Équilibré** : Dans l'Atelier 4, la carte utilise un partage 50/50 (`flex: 1` pour chaque colonne) pour maximiser le confort de saisie et de lecture du diagramme (1005px).
+                      
                 - Tableau : Parties prenantes
                   
                     - Composants d'une ligne du tableau
@@ -406,6 +408,10 @@
                     - **Liaisons (Liens)** : Création de liens fléchés orthogonaux entre les actions.
                       
                     - **Persistance** : Les données du diagramme (nœuds, liens) sont stockées en JSON dans l'objet du scénario.
+                      
+                    - **Effacer** : Un bouton "poubelle" en bas à droite permet de réinitialiser entièrement le diagramme après confirmation.
+                      
+                    - **Capture** : Un bouton "appareil photo" en bas à gauche permet d'exporter le diagramme en cours sous forme d'image JPEG.
                       
                 - **Gestion du Score (Vraisemblance)** :
                   

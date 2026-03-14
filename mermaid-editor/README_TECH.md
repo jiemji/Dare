@@ -18,7 +18,8 @@ Les dimensions et comportements de base sont régis par des constantes en début
 - `LANE_WIDTH` (default: 245) : Largeur de chaque phase de la Kill-Chain.
 - `NODE_WIDTH` (120) / `NODE_HEIGHT` (60) : Dimensions des blocs d'action.
 - `GRID_SIZE` (20) : Pas de l'alignement magnétique (Snap to grid).
-- `HEADER_HEIGHT` (80) : Hauteur de l'en-tête de colonne.
+- `NODE_SPACING_V` (40) : Espacement vertical synchronisé avec `GRID_SIZE` pour éviter les décalages lors des suppressions.
+- `HEADER_HEIGHT` (40) : Hauteur de l'en-tête de colonne (titres de phases).
 
 ## Intégration (Atelier 4)
 
@@ -41,8 +42,19 @@ L'éditeur utilise les variables CSS globales de l'application (`main.css`) pour
 - `--c-bg-input` : Fond du canevas.
 - `--c-border` : Couleur des séparateurs et des scrollbars.
 
-### Layout 30/70
-Le partage de l'espace dans la carte à rabat est contrôlé par les classes `.content-left` (flex: 3) et `.content-right` (flex: 7).
+### Layout 50/50
+Le partage de l'espace dans la carte à rabat est équilibré :
+- `.content-left` (flex: 1, min-width: 400px) : Formulaires de mesures de sécurité.
+- `.content-right` (flex: 1, min-width: 1005px) : Zone de dessin Mermaid (Largeur fixe pour 4 colonnes).
+
+## Nouvelles Fonctionnalités
+
+### Suppression et Alignement
+L'alignement vertical est maintenu lors de la suppression d'une forme grâce à la synchronisation du `shiftAmount` (`NODE_HEIGHT + NODE_SPACING_V` = 100px) avec la `GRID_SIZE` (multiple de 20).
+
+### Outils de Canvas
+- **Bouton Effacer (🗑️)** : Réinitialisation complète des nœuds et liens de l'instance.
+- **Bouton Capture (📸)** : Export JPEG haute qualité simplifiant le rendu (cache les ports/boutons) et forçant le thème "Clair" pour une meilleure lisibilité documentaire.
 
 ## Gestion Multi-Instance
 Pour éviter les conflits entre plusieurs éditeurs ouverts simultanément :
