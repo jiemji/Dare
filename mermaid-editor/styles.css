@@ -211,7 +211,7 @@
 }
 
 /* Modal Styling */
-.modal {
+.editor-modal {
     display: none;
     position: fixed;
     top: 0;
@@ -225,11 +225,11 @@
     backdrop-filter: blur(4px);
 }
 
-.modal.active {
+.editor-modal.active {
     display: flex;
 }
 
-.modal-content {
+.editor-modal .modal-content {
     background-color: var(--c-bg-panel);
     border: 2px solid var(--c-border);
     border-radius: var(--border-radius);

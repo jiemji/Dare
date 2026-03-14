@@ -1,43 +1,24 @@
 import { Store } from '../data.js';
-import { UI, Sanitize } from '../components.js';
+import { UI } from '../components.js';
+import { generateNextId, confirmAction, withId } from '../utils.js';
 
-function createMeasureDom(plan) {
-    const card = UI.card('long', `Mesure ${plan.id}`);
-    card.setAttribute('data-measure-id', plan.id);
-
-    card.appendChild(UI.inputGroup('Descriptif de la mesure', plan.description, (val) => {
-        plan.description = val;
-        Store.save();
-    }, { multiline: true }));
-
-    card.appendChild(UI.inputGroup('Cibles', plan.cibles, (val) => {
-        plan.cibles = val;
-        Store.save();
-    }));
-
-    const priorities = [
-        { value: 'P0', label: 'P0' },
-        { value: 'P1', label: 'P1' },
-        { value: 'P2', label: 'P2' },
-        { value: 'P3', label: 'P3' }
+function createMeasureDom(plan, planList) {
+    const priorities = ['P0', 'P1', 'P2', 'P3'].map(p => ({ value: p, label: p }));
+    const fields = [
+        { label: 'Descriptif de la mesure', multiline: true, bind: { obj: plan, key: 'description' } },
+        { label: 'Cibles', bind: { obj: plan, key: 'cibles' } },
+        { label: 'Priorité', type: 'select', options: priorities, bind: { obj: plan, key: 'priorite' } }
     ];
-    card.appendChild(UI.selectGroup('Priorité', plan.priorite, priorities, (val) => {
-        plan.priorite = val;
-        Store.save();
-    }));
 
-    card.appendChild(UI.button('Supprimer la mesure', () => {
-        if (confirm("Supprimer cette mesure ?")) {
-            Store.data.atelier5.plans = Store.data.atelier5.plans.filter(p => p.id !== plan.id);
-            Store.save();
-            card.remove();
-        }
-    }));
-
-    return card;
+    return withId(UI.dataCard('long', `Mesure ${plan.id}`, fields, () => {
+        confirmAction("Supprimer cette mesure ?", () => {
+            const idx = planList.indexOf(plan);
+            if(idx > -1) { planList.splice(idx, 1); Store.save(); document.querySelector(`[data-id="${plan.id}"]`).remove(); }
+        });
+    }), plan.id);
 }
 
-function initAtelier5Page() {
+export function init() {
     const containers = {
         gouvernance: document.getElementById('container-gouvernance'),
         protection: document.getElementById('container-protection'),
@@ -45,47 +26,21 @@ function initAtelier5Page() {
         reaction: document.getElementById('container-reaction'),
         resilience: document.getElementById('container-resilience')
     };
-
     if (!containers.gouvernance) return; 
 
-    // Render existing
-    Object.keys(containers).forEach(type => {
-        const container = containers[type];
-        container.innerHTML = '';
-        const typePlans = Store.data.atelier5.plans.filter(p => p.type === type);
-        typePlans.forEach(plan => {
-            container.appendChild(createMeasureDom(plan));
-        });
+    const planList = Store.data.atelier5.plans;
+    Object.entries(containers).forEach(([type, el]) => {
+        el.innerHTML = '';
+        planList.filter(p => p.type === type).forEach(p => el.appendChild(createMeasureDom(p, planList)));
     });
 
-    // Bind Add buttons
     document.querySelectorAll('.btn-add-measure').forEach(btn => {
         btn.onclick = () => {
             const type = btn.getAttribute('data-type');
-            const container = containers[type];
-            
-            let maxId = 0;
-            Store.data.atelier5.plans.forEach(p => {
-                const num = parseInt(p.id.replace('MES', ''));
-                if (num > maxId) maxId = num;
-            });
-            const newId = "MES" + String(maxId + 1).padStart(2, '0');
-            
-            const newMeasure = {
-                id: newId,
-                type: type,
-                description: "",
-                cibles: "",
-                priorite: "P1"
-            };
-
-            Store.data.atelier5.plans.push(newMeasure);
+            const newMeasure = { id: generateNextId(planList, 'MES'), type, description: "", cibles: "", priorite: "P1" };
+            planList.push(newMeasure);
             Store.save();
-            container.appendChild(createMeasureDom(newMeasure));
+            containers[type].appendChild(createMeasureDom(newMeasure, planList));
         };
     });
-}
-
-export function init() {
-    initAtelier5Page();
 }

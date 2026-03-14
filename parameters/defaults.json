@@ -31,6 +31,15 @@
             { "valeur": 2, "niveau": "Limitées", "color": "#ffcc00", "description": "" },
             { "valeur": 1, "niveau": "Très limitées", "color": "#ffff00", "description": "" }
         ],
+        "risques": [
+            { "valeur": 1, "niveau": "Négligeable", "color": "#aaaaaa" },
+            { "valeur": 2, "niveau": "Acceptable", "color": "#22c55e" },
+            { "valeur": 3, "niveau": "Tolérable", "color": "#eab308" },
+            { "valeur": 4, "niveau": "Inacceptable", "color": "#ef4444" }
+        ],
+        "grilleImpacts": [],
+        "grilleRisques": [],
+        "socles": [],
         "typesActifs": [
             { 
                 "id": "materiel", 
@@ -57,6 +66,7 @@
             "activite": "",
             "perimetre": ""
         },
+        "typsEvenements": ["Disponibilité", "Intégrité", "Confidentialité", "Traçabilité"],
         "processus": [],
         "evenements": [],
         "inventaire": []

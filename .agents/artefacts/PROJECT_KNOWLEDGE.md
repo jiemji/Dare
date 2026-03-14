@@ -20,7 +20,10 @@
   - `atelier1/` to `atelier5/`: Workshop-specific HTML contents.
   - `referentiels/`: Reference data management pages (including the new `socle.html`).
   - `livrables/`: Export and reporting views.
-- `js/pages/`: Page-specific JavaScript logic (e.g., `referentiels.js`).
+- `js/pages/`: Page-specific JavaScript logic.
+- `js/utils.js`: Core utility functions (ID generation, confirmation, chaining).
+- `js/components.js`: UI component library with automatic data-binding.
+- `mermaid-editor/`: custom graphics engine for kill-chain diagrams.
 - `.agents/`: Agent workspaces, including:
   - `artefacts/`: Planning and reference documents.
   - `workflows/`: Automated procedures.
@@ -45,7 +48,7 @@
 - **Persistence**: Fully functional with JSON export/import via `localStorage` (key: `dare_data`).
 
 ## Current State (March 2026)
-- **Implemented**: Workshops 1, 2, 3, 5 (partial) and all Referentials.
-- **Recent**: Externalized configuration to JSON and implemented the Security Foundation management.
-- **In Progress**: Workshop 5 (Treatment Plan) expansion and stabilization of the card layout system.
+- **Implemented**: Workshops 1, 2, 3, 4 (Mermaid Editor), 5 (partial) and all Referentials.
+- **Simplification (March 2026)**: Codebase refactored to use a declarative component-based approach with data-binding.
+- **Recent Fixes**: Resolved major CSS collisions and data migration issues during refactoring.
 

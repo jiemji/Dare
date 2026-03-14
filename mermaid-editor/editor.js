@@ -481,14 +481,14 @@ export class MermaidEditor {
         if (radio) radio.checked = true;
 
         modal.classList.remove('hidden');
-        modal.classList.add('active');
+        modal.classList.add('editor-modal', 'active');
         textInput.focus();
     }
 
     closeModal() {
         const modal = document.getElementById('node-modal');
         modal.classList.add('hidden');
-        modal.classList.remove('active');
+        modal.classList.remove('editor-modal', 'active');
         this.editingNode = null;
     }
 

@@ -27,11 +27,11 @@
       
         - L'application est pilotée par des fichiers de configuration externes (dossier `parameters/`) :
           
-            - `defaults.json` : Contient les référentiels par défaut (gravité, impacts, vraisemblance, motivation, ressources) et les structures des ateliers.
+            - `defaults.json` : Contient les référentiels par défaut (gravité, impacts, vraisemblance, motivation, ressources, **risques**), les **matrices** (impacts et risques) et les structures des ateliers.
               
             - `socles.json` : Contient la bibliothèque des socles de sécurité disponibles.
               
-        - L'initialisation est asynchrone : au chargement, l'application récupère ces fichiers avant d'afficher la première page.
+        - L'initialisation est asynchrone : au chargement, l'application récupère ces fichiers avant d'afficher la première page. Ce processus gère également la migration des données vers les nouvelles structures de référentiels.
           
     - Page : Aide
       
