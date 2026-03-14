@@ -10,13 +10,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mainContent = document.getElementById('main-content');
     
     const btnTheme = document.getElementById('btn-theme');
-    const btnBurger = document.getElementById('btn-burger');
     const btnPinSidebar = document.getElementById('btn-pin-sidebar');
-    const burgerMenu = document.getElementById('burger-menu');
-    const closeBurger = document.getElementById('close-burger');
     
     const sidebarMenu = document.getElementById('sidebar-menu');
-    const navBtns = document.querySelectorAll('.navbar .nav-btn[data-target]');
+    let currentModule = null;
     
     // ---- Theme Management ----
     htmlEl.setAttribute('data-theme', Store.data?.settings?.theme || 'light');
@@ -40,9 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         Store.save();
     });
 
-    // ---- Modals ----
-    btnBurger.addEventListener('click', () => burgerMenu.classList.remove('hidden'));
-    closeBurger.addEventListener('click', () => burgerMenu.classList.add('hidden'));
+    // ---- Modals (File Menu Handled below in Navigation section) ----
 
     // Menu Burger actions
     document.getElementById('menu-new').addEventListener('click', () => {
@@ -123,32 +118,44 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadPage(pageStructure.aide[0]);
     });
 
-    // ---- Current Page Cache ----
-    let currentModule = null;
+    // ---- Navigation & Tree ----
+    
+    // Initial generation (Full tree)
+    generateSidebar();
 
-    // Handle primary navigation click
-    navBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const target = e.target.getAttribute('data-target');
-            navBtns.forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            generateSidebar(target);
-            if (pageStructure[target] && pageStructure[target].length > 0) {
-                loadPage(pageStructure[target][0]);
-            }
-        });
-    });
+    const burgerMenu = document.getElementById('burger-menu');
+    const closeBurger = document.getElementById('close-burger');
+    
+    // File Menu Action
+    const btnFileMenu = document.getElementById('btn-file-menu');
+    btnFileMenu.addEventListener('click', () => burgerMenu.classList.remove('hidden'));
+    closeBurger.addEventListener('click', () => burgerMenu.classList.add('hidden'));
 
-    function generateSidebar(target) {
+    function generateSidebar() {
         sidebarMenu.innerHTML = '';
-        const pages = pageStructure[target];
-        if(!pages) return;
+        
+        Object.entries(pageStructure).forEach(([key, pages]) => {
+            if (key === 'aide') return; // Skip help, it's in the file menu
 
-        pages.forEach(page => {
-            const li = document.createElement('li');
-            li.textContent = page.label;
-            li.addEventListener('click', () => loadPage(page));
-            sidebarMenu.appendChild(li);
+            // Workshop Header
+            const header = document.createElement('li');
+            header.className = 'menu-atelier';
+            header.textContent = key.replace('atelier', 'Atelier ').replace('referentiels', 'Référentiels').replace('livrables', 'Livrables');
+            sidebarMenu.appendChild(header);
+
+            // Pages
+            pages.forEach(page => {
+                const li = document.createElement('li');
+                li.className = 'menu-page';
+                li.textContent = page.label;
+                li.dataset.id = page.id;
+                li.addEventListener('click', () => {
+                    document.querySelectorAll('.menu-page').forEach(el => el.classList.remove('active'));
+                    li.classList.add('active');
+                    loadPage(page);
+                });
+                sidebarMenu.appendChild(li);
+            });
         });
     }
 
@@ -182,18 +189,5 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // init welcome screen if empty
-    const btnNewAnalysis = document.getElementById('btn-new-analysis');
-    if (btnNewAnalysis) {
-        btnNewAnalysis.addEventListener('click', () => {
-            document.getElementById('btn-atelier1').click();
-        });
-    }
-    
-    const btnLoadAnalysis = document.getElementById('btn-load-analysis');
-    if (btnLoadAnalysis) {
-        btnLoadAnalysis.addEventListener('click', () => {
-            document.getElementById('menu-load').click();
-        });
-    }
+    // Welcome screen logic removed as requested
 });
