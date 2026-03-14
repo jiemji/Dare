@@ -343,19 +343,43 @@
       
         - Page : Scénarios de risques
           
-            - Composants
+            - Organisation
               
-                - Cartes allongée : Scénario de risques
+                - L'écran est découpé par **Scénarios Stratégiques** (Atelier 3).
                   
-                    - La carte est découpée en autant d'espaces (colonnes) côte à côte que de phases de la kill-chain, affichées par ordre croissant de gauche à droite
+                - Pour chaque scénario stratégique, on peut ajouter plusieurs **Scénarios de Risques** via des cartes à rabat (*folding cards*).
+                  
+            - Composant : Carte Scénario de Risque
+              
+                - La carte est divisée horizontalement (Ratio 30% Gauche / 70% Droite).
+                  
+                - **Colonne de Gauche (Formulaires)** :
+                  
+                    - Champ : Biens supports.
                       
-                    - En haut de chaque espace figure un bouton "+" ajouter une action
+                    - Zone de texte : Mesures de sécurité relevées (Redimensionnement vertical uniquement).
                       
-                        - fonction : ajoute un objet "action" dans la phase de la kill-chain
+                    - Zone de texte : Mesures de sécurité proposées (Redimensionnement vertical uniquement).
+                      
+                - **Colonne de Droite (Éditeur de Kill-Chain)** :
+                  
+                    - Canevas SVG dynamique affichant les phases de la Kill-Chain (Référentiel).
+                      
+                    - **Actions (Nœuds)** : On peut ajouter jusqu'à **4 actions par phase**.
+                      
+                        - Chaque action possède un texte et une valeur de criticité (1 à 4).
                           
-                            - un objet "action" sera un champ de saisie
-                              
-                - L'écran est découpé par scénarios stratégiques
+                        - Couleur du nœud dynamique selon la valeur (Référentiel).
+                          
+                    - **Liaisons (Liens)** : Création de liens fléchés orthogonaux entre les actions.
+                      
+                    - **Persistance** : Les données du diagramme (nœuds, liens) sont stockées en JSON dans l'objet du scénario.
+                      
+                - **Gestion du Score (Vraisemblance)** :
+                  
+                    - Le score de vraisemblance de la carte est synchronisé avec la valeur maximale trouvée dans le diagramme Mermaid.
+                      
+                    - Toute modification dans le dessin met à jour le sélecteur de score de la carte et l'en-tête.
                   
         - Page : Cartographie des risques
           
