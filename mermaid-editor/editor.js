@@ -6,7 +6,7 @@ const NODE_HEIGHT = 60;
 const LANE_WIDTH = 245;
 const NODE_SPACING_V = 40; // Vertical spacing between nodes in a lane (aligned to GRID_SIZE)
 
-const HEADER_HEIGHT = 80;
+const HEADER_HEIGHT = 40;
 
 export class MermaidEditor {
     constructor(container, options = {}) {
@@ -110,23 +110,59 @@ export class MermaidEditor {
         // Clone SVG to modify it for export
         const clonedSvg = svg.cloneNode(true);
         
-        // Inject styles to ensure the export looks like the screen
-        // We capture the relevant styles from the document
-        const styles = Array.from(document.styleSheets)
-            .filter(sheet => {
-                try { return sheet.href === null || sheet.href.includes('styles.css'); } catch(e) { return false; }
-            })
-            .map(sheet => {
-                try { return Array.from(sheet.cssRules).map(rule => rule.cssText).join(''); } catch(e) { return ''; }
-            }).join('');
+        // Define a dedicated stylesheet for export (Forces Light Mode)
+        const exportStyles = `
+            @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap');
+            
+            :root {
+                --c-bg-app: #f4f0e6;
+                --c-bg-panel: #eae5d9;
+                --c-bg-input: #ffffff;
+                --c-text-main: #2b1d14;
+                --c-accent: #8b2b32;
+                --c-border: #d0c8b6;
+            }
+
+            svg { 
+                background-color: var(--c-bg-app); 
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            .swimlane-header-bg { fill: var(--c-bg-panel); stroke: var(--c-border); }
+            .swimlane-title-svg { fill: var(--c-accent); font-size: 14px; font-weight: 600; text-transform: uppercase; }
+            .swimlane-separator { stroke: var(--c-border); stroke-width: 1; display: block !important; }
+            
+            .node-rect { stroke-width: 2; rx: 4px; }
+            .node-text { fill: var(--c-text-main); font-size: 14px; font-weight: 500; }
+            .node-value-text { font-size: 10px; font-weight: bold; fill: rgba(0,0,0,0.5); }
+
+            /* Node value colors */
+            .val-1 { fill: #22c55e !important; stroke: #16a34a !important; }
+            .val-2 { fill: #eab308 !important; stroke: #ca8a04 !important; }
+            .val-3 { fill: #f97316 !important; stroke: #ea580c !important; }
+            .val-4 { fill: #ef4444 !important; stroke: #dc2626 !important; }
+
+            .link-path { fill: none; stroke: var(--c-accent); stroke-width: 2; }
+            
+            /* Hide UI elements */
+            .btn-add-svg, .node-move-btn, .port, .btn-clear-canvas, .btn-snapshot-canvas, .grid-rect {
+                display: none !important;
+            }
+        `;
 
         const styleEl = document.createElementNS("http://www.w3.org/2000/svg", "style");
-        styleEl.textContent = styles;
+        styleEl.textContent = exportStyles;
         clonedSvg.insertBefore(styleEl, clonedSvg.firstChild);
 
         // Serialize
         const serializer = new XMLSerializer();
-        const svgData = serializer.serializeToString(clonedSvg);
+        let svgData = serializer.serializeToString(clonedSvg);
+        
+        // Ensure the XML namespace is correct
+        if(!svgData.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
+            svgData = svgData.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+        }
+
         const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
         const url = URL.createObjectURL(svgBlob);
 
@@ -136,15 +172,16 @@ export class MermaidEditor {
         const ctx = canvas.getContext("2d");
 
         const img = new Image();
+        img.crossOrigin = "anonymous";
         img.onload = () => {
-            // Background color (matching the theme or white for export)
-            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--c-bg-input').trim() || "#ffffff";
+            // Draw background Ivory
+            ctx.fillStyle = "#f4f0e6";
             ctx.fillRect(0, 0, width, height);
             
             ctx.drawImage(img, 0, 0);
             URL.revokeObjectURL(url);
 
-            const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+            const dataUrl = canvas.toDataURL("image/jpeg", 0.95);
             const link = document.createElement("a");
             link.download = `scenario_${this.instanceId}.jpg`;
             link.href = dataUrl;
@@ -190,8 +227,9 @@ export class MermaidEditor {
             const title = document.createElementNS("http://www.w3.org/2000/svg", "text");
             title.setAttribute("class", "swimlane-title-svg");
             title.setAttribute("x", x + LANE_WIDTH / 2);
-            title.setAttribute("y", 30);
+            title.setAttribute("y", HEADER_HEIGHT / 2);
             title.setAttribute("text-anchor", "middle");
+            title.setAttribute("dominant-baseline", "middle");
             title.textContent = lane.title;
             this.swimlanesLayer.appendChild(title);
 
@@ -208,13 +246,13 @@ export class MermaidEditor {
                 const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 circle.setAttribute("class", "btn-add-svg-bg");
                 circle.setAttribute("cx", x + LANE_WIDTH / 2);
-                circle.setAttribute("cy", 55);
+                circle.setAttribute("cy", HEADER_HEIGHT + 25);
                 circle.setAttribute("r", 14);
 
                 const cross = document.createElementNS("http://www.w3.org/2000/svg", "text");
                 cross.setAttribute("class", "btn-add-svg-text");
                 cross.setAttribute("x", x + LANE_WIDTH / 2);
-                cross.setAttribute("y", 56);
+                cross.setAttribute("y", HEADER_HEIGHT + 26);
                 cross.setAttribute("text-anchor", "middle");
                 cross.setAttribute("dominant-baseline", "middle");
                 cross.textContent = "+";
@@ -263,7 +301,7 @@ export class MermaidEditor {
             return;
         }
 
-        let ny = HEADER_HEIGHT + 60; // Offset augmenté pour éviter toute troncature sous l'en-tête
+        let ny = HEADER_HEIGHT + 60; // Offset relative to the new small header
         if (laneNodes.length > 0) {
             const lowest = Math.max(...laneNodes.map(n => n.y + n.height));
             ny = lowest + NODE_SPACING_V;

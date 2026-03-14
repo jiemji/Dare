@@ -14,7 +14,7 @@
     --grid-color: rgba(255, 255, 255, 0.05);
     /* Pour le canvas sombre */
     --font-mono: 'Fira Code', monospace;
-    --header-height-svg: 60px;
+    --header-height-svg: 40px;
 }
 
 /* Specific styles for the integrated editor container to avoid breaking global layout */
