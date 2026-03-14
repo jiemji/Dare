@@ -39,6 +39,8 @@ export class MermaidEditor {
         this.tempLayer = container.querySelector('.temp-layer');
         this.state = this.options.initialData;
 
+        this.instanceId = `inst_${Math.random().toString(36).substr(2, 9)}`;
+
         this.dragState = { active: false, target: null, offset: { x: 0, y: 0 } };
         this.connectionState = { active: false, fromPort: null, tempLine: null };
 
@@ -48,10 +50,30 @@ export class MermaidEditor {
     init() {
         this.renderSwimlanes();
 
+        // Fix uniquely identified marker for this instance to avoid collisions
+        const marker = this.svg.querySelector('marker');
+        if (marker) {
+            marker.id = `arrowhead-${this.instanceId}`;
+        }
 
-        // Modal events (Shared modal or Instance modal? Let's use a class selector)
-        // Note: For multi-instance, we'll use a modal scoped to the app or the container
-        this.modal = document.getElementById('node-modal'); // Keep global for overlay
+
+        // Modal events
+        this.modal = document.getElementById('node-modal'); 
+        
+        // Modal buttons (global elements, we attach per-instance but filter by editingNode)
+        const btnSave = document.getElementById('modal-save');
+        const btnCancel = document.getElementById('modal-cancel');
+        
+        if (btnSave) {
+            btnSave.addEventListener('click', () => {
+                if (this.editingNode) this.saveModal();
+            });
+        }
+        if (btnCancel) {
+            btnCancel.addEventListener('click', () => {
+                if (this.editingNode) this.closeModal();
+            });
+        }
 
         this.svg.addEventListener('mousemove', (e) => this.handleMouseMove(e));
         this.svg.addEventListener('mouseup', () => this.handleMouseUp());
@@ -400,6 +422,7 @@ export class MermaidEditor {
         this.connectionState.tempLine = document.createElementNS("http://www.w3.org/2000/svg", "path");
         this.connectionState.tempLine.setAttribute("class", "link-path");
         this.connectionState.tempLine.setAttribute("stroke-dasharray", "5,5");
+        this.connectionState.tempLine.style.markerEnd = `url(#arrowhead-${this.instanceId})`;
         this.tempLayer.appendChild(this.connectionState.tempLine);
     }
 
@@ -539,6 +562,7 @@ export class MermaidEditor {
 
             const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
             pathEl.setAttribute("class", "link-path");
+            pathEl.style.markerEnd = `url(#arrowhead-${this.instanceId})`;
 
             const d = this.calculateOrthogonalPath(
                 { ...startPort, side: link.fromSide },

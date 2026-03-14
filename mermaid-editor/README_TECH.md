@@ -41,8 +41,13 @@ L'éditeur utilise les variables CSS globales de l'application (`main.css`) pour
 - `--c-bg-input` : Fond du canevas.
 - `--c-border` : Couleur des séparateurs et des scrollbars.
 
-### Layout 20/80
-Le partage de l'espace dans la carte à rabat est contrôlé par les classes `.content-left` (flex: 2) et `.content-right` (flex: 8).
+### Layout 30/70
+Le partage de l'espace dans la carte à rabat est contrôlé par les classes `.content-left` (flex: 3) et `.content-right` (flex: 7).
+
+## Gestion Multi-Instance
+Pour éviter les conflits entre plusieurs éditeurs ouverts simultanément :
+1. **IDs SVG** : Chaque instance génère un `instanceId` unique utilisé pour les marqueurs de flèches (`arrowhead-${instanceId}`).
+2. **Événements Modale** : Les écouteurs sont attachés aux boutons globaux mais ne s'exécutent que pour l'instance possédant un `editingNode` actif.
 
 ## Gestion du Score
 L'éditeur n'affiche plus de score visuel sur le canevas. Le score "Vraisemblance" est calculé en parcourant les chemins à l'envers depuis la dernière colonne (Exploiter). Le résultat est ensuite remonté à l'application mère qui l'affiche dans son en-tête.

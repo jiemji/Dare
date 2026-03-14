@@ -391,6 +391,7 @@
     padding: 10px;
     display: flex;
     flex-direction: column;
+    height: fit-content;
 }
 
 .toggle-icon {
@@ -402,7 +403,7 @@
 }
 
 .content-right .editor-main {
-    height: 545px;
+    height: 530px;
 }
 
 .content-right .canvas-container {
