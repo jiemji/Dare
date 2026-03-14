@@ -1,7 +1,4 @@
-/**
- * Component Library for DARE
- * Centralizes UI creation and secure rendering logic.
- */
+import { Store } from './data.js';
 
 export const Sanitize = {
     /**
@@ -19,11 +16,21 @@ export const Sanitize = {
 
 export const UI = {
     /**
+     * Internal helper to handle data binding.
+     */
+    _bind(el, options, eventName, prop) {
+        if (options.bind) {
+            const { obj, key } = options.bind;
+            el[prop] = obj[key] || '';
+            el.addEventListener(eventName, (e) => {
+                obj[key] = e.target.value;
+                Store.save();
+            });
+        }
+    },
+
+    /**
      * Creates an input group with a label.
-     * @param {string} labelText 
-     * @param {string} value 
-     * @param {Function} onInput 
-     * @param {Object} options 
      */
     inputGroup(labelText, value, onInput, options = {}) {
         const group = document.createElement('div');
@@ -35,23 +42,23 @@ export const UI = {
         
         const input = document.createElement(options.multiline ? 'textarea' : 'input');
         if (!options.multiline) input.type = options.type || 'text';
-        input.value = value || '';
+        
+        if (options.bind) {
+            this._bind(input, options, 'input', 'value');
+        } else {
+            input.value = value || '';
+            input.oninput = (e) => onInput(e.target.value);
+        }
+        
         input.placeholder = options.placeholder || '';
-        
-        input.oninput = (e) => onInput(e.target.value);
-        
         group.appendChild(input);
         return group;
     },
 
     /**
      * Creates a select group with a label.
-     * @param {string} labelText 
-     * @param {string} value 
-     * @param {Array} options [{value, label}]
-     * @param {Function} onChange 
      */
-    selectGroup(labelText, value, options, onChange) {
+    selectGroup(labelText, value, options, onChange, extraOptions = {}) {
         const group = document.createElement('div');
         group.className = 'input-group';
         
@@ -66,9 +73,13 @@ export const UI = {
             o.textContent = opt.label;
             select.appendChild(o);
         });
-        select.value = value;
-        
-        select.onchange = (e) => onChange(e.target.value);
+
+        if (extraOptions.bind) {
+            this._bind(select, extraOptions, 'change', 'value');
+        } else {
+            select.value = value;
+            select.onchange = (e) => onChange(e.target.value);
+        }
         
         group.appendChild(select);
         return group;
@@ -76,9 +87,6 @@ export const UI = {
 
     /**
      * Creates a standard button.
-     * @param {string} text 
-     * @param {Function} onClick 
-     * @param {string} type 'primary' or 'secondary' 
      */
     button(text, onClick, type = 'secondary') {
         const btn = document.createElement('button');
@@ -90,9 +98,6 @@ export const UI = {
 
     /**
      * Creates a card container.
-     * @param {string} type 'square', 'long', 'extended'
-     * @param {string} title
-     * @returns {HTMLElement}
      */
     card(type, title = '') {
         const card = document.createElement('div');
@@ -111,46 +116,79 @@ export const UI = {
     },
 
     /**
-     * Creates a folding card for risk scenarios.
+     * Creates a data card for objects like Processus, Sources, etc.
+     */
+    dataCard(style, title, fields, onDelete) {
+        const card = UI.card(style, title);
+        
+        fields.forEach(f => {
+            if (f.type === 'select') {
+                card.appendChild(UI.selectGroup(f.label, null, f.options, f.onchange, { bind: f.bind }));
+            } else {
+                card.appendChild(UI.inputGroup(f.label, null, f.onchange, { multiline: f.multiline, bind: f.bind }));
+            }
+        });
+
+        if (onDelete) {
+            card.appendChild(UI.button('Supprimer', onDelete, 'secondary'));
+        }
+
+        return card;
+    },
+
+    /**
+     * Creates a folding card for risk scenarios and other complex objects.
      */
     foldingCard(title, options = {}) {
         const card = document.createElement('div');
         card.className = 'folding-card';
         if (options.isExpanded) card.classList.add('is-expanded');
 
-        // Header
         const header = document.createElement('div');
         header.className = 'folding-header';
         
-        const h3 = document.createElement('h3');
-        h3.textContent = title;
-        header.appendChild(h3);
+        if (typeof title === 'string') {
+            const h3 = document.createElement('h3');
+            h3.textContent = title;
+            header.appendChild(h3);
+        } else if (title instanceof HTMLElement) {
+            header.appendChild(title);
+        }
 
         const controls = document.createElement('div');
         controls.className = 'header-controls';
         
-        // Likelihood selector (Vraisemblance)
-        if (options.likelihood) {
-            const select = this.selectGroup('Vraisemblance', options.likelihood.value, options.likelihood.options, options.likelihood.onChange);
-            select.style.marginBottom = '0'; // Flat in header
-            select.querySelector('label').style.display = 'inline-block';
-            select.querySelector('label').style.marginRight = '10px';
-            select.querySelector('select').style.width = 'auto';
-            select.querySelector('select').style.marginBottom = '0';
-            controls.appendChild(select);
-            card._likelihoodSelect = select.querySelector('select');
+        // Helper to stop propagation on interactive elements in header
+        const stopProp = (el) => {
+            el.addEventListener('click', e => e.stopPropagation());
+            return el;
+        };
+
+        if (options.headerElements) {
+            options.headerElements.forEach(el => controls.appendChild(stopProp(el)));
         }
 
-        // Delete button
+        if (options.likelihood) {
+            const selectGroup = this.selectGroup('Vraisemblance', options.likelihood.value, options.likelihood.options, options.likelihood.onChange);
+            selectGroup.style.marginBottom = '0';
+            const label = selectGroup.querySelector('label');
+            label.style.display = 'inline-block';
+            label.style.marginRight = '10px';
+            const select = selectGroup.querySelector('select');
+            select.style.width = 'auto';
+            select.style.marginBottom = '0';
+            controls.appendChild(stopProp(selectGroup));
+            card._likelihoodSelect = select;
+        }
+
         if (options.onDelete) {
-            const btnDel = this.button('Supprimer ce scénario', (e) => {
+            const btnDel = this.button('Supprimer', (e) => {
                 e.stopPropagation();
                 options.onDelete();
             }, 'secondary');
-            controls.appendChild(btnDel);
+            controls.appendChild(stopProp(btnDel));
         }
 
-        // Toggle Expand
         const toggle = document.createElement('span');
         toggle.className = 'toggle-icon';
         toggle.innerHTML = '▼';
@@ -164,22 +202,31 @@ export const UI = {
 
         card.appendChild(header);
 
-        // Content
         const content = document.createElement('div');
         content.className = 'folding-content';
+        if (options.columns) content.classList.add('three-columns');
 
-        const left = document.createElement('div');
-        left.className = 'content-left';
-        if (options.contentLeft) left.appendChild(options.contentLeft);
+        if (options.content) {
+            if (options.content instanceof DocumentFragment) {
+                content.appendChild(options.content);
+            } else {
+                content.appendChild(options.content);
+            }
+        } else {
+            // Legacy/Dual column support (Atelier 4)
+            const left = document.createElement('div');
+            left.className = 'content-left';
+            if (options.contentLeft) left.appendChild(options.contentLeft);
 
-        const right = document.createElement('div');
-        right.className = 'content-right';
-        if (options.contentRight) right.appendChild(options.contentRight);
+            const right = document.createElement('div');
+            right.className = 'content-right';
+            if (options.contentRight) right.appendChild(options.contentRight);
 
-        content.appendChild(left);
-        content.appendChild(right);
+            content.appendChild(left);
+            content.appendChild(right);
+        }
+
         card.appendChild(content);
-
         return card;
     }
 };

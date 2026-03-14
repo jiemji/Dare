@@ -30,7 +30,11 @@ export class DataStore {
                 if (!loadedData.referentiels) loadedData.referentiels = {};
                 
                 // On s'assure que les catégories de référentiels existent
-                const refCats = ['gravite', 'impacts', 'vraisemblance', 'motivation', 'ressources', 'socles', 'killChain', 'typesActifs'];
+                const refCats = [
+                    'gravite', 'impacts', 'vraisemblance', 'motivation', 
+                    'ressources', 'socles', 'killChain', 'typesActifs',
+                    'risques', 'grilleImpacts', 'grilleRisques'
+                ];
                 refCats.forEach(cat => {
                     if (!loadedData.referentiels[cat]) {
                         loadedData.referentiels[cat] = JSON.parse(JSON.stringify(this.defaults.referentiels[cat] || []));

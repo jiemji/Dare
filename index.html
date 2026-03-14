@@ -11,14 +11,7 @@
     <div class="app-container">
         <!-- Bandeau horizontal -->
         <header class="navbar">
-            <button id="btn-burger" class="nav-btn" title="Menu Burger">☰</button>
-            <button id="btn-atelier1" class="nav-btn" data-target="atelier1">Atelier 1</button>
-            <button id="btn-atelier2" class="nav-btn" data-target="atelier2">Atelier 2</button>
-            <button id="btn-atelier3" class="nav-btn" data-target="atelier3">Atelier 3</button>
-            <button id="btn-atelier4" class="nav-btn" data-target="atelier4">Atelier 4</button>
-            <button id="btn-atelier5" class="nav-btn" data-target="atelier5">Atelier 5</button>
-            <button id="btn-livrables" class="nav-btn" data-target="livrables">Livrables</button>
-            <button id="btn-referentiels" class="nav-btn" data-target="referentiels">Référentiels</button>
+            <h1 class="nav-logo">DARE</h1>
             <div class="spacer"></div>
             <button id="btn-save" class="nav-btn attr-icon" title="Sauvegarder">💾</button>
             <button id="btn-theme" class="nav-btn attr-icon" title="Changer de thème">🌓</button>
@@ -30,9 +23,16 @@
                 <h3>Navigation</h3>
                 <button id="btn-pin-sidebar" class="icon-btn">📌</button>
             </div>
-            <ul id="sidebar-menu" class="sidebar-menu">
-                <!-- Les items de menu seront générés dynamiquement ici -->
-            </ul>
+            <div class="sidebar-content">
+                <ul id="sidebar-menu" class="sidebar-menu">
+                    <!-- Les items de menu seront générés dynamiquement ici -->
+                </ul>
+            </div>
+            <div class="sidebar-footer">
+                <button id="btn-file-menu" class="btn-file">
+                    <span class="icon">📁</span> [ Fichier ]
+                </button>
+            </div>
         </aside>
 
         <!-- Contenu principal chargé dynamiquement -->
@@ -40,10 +40,6 @@
             <div class="welcome-screen">
                 <h1>Bienvenue dans Dare</h1>
                 <p>Application d'analyse des risques (EBIOS RM / ISO 27005).</p>
-                <div class="actions">
-                    <button class="btn primary" id="btn-new-analysis">Nouvelle Analyse</button>
-                    <button class="btn secondary" id="btn-load-analysis">Charger</button>
-                </div>
             </div>
         </main>
     </div>

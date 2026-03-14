@@ -27,11 +27,11 @@
       
         - L'application est pilotée par des fichiers de configuration externes (dossier `parameters/`) :
           
-            - `defaults.json` : Contient les référentiels par défaut (gravité, impacts, vraisemblance, motivation, ressources) et les structures des ateliers.
+            - `defaults.json` : Contient les référentiels par défaut (gravité, impacts, vraisemblance, motivation, ressources, **risques**), les **matrices** (impacts et risques) et les structures des ateliers.
               
             - `socles.json` : Contient la bibliothèque des socles de sécurité disponibles.
               
-        - L'initialisation est asynchrone : au chargement, l'application récupère ces fichiers avant d'afficher la première page.
+        - L'initialisation est asynchrone : au chargement, l'application récupère ces fichiers avant d'afficher la première page. Ce mécanisme gère également la migration des données vers les nouvelles structures de référentiels.
           
     - Page : Aide
       
@@ -61,15 +61,15 @@
                           
                         - Champs de saisie : Périmètre de l'analyse
                           
-        - Page : Processus métier
+        - Page : Valeurs métiers
           
             - Composants
               
-                - Bouton : ajouter une processus métier
+                - Bouton : ajouter une valeur métier
                   
-                    - Fonction : ajouter une carte Processus
+                    - Fonction : ajouter une carte Valeur métier
                       
-                - Carte étendue : Processus #
+                - Carte étendue : Valeur métier #
                   
                     - Composants
                       
@@ -78,21 +78,21 @@
                           
                             - Incrémentation automatique à la création : VM01, VM02, VM##
                               
-                        - Champs de saisie : Nom de processus
+                        - Champs de saisie : Nom de la valeur métier
                           <!-- ::xmind-pos:{"x":559,"y":-1145} -->
                           
                         - Champs de saisie enrichie : Description de l'activité
                           <!-- ::xmind-pos:{"x":559,"y":-1145} -->
                           
-                        - Bouton : Supprimer le processus
+                        - Bouton : Supprimer la valeur métier
                           
-                            - Fonction : supprime le processus et ses données
+                            - Fonction : supprime la valeur métier et ses données
                               
         - Page : Evènements regrettables
           
             - Composants
               
-                - Titre : Processus #
+                - Titre : Valeur métier #
                   
                 - Carte allongée : Evénement #
                   
@@ -103,7 +103,7 @@
                           
                             - Incrémentation automatique à la création : ER01, ER02, ER##
                               
-                            - La numérotation ne tient pas compte de la séparation à l'écran par procesus. Par exemple, VM01 > ER01, ER02, VM2 > ER03, ER04.
+                            - La numérotation ne tient pas compte de la séparation à l'écran par valeur métier. Par exemple, VM01 > ER01, ER02, VM2 > ER03, ER04.
                               
                         - Champs de saisie : Descriptif de l'événement
                           <!-- ::xmind-pos:{"x":559,"y":-1145} -->
@@ -127,9 +127,9 @@
                               
                 - Bouton : Ajouter un événement
                   
-                    - Fonction : ajoute une carte événement dans l'espace du processus
+                    - Fonction : ajoute une carte événement dans l'espace de la valeur métier
                       
-            - L'écran est découpé par processus métier
+            - L'écran est découpé par valeur métier
               
         - Page : Inventaire
           
@@ -137,35 +137,41 @@
               
                 - Bouton : Ajouter un bien support
                   
-                    - Fonction : ajoute une carte "Bien Support"
+                    - Fonction : ajoute une carte "Bien Support" (Carte à rabat)
                       
-                - Carte carrée : Bien Support #
+                - Carte à rabat : Bien Support # (Composant `folding-card` en 3 colonnes)
                   
-                    - Composants
+                    - **En-tête (Visible)** :
                       
-                        - Champs de saisie : Référence
-                          
-                            - Incrémentation automatique : BS01, BS02, BS##
-                              
                         - Champs de saisie : Nom de l'actif
                           
-                        - Liste déroulante : Processus métier
+                        - Liste déroulante : Type d'actif (Données provenant de `referentiels.typesActifs`)
                           
-                            - Données provenant de la liste des processus métiers
-                              
-                        - Liste déroulante : Type d'actif
+                        - Champs de saisie (multiligne) : Description
                           
-                            - Données provenant du référentiel "Types d'actifs" (parameters/defaults.json)
-                              
-                        - Tableau : Exigences
+                    - **Contenu repliable (3 colonnes)** :
+                      
+                        - **Colonne 1 (Dépendances)** :
                           
-                            - Colonne 1 : Exigences (Liste paramétrée dans parameters/defaults.json)
+                            - Liste à cocher : Valeurs métiers supportées (Données provenant des valeurs métiers définies)
                               
-                            - Colonne 2 : Information (Champ de saisie)
+                            - Tableau des relations :
+                              
+                                - Colonne 1 : Actifs (Liste des autres biens supports de l'inventaire)
+                                  
+                                - Colonne 2 : Protocole (Liste provenant de `protocoles`)
+                                  
+                                - Colonne 3 : Authentification (Liste provenant de `authentifications`)
+                                  
+                        - **Colonne 2 (Exigences)** :
+                          
+                            - Tableau des exigences : Liste des exigences paramétrées pour le type d'actif sélectionné.
+                              
+                        - **Colonne 3 (Constat)** :
+                          
+                            - Champs de saisie (multiligne) : Constat / Observation
                               
                         - Bouton : Supprimer le bien support
-                          
-                            - Fonction : supprime le bien et ses données
               
         - Page : Cartographie
           
@@ -268,69 +274,33 @@
                               
     - Bouton : Atelier 3
       
-        - Page : Partie prenantes
+        - Page : Parties prenantes
           
             - Composants
               
                 - Bouton : ajouter une partie prenante
                   
-                    - Fonction : ajoute une ligne "partie prenante" dans le tableau
+                    - Fonction : ajoute une ligne dans le tableau
                       
-                    - **Layout Équilibré** : Dans l'Atelier 4, la carte utilise un partage 50/50 (`flex: 1` pour chaque colonne) pour maximiser le confort de saisie et de lecture du diagramme (1005px).
-                      
-                - Tableau : Parties prenantes
+                - Tableau : Liste des parties prenantes
                   
-                    - Composants d'une ligne du tableau
+                    - Colonnes : Réf, Nom, Type, Commentaires
                       
-                        - Champs de saisie : Référence
-                          <!-- ::xmind-pos:{"x":559,"y":-1145} -->
-                          
-                            - Incrémentation automatique à la création : PP01, PP02, PP##
-                              
-                        - Champs de saisie : Nom
-                          
-                            - La liste provient des données "Sources de risques"
-                              
-                        - Liste déroulante : Type de dépendance
-                          
-                            - Type de dépendance : Client, Utilisateur, Fournisseur, Sous-traitant, Partenaire
-                              
-                        - Liste déroulante : Dépendance
-                          
-                            - Dépendance : 1,2,3,4
-                              
-                        - Liste déroulante : Pénétration
-                          
-                            - Pénétration : 1,2, 3, 4
-                              
-                        - Champs de saisie : Exposition
-                          
-                            - Calcul : Dépendance * Pénétration
-                              
-                        - Liste déroulante : Maturité
-                          
-                            - Maturité : 1,2,3,4
-                              
-                        - Liste déroulante : Intentions
-                          
-                            - Intentions: 1,2, 3, 4
-                              
-                        - Champs de saisie : Fiabilité
-                          
-                            - Calcul : Maturité * Intentions
-                              
-                        - Champs de saisie : Commentaires
-                          <!-- ::xmind-pos:{"x":559,"y":-1145} -->
-                          
-                        - Bouton : Supprimer la partie prenante
-                          
-                            - Fonction : supprime la menace et ses données
+        - Page : Évaluation des parties prenantes
+          
+            - Composants
+              
+                - Tableau : Évaluation
+                  
+                    - Colonnes : Réf, Nom, Dépendance, Pénétration, Exposition (calculée), Maturité, Intentions, Fiabilité (calculée)
+                      
+                    - Les calculs sont automatiques et persistés.
                               
         - Page : Scénarios stratégiques
           
             - Composants
               
-                - Titre : Processus #
+                - Titre : Valeur métier #
                   
                 - Carte allongée : Scénario stratégique #
                   
@@ -341,7 +311,7 @@
                           
                             - Incrémentation automatique à la création : SS01, SS02, SS##
                               
-                            - La numérotation ne tient pas compte de la séparation à l'écran par procesus. Par exemple, VM01 > SS01, SS02, VM2 > SS03, SS04.
+                            - La numérotation ne tient pas compte de la séparation à l'écran par valeur métier. Par exemple, VM01 > SS01, SS02, VM2 > SS03, SS04.
                               
                         - Liste déroulante : Menaces
                           
@@ -369,9 +339,9 @@
                               
                 - Bouton : Ajouter un scénario stratégique
                   
-                    - Fonction : ajoute une carte scénario stratégique dans l'espace du processus
+                    - Fonction : ajoute une carte scénario stratégique dans l'espace de la valeur métier
                       
-            - L'écran est découpé par processus métier
+            - L'écran est découpé par valeur métier
               
     - Bouton : Atelier 4
       
@@ -440,7 +410,7 @@
                           
                             - Incrémentation automatique à la création : MES01, MES02, MES##
                               
-                            - La numérotation ne tient pas compte de la séparation à l'écran par procesus. Par exemple, Gouvernance > MES01, MES02, PRotection > MES03, MES04.
+                            - La numérotation ne tient pas compte de la séparation à l'écran par type d'action. Par exemple, Gouvernance > MES01, MES02, PRotection > MES03, MES04.
                               
                         - Champs de saisie : Descriptif de la mesure
                           <!-- ::xmind-pos:{"x":559,"y":-1145} -->

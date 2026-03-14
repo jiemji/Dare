@@ -7,35 +7,37 @@ export function init() {
     const gravites = [...Store.data.referentiels.gravite].sort((a,b) => b.valeur - a.valeur);
     const vraisemb = [...Store.data.referentiels.vraisemblance].sort((a,b) => a.valeur - b.valeur);
 
-    let html = '<table class="data-table" style="border-collapse: collapse;">';
-    
-    html += '<tr><td></td>';
-    vraisemb.forEach(v => {
-        html += `<th style="text-align:center; padding: 10px; background:var(--c-bg-panel); border: 1px solid var(--c-border);">${v.niveau}<br>(V=${v.valeur})</th>`;
-    });
-    html += '</tr>';
+    const table = document.createElement('table');
+    table.className = 'data-table';
+    table.style.borderCollapse = 'collapse';
+
+    const renderCell = (content, isHeader, style = '') => {
+        const el = document.createElement(isHeader ? 'th' : 'td');
+        el.innerHTML = content;
+        el.style.cssText = style + '; border:1px solid var(--c-border); padding:10px;';
+        return el;
+    };
+
+    const headerRow = document.createElement('tr');
+    headerRow.appendChild(renderCell('', true));
+    vraisemb.forEach(v => headerRow.appendChild(renderCell(`${v.niveau}<br>(V=${v.valeur})`, true, 'text-align:center; background:var(--c-bg-panel);')));
+    table.appendChild(headerRow);
 
     gravites.forEach(g => {
-        html += '<tr>';
-        html += `<th style="text-align:right; padding: 10px; background:var(--c-bg-panel); border: 1px solid var(--c-border);">${g.niveau}<br>(G=${g.valeur})</th>`;
-        
+        const row = document.createElement('tr');
+        row.appendChild(renderCell(`${g.niveau}<br>(G=${g.valeur})`, true, 'text-align:right; background:var(--c-bg-panel);'));
         vraisemb.forEach(v => {
             const score = v.valeur * g.valeur;
-            let bgColor = "var(--c-bg-input)";
-            let color = "var(--c-text-main)";
-
+            let bgColor = "var(--c-bg-input)", color = "var(--c-text-main)";
             if(score >= 12) { bgColor = "#ff0000"; color = "#fff"; }
             else if(score >= 8) { bgColor = "#ff6600"; color = "#fff"; }
             else if(score >= 4) { bgColor = "#ffcc00"; color = "#222"; }
             else { bgColor = "#ffff00"; color = "#222"; }
-
-            html += `<td style="width:100px; height:100px; text-align:center; border: 1px solid var(--c-border); background-color:${bgColor}; color:${color}; font-weight:bold;">${score}</td>`;
+            row.appendChild(renderCell(score, false, `width:100px; height:100px; text-align:center; background-color:${bgColor}; color:${color}; font-weight:bold;`));
         });
-        
-        html += '</tr>';
+        table.appendChild(row);
     });
 
-    html += '</table>';
-    
-    container.innerHTML = html;
+    container.innerHTML = '';
+    container.appendChild(table);
 }

@@ -1,85 +1,53 @@
 import { Store } from '../data.js';
-import { UI, Sanitize } from '../components.js';
+import { UI } from '../components.js';
+import { generateNextId, confirmAction, tap, withId } from '../utils.js';
 
 function createProcessusDom(proc) {
-    const card = UI.card('square', `Processus ${proc.id}`);
-    card.setAttribute('data-id', proc.id);
-    
-    card.appendChild(UI.inputGroup('Nom du processus', proc.nom, (val) => {
-        proc.nom = val;
-        Store.save();
-    }));
+    const fields = [
+        { label: 'Nom de la valeur métier', bind: { obj: proc, key: 'nom' } },
+        { label: 'Description', multiline: true, bind: { obj: proc, key: 'description' } }
+    ];
 
-    card.appendChild(UI.inputGroup('Description', proc.description, (val) => {
-        proc.description = val;
-        Store.save();
-    }, { multiline: true }));
-
-    card.appendChild(UI.button('Supprimer', () => {
-        if(confirm(`Supprimer le processus ${proc.id} et ses événements liés ?`)){
-            card.remove();
+    return withId(UI.dataCard('square', `Valeur métier ${proc.id}`, fields, () => {
+        confirmAction(`Supprimer la valeur métier ${proc.id} et ses événements liés ?`, () => {
             Store.data.atelier1.processus = Store.data.atelier1.processus.filter(p => p.id !== proc.id);
             Store.data.atelier1.evenements = Store.data.atelier1.evenements.filter(e => e.processusId !== proc.id);
             Store.save();
-        }
-    }));
-    
-    return card;
+            document.querySelector(`[data-id="${proc.id}"]`).remove();
+        });
+    }), proc.id);
 }
 
-function createERDom(er, procId) {
-    const card = UI.card('long', `ER ${er.id}`);
-    card.setAttribute('data-er-id', er.id);
-
-    card.appendChild(UI.inputGroup('Description de l\'événement', er.description, (val) => {
-        er.description = val;
-        Store.save();
-    }, { multiline: true }));
-
-    const typologies = [
-        { value: 'Disponibilité', label: 'Disponibilité' },
-        { value: 'Intégrité', label: 'Intégrité' },
-        { value: 'Confidentialité', label: 'Confidentialité' },
-        { value: 'Traçabilité', label: 'Traçabilité' }
-    ];
-    card.appendChild(UI.selectGroup('Typologie', er.typo, typologies, (val) => {
-        er.typo = val;
-        Store.save();
-    }));
-
+function createERDom(er) {
+    const typologies = (Store.data.atelier1.typsEvenements || []).map(t => ({ value: t, label: t }));
     const gravites = Store.data.referentiels.gravite.map(g => ({
         value: g.valeur,
         label: `${g.valeur} - ${g.niveau}`
     }));
-    card.appendChild(UI.selectGroup('Gravité', er.gravite, gravites, (val) => {
-        er.gravite = val;
-        Store.save();
-    }));
 
-    const impactsLabel = document.createElement('label');
-    impactsLabel.textContent = 'Impacts métiers';
-    card.appendChild(impactsLabel);
+    const card = UI.card('long', `ER ${er.id}`);
+    card.setAttribute('data-er-id', er.id);
 
-    const impactsContainer = document.createElement('div');
-    impactsContainer.className = 'impacts-list';
-    impactsContainer.style.maxHeight = '100px';
-    impactsContainer.style.overflowY = 'auto';
-    impactsContainer.style.padding = '5px';
-    impactsContainer.style.border = '1px solid var(--c-border)';
-    impactsContainer.style.borderRadius = 'var(--border-radius)';
-    impactsContainer.style.marginBottom = '12px';
+    card.appendChild(UI.inputGroup('Description de l\'événement', null, null, { multiline: true, bind: { obj: er, key: 'description' } }));
+    card.appendChild(UI.selectGroup('Typologie', null, typologies, null, { bind: { obj: er, key: 'typo' } }));
+    card.appendChild(UI.selectGroup('Gravité', null, gravites, null, { bind: { obj: er, key: 'gravite' } }));
+
+    // Impacts (keeping custom logic for checkbox list for now as it's specific)
+    const iLab = document.createElement('label');
+    iLab.textContent = 'Impacts métiers';
+    card.appendChild(iLab);
+
+    const iCont = document.createElement('div');
+    iCont.className = 'impacts-list';
+    iCont.style.cssText = 'max-height:100px; overflow-y:auto; padding:5px; border:1px solid var(--c-border); border-radius:var(--border-radius); margin-bottom:12px;';
 
     Store.data.referentiels.impacts.forEach(imp => {
         const lbl = document.createElement('label');
-        lbl.style.display = 'block';
-        lbl.style.fontSize = '12px';
-        lbl.style.fontWeight = 'normal';
+        lbl.style.cssText = 'display:block; font-size:12px; font-weight:normal;';
         
         const cb = document.createElement('input');
         cb.type = 'checkbox';
-        cb.style.width = 'auto';
-        cb.style.marginRight = '8px';
-        cb.value = imp;
+        cb.style.cssText = 'width:auto; margin-right:8px;';
         cb.checked = (er.impacts || []).includes(imp);
         
         cb.onchange = () => {
@@ -93,16 +61,16 @@ function createERDom(er, procId) {
         
         lbl.appendChild(cb);
         lbl.appendChild(document.createTextNode(imp));
-        impactsContainer.appendChild(lbl);
+        iCont.appendChild(lbl);
     });
-    card.appendChild(impactsContainer);
+    card.appendChild(iCont);
 
     card.appendChild(UI.button('Supprimer ER', () => {
-        if(confirm(`Supprimer l'événement ${er.id} ?`)) {
-            card.remove();
+        confirmAction(`Supprimer l'événement ${er.id} ?`, () => {
             Store.data.atelier1.evenements = Store.data.atelier1.evenements.filter(e => e.id !== er.id);
             Store.save();
-        }
+            document.querySelector(`[data-er-id="${er.id}"]`).remove();
+        });
     }));
     
     return card;
@@ -111,27 +79,15 @@ function createERDom(er, procId) {
 function initProcessusPage() {
     const container = document.getElementById('processus-container');
     const btnAdd = document.getElementById('btn-add-processus');
-
     if (!container || !btnAdd) return;
 
-    const processusList = Store.data.atelier1.processus;
+    const list = Store.data.atelier1.processus;
     container.innerHTML = '';
-    
-    processusList.forEach(proc => {
-        container.appendChild(createProcessusDom(proc));
-    });
+    list.forEach(proc => container.appendChild(createProcessusDom(proc)));
 
     btnAdd.onclick = () => {
-        let maxRef = 0;
-        processusList.forEach(p => {
-            const num = parseInt(p.id.replace('VM', ''), 10);
-            if (!isNaN(num) && num > maxRef) maxRef = num;
-        });
-        
-        const newRef = `VM${(maxRef + 1).toString().padStart(2, '0')}`;
-        const newProc = { id: newRef, nom: "", description: "" };
-        
-        processusList.push(newProc);
+        const newProc = { id: generateNextId(list, 'VM'), nom: "", description: "" };
+        list.push(newProc);
         Store.save();
         container.appendChild(createProcessusDom(newProc));
     };
@@ -142,64 +98,47 @@ function initEvenementsPage() {
     if(!container) return;
     
     container.innerHTML = '';
-    const processusList = Store.data.atelier1.processus;
+    const procList = Store.data.atelier1.processus;
     const erList = Store.data.atelier1.evenements;
     
-    if(processusList.length === 0) {
-        container.innerHTML = "<p class='full-width'><em>Veuillez d'abord créer des processus métier.</em></p>";
+    if(procList.length === 0) {
+        container.innerHTML = "<p class='full-width'><em>Veuillez d'abord créer des valeurs métiers.</em></p>";
         return;
     }
     
-    processusList.forEach(proc => {
+    procList.forEach(proc => {
         const section = document.createElement('div');
         section.className = 'processus-section';
-        section.style.width = '100%';
-        section.style.marginBottom = '30px';
+        section.style.cssText = 'width:100%; margin-bottom:30px;';
         
         const header = document.createElement('div');
-        header.style.display = 'flex';
-        header.style.justifyContent = 'space-between';
-        header.style.alignItems = 'center';
-        header.style.backgroundColor = 'var(--c-bg-panel)';
-        header.style.padding = '10px 15px';
-        header.style.borderRadius = 'var(--border-radius)';
-        header.style.borderLeft = '4px solid var(--c-accent)';
-        header.style.marginBottom = '15px';
+        header.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--c-bg-panel); padding:10px 15px; border-radius:var(--border-radius); border-left:4px solid var(--c-accent); margin-bottom:15px;';
 
         const title = document.createElement('h3');
-        title.textContent = `Processus ${proc.id} : ${proc.nom || '(Non nommé)'}`;
+        title.textContent = `Valeur métier ${proc.id} : ${proc.nom || '(Non nommé)'}`;
         header.appendChild(title);
 
-        const btnAdd = UI.button('Ajouter ER', () => {
-            let maxRef = 0;
-            erList.forEach(e => {
-                const num = parseInt(e.id.replace('ER', ''), 10);
-                if (!isNaN(num) && num > maxRef) maxRef = num;
-            });
-            const newRef = `ER${(maxRef + 1).toString().padStart(2, '0')}`;
-            
+        header.appendChild(UI.button('Ajouter ER', () => {
             const newER = {
-                id: newRef,
+                id: generateNextId(erList, 'ER'),
                 processusId: proc.id,
                 description: "",
-                typo: "Disponibilité",
+                typo: (Store.data.atelier1.typsEvenements || [])[0] || "Disponibilité",
                 impacts: [],
                 gravite: "1"
             };
             erList.push(newER);
             Store.save();
-            erCardsContainer.appendChild(createERDom(newER, proc.id));
-        }, 'primary');
-        header.appendChild(btnAdd);
+            erCardsContainer.appendChild(createERDom(newER));
+        }, 'primary'));
         
         section.appendChild(header);
 
         const erCardsContainer = document.createElement('div');
         erCardsContainer.className = 'cards-container';
         
-        const procErs = erList.filter(e => e.processusId === proc.id);
-        procErs.forEach(er => {
-            erCardsContainer.appendChild(createERDom(er, proc.id));
+        erList.filter(e => e.processusId === proc.id).forEach(er => {
+            erCardsContainer.appendChild(createERDom(er));
         });
         
         section.appendChild(erCardsContainer);

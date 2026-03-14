@@ -72,17 +72,9 @@ body {
     border-bottom: 2px solid var(--c-border);
     display: flex;
     align-items: center;
-    padding: 0 20px;
-    gap: 15px;
+    padding: 0 10px;
+    gap: 5px;
     z-index: 100;
-}
-
-.nav-logo {
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    color: var(--c-accent);
-    margin: 0;
 }
 
 .nav-btn {
@@ -122,6 +114,7 @@ body {
 .sidebar {
     position: absolute;
     left: calc(var(--sidebar-width) * -1);
+    /* Hidden by default */
     top: var(--navbar-height);
     bottom: 0;
     width: var(--sidebar-width);
@@ -134,17 +127,35 @@ body {
     flex-direction: column;
 }
 
+/* Hover zone on the left edge (invisible 3px trigger attached to the sidebar) */
+.sidebar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -3px;
+    width: 3px;
+    background: transparent;
+    z-index: 80;
+}
+
 .sidebar:hover {
     left: 0;
 }
 
 .sidebar.pinned {
     position: relative;
+    /* Falls into grid cell nicely */
     left: 0;
     top: 0;
     grid-column: 1;
     grid-row: 2;
     box-shadow: none;
+}
+
+.sidebar.pinned::after {
+    display: none;
+    /* No need for trigger when pinned */
 }
 
 .sidebar-header {
@@ -155,79 +166,21 @@ body {
     border-bottom: 1px solid var(--c-border);
 }
 
-.sidebar-content {
-    flex-grow: 1;
-    overflow-y: auto;
-}
-
 .sidebar-menu {
     list-style: none;
-    padding: 0;
+    overflow-y: auto;
+    flex-grow: 1;
 }
 
-/* Tree Styles */
-.menu-atelier {
-    padding: 12px 15px 5px 15px;
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--c-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.sidebar-menu li.menu-page {
-    padding: 8px 25px;
+.sidebar-menu li {
+    padding: 10px 15px;
     cursor: pointer;
-    font-size: 13px;
-    border-bottom: none;
-    transition: all 0.2s;
-    color: var(--c-text-main);
+    border-bottom: 1px solid var(--c-border);
+    transition: background 0.2s;
 }
 
-.sidebar-menu li.menu-page:hover {
+.sidebar-menu li:hover {
     background-color: var(--c-bg-input);
-    padding-left: 30px;
-    color: var(--c-accent);
-}
-
-.sidebar-menu li.menu-page.active {
-    background-color: var(--c-bg-app);
-    color: var(--c-accent);
-    font-weight: 600;
-    border-left: 4px solid var(--c-accent);
-}
-
-/* Footer Section */
-.sidebar-footer {
-    padding: 15px;
-    border-top: 1px solid var(--c-border);
-    background-color: var(--c-bg-panel);
-}
-
-.btn-file {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px;
-    background-color: var(--c-bg-input);
-    border: 2px solid var(--c-border);
-    border-radius: var(--border-radius);
-    color: var(--c-text-main);
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 2px 2px 0 var(--c-shadow);
-    transition: all 0.1s;
-}
-
-.btn-file:hover {
-    border-color: var(--c-accent);
-}
-
-.btn-file:active {
-    box-shadow: 0 0 0 var(--c-shadow);
-    transform: translate(1px, 1px);
 }
 
 /* Main Content */
@@ -437,46 +390,4 @@ textarea {
     margin-bottom: 12px;
     font-family: var(--font-stack);
     resize: vertical;
-}
-
-/* Folding Card Extensions */
-.folding-card.is-expanded .folding-content.three-columns {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-.column {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    min-width: 0; /* Prevents long content from expanding the column */
-}
-
-.inner-table-wrapper {
-    border: 1px solid var(--c-border);
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    margin-top: 10px;
-}
-
-.inner-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-}
-
-.inner-table th, .inner-table td {
-    padding: 8px;
-    border-bottom: 1px solid var(--c-border);
-    text-align: left;
-}
-
-.inner-table th {
-    background-color: var(--c-bg-panel);
-    font-weight: 600;
-}
-
-.inner-table tr:last-child td {
-    border-bottom: none;
 }

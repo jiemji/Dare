@@ -6,18 +6,11 @@ export function init() {
     if (!container) return;
 
     container.innerHTML = '';
+    const ctx = Store.data.atelier1.contexte;
+    const fields = [
+        { label: "Nom de l'étude", bind: { obj: ctx, key: 'nom' } },
+        { label: "Description et portée", multiline: true, bind: { obj: ctx, key: 'description' } }
+    ];
     
-    const card = UI.card('extended', 'Contexte de l\'analyse');
-    
-    card.appendChild(UI.inputGroup('Nom de l\'étude', Store.data.atelier1.contexte.nom, (val) => {
-        Store.data.atelier1.contexte.nom = val;
-        Store.save();
-    }));
-
-    card.appendChild(UI.inputGroup('Description et portée', Store.data.atelier1.contexte.description, (val) => {
-        Store.data.atelier1.contexte.description = val;
-        Store.save();
-    }, { multiline: true }));
-
-    container.appendChild(card);
+    container.appendChild(UI.dataCard('extended', 'Contexte de l\'analyse', fields));
 }

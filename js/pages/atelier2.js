@@ -1,65 +1,40 @@
 import { Store } from '../data.js';
-import { UI, Sanitize } from '../components.js';
+import { UI } from '../components.js';
+import { generateNextId, confirmAction, tap, withId } from '../utils.js';
 
 function createSRDom(sr) {
-    const card = UI.card('square', `Source : ${sr.id}`);
-    card.setAttribute('data-sr-id', sr.id);
+    const resOpts = Store.data.referentiels.ressources.map(r => ({ value: r.valeur, label: `${r.valeur} - ${r.niveau}` }));
     
-    card.appendChild(UI.inputGroup('Libellé de la source', sr.libelle, (val) => {
-        sr.libelle = val;
-        Store.save();
-    }));
+    const fields = [
+        { label: 'Libellé de la source', bind: { obj: sr, key: 'libelle' } },
+        { label: 'Description / Commentaires', multiline: true, bind: { obj: sr, key: 'description' } },
+        { label: 'Ressources', type: 'select', options: resOpts, bind: { obj: sr, key: 'ressources' } }
+    ];
 
-    card.appendChild(UI.inputGroup('Description / Commentaires', sr.description, (val) => {
-        sr.description = val;
-        Store.save();
-    }, { multiline: true }));
-
-    const ressourcesOpts = Store.data.referentiels.ressources.map(r => ({
-        value: r.valeur,
-        label: `${r.valeur} - ${r.niveau}`
-    }));
-    card.appendChild(UI.selectGroup('Ressources', sr.ressources, ressourcesOpts, (val) => {
-        sr.ressources = val;
-        Store.save();
-    }));
-
-    card.appendChild(UI.button('Supprimer Source', () => {
-        if(confirm(`Supprimer la source de risque ${sr.id} ?`)){
-            card.remove();
+    return tap(withId(UI.dataCard('square', `Source : ${sr.id}`, fields, () => {
+        confirmAction(`Supprimer la source de risque ${sr.id} ?`, () => {
             Store.data.atelier2.sourcesRisque = Store.data.atelier2.sourcesRisque.filter(s => s.id !== sr.id);
             Store.data.atelier2.menaces = Store.data.atelier2.menaces.filter(m => m.srId !== sr.id);
             Store.save();
-        }
-    }));
-    
-    return card;
+            document.querySelector(`[data-sr-id="${sr.id}"]`).remove();
+        });
+    }), sr.id), el => el.setAttribute('data-sr-id', sr.id));
 }
 
 function createOVDom(ov) {
-    const card = UI.card('square', `Objectif : ${ov.id}`);
-    card.setAttribute('data-ov-id', ov.id);
-    
-    card.appendChild(UI.inputGroup('Libellé', ov.libelle, (val) => {
-        ov.libelle = val;
-        Store.save();
-    }));
+    const fields = [
+        { label: 'Libellé', bind: { obj: ov, key: 'libelle' } },
+        { label: 'Description', multiline: true, bind: { obj: ov, key: 'description' } }
+    ];
 
-    card.appendChild(UI.inputGroup('Description', ov.description, (val) => {
-        ov.description = val;
-        Store.save();
-    }, { multiline: true }));
-    
-    card.appendChild(UI.button('Supprimer Objectif', () => {
-        if(confirm(`Supprimer l'objectif visé ${ov.id} ?`)){
-            card.remove();
+    return tap(withId(UI.dataCard('square', `Objectif : ${ov.id}`, fields, () => {
+        confirmAction(`Supprimer l'objectif visé ${ov.id} ?`, () => {
             Store.data.atelier2.objectifsVises = Store.data.atelier2.objectifsVises.filter(o => o.id !== ov.id);
             Store.data.atelier2.menaces = Store.data.atelier2.menaces.filter(m => m.ovId !== ov.id);
             Store.save();
-        }
-    }));
-    
-    return card;
+            document.querySelector(`[data-ov-id="${ov.id}"]`).remove();
+        });
+    }), ov.id), el => el.setAttribute('data-ov-id', ov.id));
 }
 
 function createMenaceDom(menace, template) {
@@ -113,11 +88,7 @@ function createMenaceDom(menace, template) {
     
     const updateRessourcesDisplay = () => {
         const sr = Store.data.atelier2.sourcesRisque.find(s => s.id === selSr.value);
-        if (sr && sr.ressources) {
-            selRessources.value = sr.ressources;
-        } else {
-            selRessources.value = "";
-        }
+        selRessources.value = sr?.ressources || "";
     };
     updateRessourcesDisplay();
     
@@ -126,22 +97,20 @@ function createMenaceDom(menace, template) {
         menace.ovId = selOv.value;
         menace.motivation = selMotivation.value;
         menace.commentaires = inpComm.value;
+        Store.save();
     };
     
-    selSr.addEventListener('change', () => {
-        updateRessourcesDisplay();
-        saveChanges();
-    });
+    selSr.addEventListener('change', () => { updateRessourcesDisplay(); saveChanges(); });
     selOv.addEventListener('change', saveChanges);
     selMotivation.addEventListener('change', saveChanges);
     inpComm.addEventListener('input', saveChanges);
     
     btnDel.addEventListener('click', () => {
-        if(confirm(`Supprimer cette ligne d'évaluation ?`)){
+        confirmAction(`Supprimer cette ligne d'évaluation ?`, () => {
             row.remove();
             Store.data.atelier2.menaces = Store.data.atelier2.menaces.filter(m => m.id !== menace.id);
             Store.save();
-        }
+        });
     });
     
     return clone;
@@ -150,27 +119,15 @@ function createMenaceDom(menace, template) {
 function initSourcesRisquePage() {
     const container = document.getElementById('sr-container');
     const btnAdd = document.getElementById('btn-add-sr');
-
     if (!container || !btnAdd) return;
 
-    const sourcesList = Store.data.atelier2.sourcesRisque;
+    const list = Store.data.atelier2.sourcesRisque;
     container.innerHTML = '';
-    
-    sourcesList.forEach(sr => {
-        container.appendChild(createSRDom(sr));
-    });
+    list.forEach(sr => container.appendChild(createSRDom(sr)));
 
     btnAdd.onclick = () => {
-        let maxRef = 0;
-        sourcesList.forEach(s => {
-            const num = parseInt(s.id.replace('SR', ''), 10);
-            if (!isNaN(num) && num > maxRef) maxRef = num;
-        });
-        
-        const newRef = `SR${(maxRef + 1).toString().padStart(2, '0')}`;
-        const newSR = { id: newRef, libelle: "", description: "", ressources: "1" };
-        
-        sourcesList.push(newSR);
+        const newSR = { id: generateNextId(list, 'SR'), libelle: "", description: "", ressources: "1" };
+        list.push(newSR);
         Store.save();
         container.appendChild(createSRDom(newSR));
     };
@@ -179,27 +136,15 @@ function initSourcesRisquePage() {
 function initObjectifsVisesPage() {
     const container = document.getElementById('ov-container');
     const btnAdd = document.getElementById('btn-add-ov');
-
     if (!container || !btnAdd) return;
 
-    const ovList = Store.data.atelier2.objectifsVises;
+    const list = Store.data.atelier2.objectifsVises;
     container.innerHTML = '';
-    
-    ovList.forEach(ov => {
-        container.appendChild(createOVDom(ov));
-    });
+    list.forEach(ov => container.appendChild(createOVDom(ov)));
 
     btnAdd.onclick = () => {
-        let maxRef = 0;
-        ovList.forEach(o => {
-            const num = parseInt(o.id.replace('OV', ''), 10);
-            if (!isNaN(num) && num > maxRef) maxRef = num;
-        });
-        
-        const newRef = `OV${(maxRef + 1).toString().padStart(2, '0')}`;
-        const newOV = { id: newRef, libelle: "", description: "" };
-        
-        ovList.push(newOV);
+        const newOV = { id: generateNextId(list, 'OV'), libelle: "", description: "" };
+        list.push(newOV);
         Store.save();
         container.appendChild(createOVDom(newOV));
     };
@@ -209,26 +154,15 @@ function initEvaluationMenacePage() {
     const tbody = document.getElementById('menaces-tbody');
     const btnAdd = document.getElementById('btn-add-menace');
     const template = document.getElementById('tpl-menace-row');
-
     if (!tbody || !btnAdd || !template) return;
 
-    const menacesList = Store.data.atelier2.menaces;
+    const list = Store.data.atelier2.menaces;
     tbody.innerHTML = '';
-    
-    menacesList.forEach(menace => {
-        tbody.appendChild(createMenaceDom(menace, template));
-    });
+    list.forEach(menace => tbody.appendChild(createMenaceDom(menace, template)));
 
     btnAdd.onclick = () => {
-        const newMenace = { 
-            id: Date.now().toString(), 
-            srId: "", 
-            ovId: "", 
-            motivation: "1", 
-            commentaires: "" 
-        };
-        
-        menacesList.push(newMenace);
+        const newMenace = { id: Date.now().toString(), srId: "", ovId: "", motivation: "1", commentaires: "" };
+        list.push(newMenace);
         Store.save();
         tbody.appendChild(createMenaceDom(newMenace, template));
     };
