@@ -30,12 +30,24 @@ export class DataStore {
                 if (!loadedData.referentiels) loadedData.referentiels = {};
                 
                 // On s'assure que les catégories de référentiels existent
-                const refCats = ['gravite', 'impacts', 'vraisemblance', 'motivation', 'ressources', 'socles'];
+                const refCats = ['gravite', 'impacts', 'vraisemblance', 'motivation', 'ressources', 'socles', 'killChain'];
                 refCats.forEach(cat => {
                     if (!loadedData.referentiels[cat]) {
                         loadedData.referentiels[cat] = JSON.parse(JSON.stringify(this.defaults.referentiels[cat] || []));
                     }
                 });
+
+                if (!loadedData.atelier3) {
+                    loadedData.atelier3 = JSON.parse(JSON.stringify(this.defaults.atelier3));
+                } else if (!loadedData.atelier3.scenariosStrategiques) {
+                    loadedData.atelier3.scenariosStrategiques = [];
+                }
+
+                if (!loadedData.atelier4) {
+                    loadedData.atelier4 = JSON.parse(JSON.stringify(this.defaults.atelier4));
+                } else if (!loadedData.atelier4.scenariosRisques) {
+                    loadedData.atelier4.scenariosRisques = [];
+                }
 
                 if (!loadedData.atelier5) {
                     loadedData.atelier5 = JSON.parse(JSON.stringify(this.defaults.atelier5));

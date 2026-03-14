@@ -89,10 +89,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         ],
         atelier3: [
             { id: "parties_prenantes", label: "Parties prenantes", file: "pages/atelier3/parties_prenantes.html", script: "pages/atelier3.js" },
-            { id: "scenarios_strat", label: "Scénarios stratégiques", file: "pages/atelier3/scenarios_strat.html" }
+            { id: "scenarios_strat", label: "Scénarios stratégiques", file: "pages/atelier3/scenarios_strat.html", script: "pages/atelier3_scenarios.js" }
         ],
         atelier4: [
-            { id: "scenarios_risques", label: "Scénarios de risques", file: "pages/atelier4/scenarios_risques.html" },
+            { id: "scenarios_risques", label: "Scénarios de risques", file: "pages/atelier4/scenarios_risques.html", script: "pages/atelier4_scenarios.js" },
             { id: "cartographie", label: "Cartographie des risques", file: "pages/atelier4/cartographie.html" }
         ],
         atelier5: [

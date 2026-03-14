@@ -34,9 +34,9 @@
         - L'initialisation est asynchrone : au chargement, l'application récupère ces fichiers avant d'afficher la première page.
           
     - Page : Aide
-              
-                - Affiche de la page d'aide (aide.html)
-                  
+      
+        - Affiche de la page d'aide (aide.html)
+          
     - Bouton : Atelier 1
       
         - Page : Contexte de l'analyse
@@ -294,14 +294,69 @@
                               
         - Page : Scénarios stratégiques
           
-            - à définir. mettre une page filer
+            - Composants
+              
+                - Titre : Processus #
+                  
+                - Carte allongée : Scénario stratégique #
+                  
+                    - Composants
+                      
+                        - Champs de saisie : Référence
+                          <!-- ::xmind-pos:{"x":559,"y":-1145} -->
+                          
+                            - Incrémentation automatique à la création : SS01, SS02, SS##
+                              
+                            - La numérotation ne tient pas compte de la séparation à l'écran par procesus. Par exemple, VM01 > SS01, SS02, VM2 > SS03, SS04.
+                              
+                        - Liste déroulante : Menaces
+                          
+                            - les données proviennent du tableau "Evaluation des menaces"
+                              
+                        - Liste déroulante : Parties prenantes
+                          <!-- ::xmind-pos:{"x":2678,"y":-506} -->
+                          
+                            - les données proviennent du tableau "Parties prenantes"
+                              
+                        - Champs de saisie : Cible
+                          
+                        - Champs de saisie : Scénario stratégique
+                          <!-- ::xmind-pos:{"x":559,"y":-1145} -->
+                          
+                        - Champs de saisie : Déclenchement
+                          
+                        - Liste déroulante : Gravité
+                          
+                            - les données proviennent du référentiel "Gravité"
+                              
+                        - Bouton : Supprimer le scénario stratégique
+                          
+                            - Fonction : supprime le scénario et ses données
+                              
+                - Bouton : Ajouter un scénario stratégique
+                  
+                    - Fonction : ajoute une carte scénario stratégique dans l'espace du processus
+                      
+            - L'écran est découpé par processus métier
               
     - Bouton : Atelier 4
       
         - Page : Scénarios de risques
           
-            - à définir. mettre une page filer
+            - Composants
               
+                - Cartes allongée : Scénario de risques
+                  
+                    - La carte est découpée en autant d'espaces (colonnes) côte à côte que de phases de la kill-chain, affichées par ordre croissant de gauche à droite
+                      
+                    - En haut de chaque espace figure un bouton "+" ajouter une action
+                      
+                        - fonction : ajoute un objet "action" dans la phase de la kill-chain
+                          
+                            - un objet "action" sera un champ de saisie
+                              
+                - L'écran est découpé par scénarios stratégiques
+                  
         - Page : Cartographie des risques
           
             - à définir. mettre une page filer
@@ -526,42 +581,66 @@
                       
                         - Fonction : ajoute une ligne à la fin du tableau des niveaux de ressource
                           
-        - Page : Partie Prenantes
-          
-            - à définir. mettre une page filer
-              
         - Page : Vraisemblance
           
-            - Composants
+            - Echelle des vraisemblances
               
-                - Tableau carré : Echelle de vraisemblance
+                - Composants
                   
-                    - Composants d'un ligne du tableau
+                    - Tableau carré : Echelle de vraisemblance
                       
-                        - Champs valeur : Valeur
+                        - Composants d'un ligne du tableau
                           
-                            - Les valeurs incrémente à chaque ajout d'un ligne dans le tableau
+                            - Champs valeur : Valeur
                               
-                            - Les valeurs sont supérieures à 0
-                              
-                        - Champs de saisie : Niveau
-                          
-                        - Bouton : Sélecteur de couleur
-                          
-                            - Fonction : ouvre un nuancier et permet de choisir la couleur du fond du champs niveau
-                              
-                                - Les références des couleurs sont stockées dans les paramètre pour être réutilisé sur les autres pages quand on fait appel au référentiel
+                                - Les valeurs incrémente à chaque ajout d'un ligne dans le tableau
                                   
-                        - Champs de saisie : Description
-                          
-                        - Bouton : Supprimer le niveau de motivation
-                          
-                            - Fonction : supprime la ligne de l'échelle de vraisemblance et ses données
+                                - Les valeurs sont supérieures à 0
+                                  
+                            - Champs de saisie : Niveau
                               
-                - Bouton : ajouter une ligne à l'échelle de vraisemblance
-                  
-                    - Fonction : ajoute une ligne à la fin du tableau d'échelle de vraisemblance
+                            - Bouton : Sélecteur de couleur
+                              
+                                - Fonction : ouvre un nuancier et permet de choisir la couleur du fond du champs niveau
+                                  
+                                    - Les références des couleurs sont stockées dans les paramètre pour être réutilisé sur les autres pages quand on fait appel au référentiel
+                                      
+                            - Champs de saisie : Description
+                              
+                            - Bouton : Supprimer le niveau de motivation
+                              
+                                - Fonction : supprime la ligne de l'échelle de vraisemblance et ses données
+                                  
+                    - Bouton : ajouter une ligne à l'échelle de vraisemblance
                       
+                        - Fonction : ajoute une ligne à la fin du tableau d'échelle de vraisemblance
+                          
+            - Kill-chain
+              
+                - Composants
+                  
+                    - Tableau carré : Kill-chain
+                      
+                        - Composants d'un ligne du tableau
+                          
+                            - Champs valeur : Valeur
+                              
+                                - Les valeurs incrémente à chaque ajout d'un ligne dans le tableau
+                                  
+                                - Les valeurs sont supérieures à 0
+                                  
+                            - Champs de saisie : Phase
+                              
+                                - Par défaut, les phases sont : "Reconnaitre", "Rentrer", "Trouver", "Exploiter"
+                                  
+                            - Bouton : Supprimer la phase
+                              
+                                - Fonction : supprime la phase et ses données
+                                  
+                    - Bouton : ajouter une ligne à la kill-chain
+                      
+                        - Fonction : ajoute une ligne à la fin du tableau kill-chain
+                          
         - Page : Matrice des risques
           
             - Echelle des risques

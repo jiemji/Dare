@@ -1,29 +1,37 @@
 /* Variables CSS pour gérer les thèmes */
 :root {
     /* Thème clair (Défaut) - OS7 Modernized */
-    --c-bg-app: #f4f0e6; /* Ivoire */
+    --c-bg-app: #f4f0e6;
+    /* Ivoire */
     --c-bg-panel: #eae5d9;
     --c-bg-input: #ffffff;
-    --c-text-main: #2b1d14; /* Marron très foncé */
-    --c-accent: #8b2b32; /* Bordeaux */
+    --c-text-main: #2b1d14;
+    /* Marron très foncé */
+    --c-accent: #8b2b32;
+    /* Bordeaux */
     --c-accent-hover: #a83a42;
     --c-border: #d0c8b6;
     --c-shadow: rgba(43, 29, 20, 0.15);
-    
+
     /* Variables de taille */
     --navbar-height: 48px;
     --sidebar-width: 250px;
-    --border-radius: 4px; /* Un peu rétro/carré, style OS7 moderne */
+    --border-radius: 4px;
+    /* Un peu rétro/carré, style OS7 moderne */
     --font-stack: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
 [data-theme="dark"] {
     /* Thème sombre */
-    --c-bg-app: #2e221d; /* Marron foncé */
+    --c-bg-app: #2e221d;
+    /* Marron foncé */
     --c-bg-panel: #3a2b25;
-    --c-bg-input: #45352e; /* Légèrement plus clair que bg-app */
-    --c-text-main: #f5f5f5; /* Blanc cassé pour lisibilité */
-    --c-accent: #d96c2e; /* Orange */
+    --c-bg-input: #45352e;
+    /* Légèrement plus clair que bg-app */
+    --c-text-main: #f5f5f5;
+    /* Blanc cassé pour lisibilité */
+    --c-accent: #d96c2e;
+    /* Orange */
     --c-accent-hover: #e8864d;
     --c-border: #4d3a33;
     --c-shadow: rgba(0, 0, 0, 0.5);
@@ -39,7 +47,8 @@ body {
     font-family: var(--font-stack);
     background-color: var(--c-bg-app);
     color: var(--c-text-main);
-    overflow: hidden; /* Prevent body scroll, handle inside main */
+    overflow: hidden;
+    /* Prevent body scroll, handle inside main */
     transition: background-color 0.3s, color 0.3s;
 }
 
@@ -104,7 +113,8 @@ body {
 /* Sidebar */
 .sidebar {
     position: absolute;
-    left: calc(var(--sidebar-width) * -1); /* Hidden by default */
+    left: calc(var(--sidebar-width) * -1);
+    /* Hidden by default */
     top: var(--navbar-height);
     bottom: 0;
     width: var(--sidebar-width);
@@ -134,7 +144,8 @@ body {
 }
 
 .sidebar.pinned {
-    position: relative; /* Falls into grid cell nicely */
+    position: relative;
+    /* Falls into grid cell nicely */
     left: 0;
     top: 0;
     grid-column: 1;
@@ -143,7 +154,8 @@ body {
 }
 
 .sidebar.pinned::after {
-    display: none; /* No need for trigger when pinned */
+    display: none;
+    /* No need for trigger when pinned */
 }
 
 .sidebar-header {
@@ -215,8 +227,11 @@ body {
 
 .modal {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -245,7 +260,12 @@ body {
 }
 
 /* Containers for cards must be flex and full width to allow internal cards to stretch/align */
-#processus-container, #er-container, #sr-container, #ov-container, .cards-container {
+#processus-container,
+#er-container,
+#sr-container,
+#rs-container,
+#ov-container,
+.cards-container {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
@@ -253,7 +273,11 @@ body {
 }
 
 /* Base style for all cards/table-wrappers */
-.card-square, .card-extended, .card-long, .table-square, .table-extended {
+.card-square,
+.card-extended,
+.card-long,
+.table-square,
+.table-extended {
     background: var(--c-bg-panel);
     border: 1px solid var(--c-border);
     border-radius: var(--border-radius);
@@ -287,15 +311,17 @@ body {
     min-width: 400px;
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap; /* Horizontal alignment forced */
+    flex-wrap: nowrap;
+    /* Horizontal alignment forced */
     overflow-x: auto;
     gap: 20px;
-    align-items: flex-end; /* Align inputs on the bottom of the row */
+    align-items: flex-end;
+    /* Align inputs on the bottom of the row */
 }
 
 /* Ensure children of card-long that contain inputs keep labels above */
-.card-long > .input-group, 
-.card-long > div {
+.card-long>.input-group,
+.card-long>div {
     display: flex;
     flex-direction: column;
     min-width: 200px;
@@ -307,7 +333,8 @@ body {
     max-width: 400px;
     overflow-x: auto;
     overflow-y: auto;
-    max-height: 70vh; /* Limited vertical space */
+    max-height: 70vh;
+    /* Limited vertical space */
 }
 
 /* Table Extended: Takes remaining space on a shared line */
@@ -316,7 +343,8 @@ body {
     min-width: 400px;
     overflow-x: auto;
     overflow-y: auto;
-    max-height: 70vh; /* Limited vertical space */
+    max-height: 70vh;
+    /* Limited vertical space */
 }
 
 /* Make table headers sticky */
@@ -337,10 +365,12 @@ body {
 }
 
 /* Standard Header / Text flow */
-.page-header, p.full-width {
+.page-header,
+p.full-width {
     width: 100%;
     flex: 1 1 100%;
 }
+
 label {
     display: block;
     font-size: 13px;
@@ -348,7 +378,9 @@ label {
     margin-bottom: 5px;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
     background-color: var(--c-bg-input);
     color: var(--c-text-main);
     border: 1px solid var(--c-border);
@@ -357,4 +389,5 @@ input, select, textarea {
     width: 100%;
     margin-bottom: 12px;
     font-family: var(--font-stack);
+    resize: vertical;
 }

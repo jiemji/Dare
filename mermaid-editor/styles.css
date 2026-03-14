@@ -1,0 +1,444 @@
+/* Editor Specific Variables (using main app variables where possible) */
+:root {
+    --bg-color: var(--c-bg-app);
+    --canvas-bg: var(--c-bg-input);
+    --sidebar-bg: var(--c-bg-panel);
+    --text-color: var(--c-text-main);
+    --text-muted: #94a3b8;
+    --accent-color: var(--c-accent);
+    --accent-hover: var(--c-accent-hover);
+    --primary-color: var(--c-accent);
+    --border-color: var(--c-border);
+    --node-bg: var(--c-bg-panel);
+    --node-border: var(--c-border);
+    --grid-color: rgba(255, 255, 255, 0.05);
+    /* Pour le canvas sombre */
+    --font-mono: 'Fira Code', monospace;
+    --header-height-svg: 60px;
+}
+
+/* Specific styles for the integrated editor container to avoid breaking global layout */
+.editor-main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+}
+
+
+/* Remove or scope editor-specific buttons to not conflict with global .btn */
+.editor-main .btn {
+    padding: 8px 16px;
+    background-color: var(--c-bg-input);
+    color: var(--c-text-main);
+    border: 2px solid var(--c-border);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 2px 2px 0px var(--c-shadow);
+    transition: all 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.swimlane-header-bg {
+    fill: var(--bg-color);
+    stroke: var(--border-color);
+}
+
+.swimlane-separator {
+    stroke: var(--border-color);
+    stroke-width: 1;
+}
+
+.swimlane-title-svg {
+    fill: var(--accent-color);
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.btn-add-svg-bg {
+    fill: var(--primary-color);
+    cursor: pointer;
+    transition: fill 0.2s;
+}
+
+.btn-add-svg:hover .btn-add-svg-bg {
+    fill: var(--accent-hover);
+}
+
+.btn-add-svg-text {
+    fill: white;
+    font-size: 20px;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.canvas-container {
+    flex: 1;
+    background-color: var(--canvas-bg);
+    overflow: auto;
+    position: relative;
+    cursor: crosshair;
+}
+
+.canvas {
+    display: block;
+    background-color: var(--canvas-bg);
+}
+
+
+
+
+/* Node Styling */
+.node-group {
+    pointer-events: all;
+}
+
+.node-group:active {
+    cursor: grabbing;
+}
+
+.node-rect {
+    fill: var(--node-bg);
+    stroke: var(--node-border);
+    stroke-width: 2;
+    rx: var(--border-radius);
+    transition: stroke 0.2s, filter 0.2s;
+}
+
+.node-group:hover .node-rect {
+    stroke: var(--accent-color);
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.3));
+}
+
+.node-text {
+    fill: var(--text-color);
+    font-size: 14px;
+    font-weight: 500;
+    pointer-events: none;
+    user-select: none;
+}
+
+.port {
+    fill: rgba(255, 255, 255, 0.1);
+    stroke: var(--accent-color);
+    stroke-width: 1;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.node-group:hover .port {
+    opacity: 1;
+}
+
+.port:hover {
+    fill: var(--accent-color);
+    r: 8;
+}
+
+/* Link Styling */
+.link-path {
+    fill: none;
+    stroke: var(--accent-color);
+    stroke-width: 2;
+    marker-end: url(#arrowhead);
+}
+
+.node-move-btn {
+    fill: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: fill 0.2s, transform 0.2s;
+}
+
+.node-move-btn:hover {
+    fill: var(--accent-color);
+    transform: scale(1.2);
+}
+
+/* Score Column Styles */
+.score-circle {
+    fill: none;
+    stroke-width: 3;
+}
+
+.score-text {
+    font-size: 14px;
+    font-weight: bold;
+    fill: white;
+}
+
+/* Node Value Colors */
+.node-rect.val-1,
+.score-circle.val-1 {
+    fill: #22c55e;
+    stroke: #16a34a;
+}
+
+.node-rect.val-2,
+.score-circle.val-2 {
+    fill: #eab308;
+    stroke: #ca8a04;
+}
+
+.node-rect.val-3,
+.score-circle.val-3 {
+    fill: #f97316;
+    stroke: #ea580c;
+}
+
+.node-rect.val-4,
+.score-circle.val-4 {
+    fill: #ef4444;
+    stroke: #dc2626;
+}
+
+.score-circle {
+    fill-opacity: 0.2;
+    /* Better way to show semi-transparency while keeping the class color */
+}
+
+.node-value-text {
+    font-size: 10px;
+    font-weight: bold;
+    fill: rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background-color: var(--c-bg-panel);
+    border: 2px solid var(--c-border);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 5px 5px 15px var(--c-shadow);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.form-group input[type="text"] {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 10px;
+    color: var(--text-color);
+    outline: none;
+}
+
+.value-selector {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.val-opt {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.dot.val-1 {
+    background-color: #22c55e;
+}
+
+.dot.val-2 {
+    background-color: #eab308;
+}
+
+.dot.val-3 {
+    background-color: #f97316;
+}
+
+.dot.val-4 {
+    background-color: #ef4444;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* Selection */
+.node-group.selected .node-rect {
+    stroke: var(--accent-color);
+    stroke-width: 3;
+}
+
+/* Folding Card Styles */
+.folding-card {
+    background: var(--c-bg-panel);
+    border: 2px solid var(--c-border);
+    border-radius: var(--border-radius);
+    width: 100%;
+    margin-bottom: 20px;
+    box-shadow: 2px 2px 5px var(--c-shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.folding-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: var(--c-bg-panel);
+    border-bottom: 2px solid var(--c-border);
+    cursor: pointer;
+    gap: 20px;
+    position: relative;
+}
+
+.folding-card.is-expanded .folding-header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #ff00ff;
+    /* Magenta */
+    z-index: 5;
+}
+
+.folding-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    min-width: 150px;
+}
+
+.folding-header .header-controls {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.folding-content {
+    display: none;
+    padding: 20px;
+    flex-direction: row;
+    gap: 20px;
+    background-color: var(--c-bg-app);
+}
+
+.folding-card.is-expanded .folding-content {
+    display: flex;
+}
+
+.content-left {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 250px;
+}
+
+.content-right {
+    flex: 7;
+    min-width: 400px;
+    background: var(--c-bg-input);
+    border: 1px solid var(--c-border);
+    border-radius: var(--border-radius);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.folding-card.is-expanded .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.content-right .editor-main {
+    height: 530px;
+}
+
+.content-right .canvas-container {
+    height: 100%;
+}
+
+.content-left textarea {
+    font-size: 18px;
+    min-height: 140px;
+}
+
+.content-left input {
+    min-height: 140px;
+}
+
+/* Personnalisation des barres de défilement (Scrollbars) */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: var(--c-border) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--c-border);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--c-accent);
+}

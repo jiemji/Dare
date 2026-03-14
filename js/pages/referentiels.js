@@ -291,6 +291,75 @@ function initGenericRefPage(storeKey, tbodyId, btnAddId) {
     renderData();
 }
 
+// --- REFERENTIEL : KILL-CHAIN ---
+function initKillChainPage() {
+    const tbody = document.getElementById('ref-killchain-tbody');
+    const btnAdd = document.getElementById('btn-add-killchain');
+    
+    if(!tbody || !btnAdd) return;
+
+    const renderData = () => {
+        tbody.innerHTML = '';
+        const list = [...Store.data.referentiels.killChain].sort((a,b) => a.valeur - b.valeur);
+        
+        list.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = "1px solid var(--c-border)";
+            
+            const tdVal = document.createElement('td');
+            tdVal.style.padding = '8px';
+            tdVal.style.fontWeight = 'bold';
+            tdVal.style.textAlign = 'center';
+            tdVal.textContent = item.valeur;
+            tr.appendChild(tdVal);
+            
+            const tdPhase = document.createElement('td');
+            const inpPhase = document.createElement('input');
+            inpPhase.type = 'text';
+            inpPhase.value = item.phase || "";
+            inpPhase.style.margin = '0';
+            inpPhase.style.width = '100%';
+            inpPhase.oninput = () => {
+                item.phase = inpPhase.value;
+                Store.save();
+            };
+            tdPhase.appendChild(inpPhase);
+            tr.appendChild(tdPhase);
+            
+            const tdDel = document.createElement('td');
+            tdDel.style.textAlign = 'center';
+            const btnDel = UI.button('✕', () => {
+                if(confirm(`Supprimer la phase ${item.valeur} ?`)) {
+                    Store.data.referentiels.killChain = Store.data.referentiels.killChain.filter(x => x.valeur !== item.valeur);
+                    Store.save();
+                    renderData();
+                }
+            });
+            btnDel.style.padding = '4px';
+            btnDel.style.minWidth = 'auto';
+            tdDel.appendChild(btnDel);
+            tr.appendChild(tdDel);
+            
+            tbody.appendChild(tr);
+        });
+    };
+
+    btnAdd.onclick = () => {
+        const list = Store.data.referentiels.killChain;
+        let maxVal = 0;
+        list.forEach(g => { if(g.valeur > maxVal) maxVal = g.valeur; });
+        
+        list.push({
+            valeur: maxVal + 1,
+            phase: "Nouvelle phase"
+        });
+        Store.save();
+        renderData();
+    };
+
+    renderData();
+}
+
 function initVraisemblancePage() {
     initGenericRefPage('vraisemblance', 'ref-vraisemblance-tbody', 'btn-add-vraisemblance');
 }
@@ -576,6 +645,7 @@ export function init() {
     if (document.getElementById('ref-socle-tbody')) initSoclePage();
     if (document.getElementById('ref-gravite-tbody')) initImpactsGravitesPage();
     if (document.getElementById('ref-vraisemblance-tbody')) initVraisemblancePage();
+    if (document.getElementById('ref-killchain-tbody')) initKillChainPage();
     if (document.getElementById('ref-motivation-tbody')) initMotivResPage();
     if (document.getElementById('ref-matrice-container')) initRefMatricePage();
 }

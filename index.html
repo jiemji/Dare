@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dare - Analyse des Risques</title>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="mermaid-editor/styles.css">
 </head>
 <body>
     <div class="app-container">
@@ -56,6 +57,30 @@
             <button class="btn" id="menu-save">Sauvegarder</button>
             <button class="btn secondary" id="menu-help">Aide</button>
             <button class="btn-close" id="close-burger">Fermer</button>
+        </div>
+    </div>
+
+    <!-- Modale pour l'éditeur Mermaid -->
+    <div id="node-modal" class="modal">
+        <div class="modal-content">
+            <h3>Propriétés du nœud</h3>
+            <div class="form-group">
+                <label for="modal-text">Texte :</label>
+                <input type="text" id="modal-text" placeholder="Entrez le texte...">
+            </div>
+            <div class="form-group">
+                <label>Valeur (1-4) :</label>
+                <div class="value-selector">
+                    <label class="val-opt"><input type="radio" name="node-value" value="1"> <span class="dot val-1"></span> 1</label>
+                    <label class="val-opt"><input type="radio" name="node-value" value="2"> <span class="dot val-2"></span> 2</label>
+                    <label class="val-opt"><input type="radio" name="node-value" value="3"> <span class="dot val-3"></span> 3</label>
+                    <label class="val-opt"><input type="radio" name="node-value" value="4"> <span class="dot val-4"></span> 4</label>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="modal-cancel" class="btn btn-secondary">Annuler</button>
+                <button id="modal-save" class="btn btn-primary">Enregistrer</button>
+            </div>
         </div>
     </div>
 
