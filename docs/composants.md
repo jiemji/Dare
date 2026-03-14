@@ -42,9 +42,9 @@ Plusieurs cartes peuvent s'aligner horizontalement (côte à côte) sur la même
 *   **Comportement** :
     *   L'en-tête peut contenir des titres, des boutons d'action ou des sélecteurs.
     *   Le contenu s'affiche uniquement lorsque la carte est "étendue" (`is-expanded`).
-    *   Supporte des mises en page internes complexes : 3 colonnes égales (`three-columns`) ou format Scénario de Risque (30% gauche, 70% droite).
+    *   Supporte des mises en page internes complexes : 2 colonnes (`two-columns`) ou 3 colonnes égales (`three-columns`) ou format Scénario de Risque (30% gauche, 70% droite).
     *   Prend **100% de la largeur** disponible.
-*   **Usage** : Inventaire des biens supports (Atelier 1) et Scénarios de risques (Atelier 4).
+*   **Usage** : Inventaire des Biens Supports et Hébergements (Atelier 1), Parties Prenantes (Atelier 3), Scénarios de risques (Atelier 4).
 
 ---
 

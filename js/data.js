@@ -38,8 +38,38 @@ export class DataStore {
                 refCats.forEach(cat => {
                     if (!loadedData.referentiels[cat]) {
                         loadedData.referentiels[cat] = JSON.parse(JSON.stringify(this.defaults.referentiels[cat] || []));
+                    } else if (cat === 'typesActifs' || cat === 'typesDependancePP') {
+                        // Migration : on ajoute les nouveaux types qui n'existent pas encore
+                        // Et on met à jour les propriétés (comme 'famille') pour les types existants
+                        const existingList = loadedData.referentiels[cat];
+                        this.defaults.referentiels[cat].forEach(newTypeDef => {
+                            const existing = existingList.find(x => x.id === newTypeDef.id);
+                            if (!existing) {
+                                existingList.push(JSON.parse(JSON.stringify(newTypeDef)));
+                            } else {
+                                // Mise à jour des propriétés (famille, exigences par défaut, etc.)
+                                Object.assign(existing, JSON.parse(JSON.stringify(newTypeDef)));
+                            }
+                        });
+
+                        // Cas spécifique typesActifs : suppression du type générique 'hebergement' si présent
+                        if (cat === 'typesActifs') {
+                            const idx = existingList.findIndex(x => x.id === 'hebergement');
+                            if (idx > -1) existingList.splice(idx, 1);
+                        }
                     }
                 });
+
+                // Migration des données utilisateur (Atelier 1)
+                if (loadedData.atelier1?.inventaire) {
+                    loadedData.atelier1.inventaire.forEach(item => {
+                        // Si l'actif avait l'ancien type 'hebergement', on le passe en 'datacenter'
+                        if (item.typeId === 'hebergement') {
+                            item.typeId = 'datacenter';
+                            console.log(`Migration actif [${item.id}] : hebergement -> datacenter`);
+                        }
+                    });
+                }
 
                 if (!loadedData.atelier1) {
                     loadedData.atelier1 = JSON.parse(JSON.stringify(this.defaults.atelier1));

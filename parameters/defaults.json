@@ -1,59 +1,73 @@
 {
+    "atelier1": {
+        "processus": [],
+        "evenements": [],
+        "inventaire": []
+    },
+    "atelier2": {
+        "sources": [],
+        "objectifs": []
+    },
+    "atelier3": {
+        "scenariosStrategiques": []
+    },
+    "atelier4": {
+        "scenariosRisques": []
+    },
+    "atelier5": {
+        "planTraitement": []
+    },
     "referentiels": {
         "gravite": [
-            { "valeur": 4, "niveau": "Critique", "color": "#ff0000" },
-            { "valeur": 3, "niveau": "Grave", "color": "#ff6600" },
-            { "valeur": 2, "niveau": "Significatif", "color": "#ffcc00" },
-            { "valeur": 1, "niveau": "Mineur", "color": "#ffff00" }
+            { "id": 1, "label": "1. Mineure", "descr": "Impact limité sur l'organisation" },
+            { "id": 2, "label": "2. Significative", "descr": "Impact notable sur certains processus" },
+            { "id": 3, "label": "3. Grave", "descr": "Impact majeur sur l'organisation" },
+            { "id": 4, "label": "4. Critique", "descr": "Menace la survie de l'organisation" }
         ],
-        "impacts": ["Financier", "Image", "Juridique", "Opérationnel"],
         "vraisemblance": [
-            { "valeur": 4, "niveau": "Très probable", "color": "#ff0000", "description": "" },
-            { "valeur": 3, "niveau": "Probable", "color": "#ff6600", "description": "" },
-            { "valeur": 2, "niveau": "Peu probable", "color": "#ffcc00", "description": "" },
-            { "valeur": 1, "niveau": "Très peu probable", "color": "#ffff00", "description": "" }
+            { "id": 1, "label": "1. Presque impossible", "descr": "Nécessite des ressources exceptionnelles" },
+            { "id": 2, "label": "2. Peu probable", "descr": "S'est déjà produit mais rarement" },
+            { "id": 3, "label": "3. Probable", "descr": "Se produit régulièrement" },
+            { "id": 4, "label": "4. Très probable", "descr": "Quasiment certain à court terme" }
         ],
-        "killChain": [
-            { "valeur": 1, "phase": "Reconnaitre" },
-            { "valeur": 2, "phase": "Rentrer" },
-            { "valeur": 3, "phase": "Trouver" },
-            { "valeur": 4, "phase": "Exploiter" }
-        ],
-        "motivation": [
-            { "valeur": 4, "niveau": "Déterminée", "color": "#ff0000", "description": "" },
-            { "valeur": 3, "niveau": "Forte", "color": "#ff6600", "description": "" },
-            { "valeur": 2, "niveau": "Moyenne", "color": "#ffcc00", "description": "" },
-            { "valeur": 1, "niveau": "Faible", "color": "#ffff00", "description": "" }
-        ],
-        "ressources": [
-            { "valeur": 4, "niveau": "Illimitées", "color": "#ff0000", "description": "" },
-            { "valeur": 3, "niveau": "Importantes", "color": "#ff6600", "description": "" },
-            { "valeur": 2, "niveau": "Limitées", "color": "#ffcc00", "description": "" },
-            { "valeur": 1, "niveau": "Très limitées", "color": "#ffff00", "description": "" }
-        ],
-        "risques": [
-            { "valeur": 1, "niveau": "Négligeable", "color": "#aaaaaa" },
-            { "valeur": 2, "niveau": "Acceptable", "color": "#22c55e" },
-            { "valeur": 3, "niveau": "Tolérable", "color": "#eab308" },
-            { "valeur": 4, "niveau": "Inacceptable", "color": "#ef4444" }
-        ],
-        "grilleImpacts": [],
-        "grilleRisques": [],
-        "socles": [],
+        "impacts": ["Financier", "Opérationnel", "Juridique / Conformité", "Réputationnel", "Sécurité des personnes", "Autres"],
+        "ressources": ["Logicielle", "Humaine", "Financière", "Technique", "Matérielle"],
+        "motivation": ["Financière", "Politique / Idéologique", "Vengeance", "Challenge technique", "Involontaire"],
         "typesActifs": [
+            { 
+                "id": "saas", 
+                "label": "SaaS (Logiciel en tant que service)", 
+                "famille": "hebergement",
+                "exigences": ["Contrôles d'accès MFA", "Chiffrement des données (repos/transit)", "Journalisation des accès", "Conformité SOC2/HDS"] 
+            },
+            { 
+                "id": "datacenter", 
+                "label": "Datacenter (Infrastructure physique)", 
+                "famille": "hebergement",
+                "exigences": ["Sécurité physique des locaux", "Redondance électrique et clim", "Contrôles d'accès biométriques", "Disponibilité du lien internet"] 
+            },
+            { 
+                "id": "cloud_prive", 
+                "label": "Cloud Privé / On-premise", 
+                "famille": "hebergement",
+                "exigences": ["Sécurité du périmètre réseau", "Durcissement Hyperviseur", "Sauvegardes immuables", "Monitoring 24/7"] 
+            },
             { 
                 "id": "materiel", 
                 "label": "Matériel (Serveur, Poste, etc.)", 
-                "exigences": ["Maintien en condition opérationnelle", "Disponibilité physique", "Inventaire et marquage"] 
+                "famille": "actif",
+                "exigences": ["Inventaire à jour", "Maintenance préventive", "Marquage physique"] 
             },
             { 
                 "id": "logiciel", 
                 "label": "Logiciel / Application", 
+                "famille": "actif",
                 "exigences": ["Gestion des patchs de sécurité", "Contrôles d'accès applicatifs", "Journalisation des actions"] 
             },
             { 
                 "id": "reseau", 
                 "label": "Equipement réseau", 
+                "famille": "actif",
                 "exigences": ["Segmentation (VLAN)", "Filtrage de flux (Firewall)", "Durcissement (Hardening)"] 
             }
         ],
@@ -63,51 +77,39 @@
             { 
                 "id": "fournisseur", 
                 "label": "Fournisseur / Editeur", 
-                "exigences": ["Assurance cybersécurité", "SLA / Disponibilité", "Plan de réversibilité", "Droit d'audit"] 
+                "exigences": ["Assurance Responsabilité Civile", "Plan de Continuité d'Activité (PCA)", "Certifications (ISO 27001...)"] 
             },
             { 
-                "id": "partenaire", 
-                "label": "Partenaire métier", 
-                "exigences": ["Convention de service", "Confidentialité des échanges", "Intégrité des données", "Gestion des habilitations"] 
+                "id": "hébergeur", 
+                "label": "Hébergeur / Datacenter", 
+                "exigences": ["Tier III minimum", "Accès contrôlé 24/7", "Redondance N+1"] 
             },
             { 
-                "id": "prestataire", 
-                "label": "Prestataire de service IT", 
-                "exigences": ["Contrôle d'accès logique", "Durcissement des postes", "Journalisation", "Périmètre d'intervention"] 
-            },
-            { 
-                "id": "client", 
-                "label": "Client / Usager", 
-                "exigences": ["Portail d'authentification", "Conditions Générales d'Utilisation", "Protection des données personnelles"] 
+                "id": "maintenance", 
+                "label": "Maintenance / Infogérance", 
+                "exigences": ["SLA de rétablissement (GTI/GTR)", "Chiffrement des accès distants", "Traçabilité des interventions"] 
             }
-        ]
-    },
-    "atelier1": {
-        "contexte": {
-            "organisation": "",
-            "siteInternet": "",
-            "secteurActivite": "",
-            "activite": "",
-            "perimetre": ""
+        ],
+        "killChain": [
+            { "id": "reco", "label": "Reconnaissance" },
+            { "id": "weapon", "label": "Armement" },
+            { "id": "delivery", "label": "Livraison" },
+            { "id": "exploit", "label": "Exploitation" },
+            { "id": "inst", "label": "Installation" },
+            { "id": "c2", "label": "C&C (Command & Control)" },
+            { "id": "actions", "label": "Actions on Objectives" }
+        ],
+        "grilleImpacts": {
+            "Financier": ["Insignifiant", "Modéré", "Substantiel", "Vital"],
+            "Opérationnel": ["Retard mineur", "Indisponibilité partielle", "Arrêt production", "Arrêt total durable"],
+            "Juridique / Conformité": ["Observation mineure", "Mise en demeure", "Sanction financière", "Retrait de licence"],
+            "Réputationnel": ["Bruit de couloir", "Presse locale", "Presse nationale", "Crise internationale"]
         },
-        "typsEvenements": ["Disponibilité", "Intégrité", "Confidentialité", "Traçabilité"],
-        "processus": [],
-        "evenements": [],
-        "inventaire": []
-    },
-    "atelier2": {
-        "sourcesRisque": [],
-        "objectifsVises": [],
-        "menaces": []
-    },
-    "atelier3": {
-        "partiesPrenantes": [],
-        "scenariosStrategiques": []
-    },
-    "atelier4": {
-        "scenariosRisques": []
-    },
-    "atelier5": {
-        "plans": []
+        "grilleRisques": [
+            ["Faible", "Moyen", "Moyen", "Elevé"],
+            ["Faible", "Moyen", "Elevé", "Critique"],
+            ["Moyen", "Elevé", "Critique", "Critique"],
+            ["Elevé", "Critique", "Critique", "Critique"]
+        ]
     }
 }

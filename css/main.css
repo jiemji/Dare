@@ -422,6 +422,12 @@ textarea {
     gap: 20px;
 }
 
+.folding-card.is-expanded .folding-content.two-columns {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
 .column {
     display: flex;
     flex-direction: column;
@@ -457,4 +463,28 @@ textarea {
 
 .inner-table tr:last-child td {
     border-bottom: none;
+}
+
+.inventory-section {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.inventory-section h3 {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--c-accent);
+    margin-bottom: 15px;
+    border-left: 5px solid var(--c-accent);
+    padding-left: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+hr {
+    width: 100%;
+    border: none;
+    border-top: 2px solid var(--c-border);
+    margin: 20px 0;
+    opacity: 0.5;
 }
