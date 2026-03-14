@@ -1,9 +1,18 @@
-[ARTIFACT: implementation_plan]
-Path: file:///g:/devapps/Dare/.agents/artefacts/implementation_plan.md
-Last Edited: 2026-03-14T14:31:00Z (votre version locale)
+# Refonte de la Navigation & Parties Prenantes
 
-# Plan de Simplification de la Codebase
+Ce plan a permis d'unifier la navigation et de moderniser la gestion des acteurs de l'écosystème.
 
-Ce plan vise à réduire la redondance, améliorer la maintenabilité et centraliser la logique transverse du projet DARE.
+## Changements Réalisés
 
-[...] (Suite du contenu synchronisé)
+### Navigation
+- Sidebar unifiée et **fixe** (Layout Grid 250px / 1fr).
+- Suppression du mode "hover/pin" pour une meilleure stabilité.
+- Bouton [Fichier] en footer de sidebar.
+
+### Parties Prenantes
+- Passage du format tableau au format **Folding Card**.
+- Layout 3 colonnes.
+- Tableaux d'exigences basés sur les types définis dans `defaults.json`.
+
+### Core Logic
+- Mise à jour de `DataStore.init()` pour supporter la migration des nouveaux référentiels.

@@ -1,4 +1,4 @@
-Voici la liste des **5 composants d'interface** que vous avez détaillés et que j'ai implémentés dans le système de design de Dare :
+Voici la liste des **composants d'interface** implémentés dans le système de design de Dare :
 
 Le choix des composants est imposé dans sa description par l'utilisateur. tu ne dois pas choisir un type de composant toi-même.
 
@@ -45,3 +45,15 @@ Plusieurs cartes peuvent s'aligner horizontalement (côte à côte) sur la même
     *   Supporte des mises en page internes complexes : 3 colonnes égales (`three-columns`) ou format Scénario de Risque (30% gauche, 70% droite).
     *   Prend **100% de la largeur** disponible.
 *   **Usage** : Inventaire des biens supports (Atelier 1) et Scénarios de risques (Atelier 4).
+
+---
+
+### 7. Barre de Navigation (Sidebar Tree)
+- **Structure** : Liste hiérarchique regroupée par Ateliers/Domaines.
+- **Style** : En-têtes d'ateliers en majuscules (muted), pages en retrait.
+- **Comportement** : L'item actif est mis en avant avec une bordure gauche bordeaux (`--c-accent`).
+
+### 8. Bouton Menu Fichier (`btn-file`)
+- **Emplacement** : Fixe en bas de la barre latérale (Sidebar Footer).
+- **Style** : Bouton large avec icône dossier, apparence "heavy" (bordure 2px, ombre marquée).
+- **Fonction** : Déclenche l'ouverture de la modale de gestion globale (Nouvelle analyse, Import, Export).

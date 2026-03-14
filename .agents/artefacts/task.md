@@ -1,6 +1,4 @@
-[ARTIFACT: task]
-Path: file:///g:/devapps/Dare/.agents/artefacts/task.md
-Last Edited: 2026-03-14T16:15:00Z (votre version locale)
+# Tasks
 
 - [x] Analyze codebase architecture and identify redundancy
 - [x] Research common patterns in page logic and component rendering
@@ -11,4 +9,16 @@ Last Edited: 2026-03-14T16:15:00Z (votre version locale)
 - [x] Verify changes
 - [x] Fix regression: Burger menu not working (CSS collision)
 - [x] Fix post-refactoring regressions (Referentiels and Atelier 2)
-- [x] Present walkthrough to user
+- [x] Semantic refactor: Processus métier -> Valeurs métiers / Chaines de valeurs
+- [x] Restore Folding Card component (CSS, components.md, and design.md layout)
+- [x] Fix Asset Card 3-column layout (CSS Grid and DOM structure)
+- [x] Refactor Stakeholders: Split into "Parties prenantes" and "Évaluation".
+    - [x] Update routing in `app.js`.
+    - [x] Create new list management page.
+    - [x] Rename and update evaluation page.
+    - [x] Update documentation.
+- [x] Refactor Global Navigation: Unified Tree Sidebar & Simplified Navbar.
+    - [x] Consolidate navigation in sidebar tree.
+    - [x] Add "[Fichier]" button to sidebar footer.
+    - [x] Clean up top navbar.
+- [x] Present updated walkthrough to user

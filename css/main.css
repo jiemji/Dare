@@ -55,13 +55,9 @@ body {
 /* Layout */
 .app-container {
     display: grid;
-    grid-template-columns: 0px 1fr;
+    grid-template-columns: var(--sidebar-width) 1fr;
     grid-template-rows: var(--navbar-height) 1fr;
     height: 100vh;
-}
-
-.app-container:has(.sidebar.pinned) {
-    grid-template-columns: var(--sidebar-width) 1fr;
 }
 
 /* Navbar */
@@ -120,31 +116,15 @@ body {
 
 /* Sidebar */
 .sidebar {
-    position: absolute;
-    left: calc(var(--sidebar-width) * -1);
-    top: var(--navbar-height);
-    bottom: 0;
+    position: relative;
+    grid-column: 1;
+    grid-row: 2;
     width: var(--sidebar-width);
     background-color: var(--c-bg-panel);
     border-right: 2px solid var(--c-border);
-    transition: left 0.3s ease;
     z-index: 90;
-    box-shadow: 4px 0 10px var(--c-shadow);
     display: flex;
     flex-direction: column;
-}
-
-.sidebar:hover {
-    left: 0;
-}
-
-.sidebar.pinned {
-    position: relative;
-    left: 0;
-    top: 0;
-    grid-column: 1;
-    grid-row: 2;
-    box-shadow: none;
 }
 
 .sidebar-header {
@@ -176,7 +156,7 @@ body {
 }
 
 .sidebar-menu li.menu-page {
-    padding: 8px 25px;
+    padding: 4px 25px;
     cursor: pointer;
     font-size: 13px;
     border-bottom: none;
@@ -237,10 +217,6 @@ body {
     padding: 20px;
     overflow-y: auto;
     background-color: var(--c-bg-app);
-}
-
-.app-container:not(:has(.sidebar.pinned)) .main-content {
-    grid-column: 1 / 3;
 }
 
 /* Buttons */
@@ -450,7 +426,8 @@ textarea {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    min-width: 0; /* Prevents long content from expanding the column */
+    min-width: 0;
+    /* Prevents long content from expanding the column */
 }
 
 .inner-table-wrapper {
@@ -466,7 +443,8 @@ textarea {
     font-size: 12px;
 }
 
-.inner-table th, .inner-table td {
+.inner-table th,
+.inner-table td {
     padding: 8px;
     border-bottom: 1px solid var(--c-border);
     text-align: left;

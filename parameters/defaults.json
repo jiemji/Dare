@@ -58,7 +58,29 @@
             }
         ],
         "protocoles": ["HTTPS", "SSH", "SFTP", "TLS", "IPsec", "RDP", "SMB", "SNMP", "Autre"],
-        "authentifications": ["Mot de passe", "MFA/2FA", "Certificat", "Clé SSH", "Kerberos", "Aucune", "Autre"]
+        "authentifications": ["Mot de passe", "MFA/2FA", "Certificat", "Clé SSH", "Kerberos", "Aucune", "Autre"],
+        "typesDependancePP": [
+            { 
+                "id": "fournisseur", 
+                "label": "Fournisseur / Editeur", 
+                "exigences": ["Assurance cybersécurité", "SLA / Disponibilité", "Plan de réversibilité", "Droit d'audit"] 
+            },
+            { 
+                "id": "partenaire", 
+                "label": "Partenaire métier", 
+                "exigences": ["Convention de service", "Confidentialité des échanges", "Intégrité des données", "Gestion des habilitations"] 
+            },
+            { 
+                "id": "prestataire", 
+                "label": "Prestataire de service IT", 
+                "exigences": ["Contrôle d'accès logique", "Durcissement des postes", "Journalisation", "Périmètre d'intervention"] 
+            },
+            { 
+                "id": "client", 
+                "label": "Client / Usager", 
+                "exigences": ["Portail d'authentification", "Conditions Générales d'Utilisation", "Protection des données personnelles"] 
+            }
+        ]
     },
     "atelier1": {
         "contexte": {

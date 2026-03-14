@@ -33,7 +33,7 @@ export class DataStore {
                 const refCats = [
                     'gravite', 'impacts', 'vraisemblance', 'motivation', 
                     'ressources', 'socles', 'killChain', 'typesActifs',
-                    'risques', 'grilleImpacts', 'grilleRisques'
+                    'risques', 'grilleImpacts', 'grilleRisques', 'typesDependancePP'
                 ];
                 refCats.forEach(cat => {
                     if (!loadedData.referentiels[cat]) {

@@ -2,27 +2,9 @@
 
 ## Structure
 
-- Un bandeau horizontal avec des boutons  
-  Chaque bouton permet d'accéder un ensemble de page ou des fonctions
-  
-    - Bouton : Burger Menu
-      
-        - Composants
-          
-            - Fonction : Nouvelle analyse
-              
-                - L'application nettoie le localstorage pour démarrer une nouvelle analyse
-                  
-                - L'application récupère les paramétrages par défaut
-                  
-            - Fonction : Charger
-              
-                - L'application charge un fichier json d'analyse dans le localstorage
-                  
-            - Fonction : Sauvegarder
-              
-                - L'application sauvegarde le local storage dans un fichier json
-                  
+- **Bandeau supérieur** : Affiche le titre "DARE", le bouton de sauvegarde rapide (disquette) et le sélecteur de thème.
+- **Barre latérale (Sidebar)** : Arborescence complète de l'analyse (Ateliers > Pages).
+    - Un bouton permanent **[ Fichier ]** en bas de barre permet d'accéder aux fonctions globales (Nouvelle analyse, Charger, Sauvegarder, Aide).
     - Paramétrage et Initialisation
       
         - L'application est pilotée par des fichiers de configuration externes (dossier `parameters/`) :
@@ -272,21 +254,41 @@
                           
                             - Fonction : supprime la menace et ses données
                               
-    - Bouton : Atelier 3
+    - Atelier 3 : Écosystème des parties prenantes
       
-        - Page : Parties prenantes
+        - Page : Parties prenantes (Gestion)
           
             - Composants
               
                 - Bouton : ajouter une partie prenante
                   
-                    - Fonction : ajoute une ligne dans le tableau
+                    - Fonction : ajoute une carte à rabat (Folding Card)
                       
-                - Tableau : Liste des parties prenantes
+                - Carte à Rabat : Partie Prenante # (Composant `folding-card` en 3 colonnes)
                   
-                    - Colonnes : Réf, Nom, Type, Commentaires
+                    - **En-tête (Visible)** :
                       
-        - Page : Évaluation des parties prenantes
+                        - Champs de saisie : Nom de la partie prenante
+                          
+                        - Liste déroulante : Type de dépendance (Données provenant de `referentiels.typesDependancePP`)
+                          
+                    - **Contenu repliable (3 colonnes)** :
+                      
+                        - **Colonne 1 (Constats)** :
+                          
+                            - Champs de saisie (multiligne) : Constats / Observations
+                              
+                        - **Colonne 2 (Exigences)** :
+                          
+                            - Tableau des exigences : Liste des exigences paramétrées pour le type de dépendance sélectionné.
+                              
+                        - **Colonne 3 (Actions)** :
+                          
+                            - Champs de saisie (multiligne) : Mesures de sécurité proposées
+                              
+                        - Bouton : Supprimer la partie prenante
+                      
+        - Page : Évaluation des parties prenantes (Scoring)
           
             - Composants
               
@@ -729,8 +731,7 @@
       
         - Fonction : changement du thème / style
           
-- Un bande latérale qui s'affiche si on passe la souris sur le bord gauche de la fenêtre.  
-  Elle peut être épinglée.  
-  Elle affiche la liste des pages liées à un atelier sélectionné (bouton du bandeau horizontal)  
-  Le clic sur un item ouvre la page correspondante
+- **Barre latérale** : Affiche la totalité de l'arborescence de manière fixe.
+  Elle regroupe les Ateliers et leurs Pages respectives.
+  Le clic sur un item d'atelier (titre) est informatif, le clic sur une page charge le contenu.
   
