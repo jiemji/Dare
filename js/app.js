@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const pageStructure = {
         atelier1: [
             { id: "contexte", label: "Contexte de l'analyse", file: "pages/atelier1/contexte.html", script: "pages/atelier1.js" },
-            { id: "processus", label: "Processus métier", file: "pages/atelier1/processus.html", script: "pages/atelier1_suite.js" },
+            { id: "processus", label: "Chaines de valeurs", file: "pages/atelier1/processus.html", script: "pages/atelier1_suite.js" },
             { id: "inventaire", label: "Inventaire des actifs", file: "pages/atelier1/inventaire.html", script: "pages/atelier1_inventaire.js" },
             { id: "evenements", label: "Évènements regrettables", file: "pages/atelier1/evenements.html", script: "pages/atelier1_suite.js" }
         ],

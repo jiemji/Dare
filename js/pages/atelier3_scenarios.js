@@ -38,7 +38,7 @@ export function init() {
     const ssList = Store.data.atelier3.scenariosStrategiques;
     
     if(processusList.length === 0) {
-        container.innerHTML = "<p class='full-width'><em>Veuillez d'abord créer des processus métier dans l'Atelier 1.</em></p>";
+        container.innerHTML = "<p class='full-width'><em>Veuillez d'abord créer des valeurs métiers dans l'Atelier 1.</em></p>";
         return;
     }
     
@@ -51,7 +51,7 @@ export function init() {
         header.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--c-bg-panel); padding:10px 15px; border-radius:var(--border-radius); border-left:4px solid var(--c-accent); margin-bottom:15px;';
 
         const title = document.createElement('h3');
-        title.textContent = `Processus ${proc.id} : ${proc.nom || '(Non nommé)'}`;
+        title.textContent = `Valeur métier ${proc.id} : ${proc.nom || '(Non nommé)'}`;
         header.appendChild(title);
 
         const ssCardsContainer = document.createElement('div');

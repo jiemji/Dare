@@ -56,7 +56,9 @@
                 "label": "Equipement réseau", 
                 "exigences": ["Segmentation (VLAN)", "Filtrage de flux (Firewall)", "Durcissement (Hardening)"] 
             }
-        ]
+        ],
+        "protocoles": ["HTTPS", "SSH", "SFTP", "TLS", "IPsec", "RDP", "SMB", "SNMP", "Autre"],
+        "authentifications": ["Mot de passe", "MFA/2FA", "Certificat", "Clé SSH", "Kerberos", "Aucune", "Autre"]
     },
     "atelier1": {
         "contexte": {

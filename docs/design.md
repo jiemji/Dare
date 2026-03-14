@@ -127,9 +127,9 @@
                               
                 - Bouton : Ajouter un événement
                   
-                    - Fonction : ajoute une carte événement dans l'espace du processus
+                    - Fonction : ajoute une carte événement dans l'espace de la valeur métier
                       
-            - L'écran est découpé par processus métier
+            - L'écran est découpé par valeur métier
               
         - Page : Inventaire
           
@@ -137,35 +137,41 @@
               
                 - Bouton : Ajouter un bien support
                   
-                    - Fonction : ajoute une carte "Bien Support"
+                    - Fonction : ajoute une carte "Bien Support" (Carte à rabat)
                       
-                - Carte carrée : Bien Support #
+                - Carte à rabat : Bien Support #
                   
-                    - Composants
+                    - **En-tête (Visible)** :
                       
-                        - Champs de saisie : Référence
-                          
-                            - Incrémentation automatique : BS01, BS02, BS##
-                              
                         - Champs de saisie : Nom de l'actif
                           
-                        - Liste déroulante : Processus métier
+                        - Liste déroulante : Type d'actif (Données provenant de `referentiels.typesActifs`)
                           
-                            - Données provenant de la liste des processus métiers
-                              
-                        - Liste déroulante : Type d'actif
+                        - Champs de saisie (multiligne) : Description
                           
-                            - Données provenant du référentiel "Types d'actifs" (parameters/defaults.json)
-                              
-                        - Tableau : Exigences
+                    - **Contenu repliable (3 colonnes)** :
+                      
+                        - **Colonne 1 (Dépendances)** :
                           
-                            - Colonne 1 : Exigences (Liste paramétrée dans parameters/defaults.json)
+                            - Liste à cocher : Valeurs métiers supportées (Données provenant de `atelier1.processus`)
                               
-                            - Colonne 2 : Information (Champ de saisie)
+                            - Tableau des relations :
+                              
+                                - Colonne 1 : Actifs (Liste des autres biens supports de l'inventaire)
+                                  
+                                - Colonne 2 : Protocole (Liste provenant de `protocoles`)
+                                  
+                                - Colonne 3 : Authentification (Liste provenant de `authentifications`)
+                                  
+                        - **Colonne 2 (Exigences)** :
+                          
+                            - Tableau des exigences : Liste des exigences paramétrées pour le type d'actif sélectionné.
+                              
+                        - **Colonne 3 (Constat)** :
+                          
+                            - Champs de saisie (multiligne) : Constat / Observation
                               
                         - Bouton : Supprimer le bien support
-                          
-                            - Fonction : supprime le bien et ses données
               
         - Page : Cartographie
           

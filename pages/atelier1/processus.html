@@ -1,31 +1,31 @@
 <div class="page-header">
-    <h2>Atelier 1 : Processus métier</h2>
-    <p>Définissez les processus de votre organisation.</p>
+    <h2>Atelier 1 : Valeurs métiers</h2>
+    <p>Définissez les chaines de valeurs de votre organisation.</p>
 </div>
 
 <div id="processus-container">
-    <!-- Les cartes processus seront injectées ici -->
+    <!-- Les cartes valeurs métiers seront injectées ici -->
 </div>
 
 <div style="margin-top: 20px;">
-    <button class="btn primary" id="btn-add-processus">+ Ajouter un processus métier</button>
+    <button class="btn primary" id="btn-add-processus">+ Ajouter une valeur métier</button>
 </div>
 
 <!-- Template pour une carte Processus -->
 <template id="tpl-processus-card">
     <div class="card-extended processus-card" data-ref="">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-            <h3>Processus <span class="ref-display"></span></h3>
+            <h3>Valeur métier <span class="ref-display"></span></h3>
         </div>
 
         <label>Référence</label>
         <input type="text" class="proc-ref" disabled>
 
-        <label>Nom du processus</label>
+        <label>Nom de la valeur métier</label>
         <input type="text" class="proc-nom" placeholder="Ex: Gestion des RH">
 
         <label>Description de l'activité</label>
-        <textarea class="proc-desc" rows="3" placeholder="Description de l'activité du processus..."></textarea>
+        <textarea class="proc-desc" rows="3" placeholder="Description de l'activité..."></textarea>
 
         <div style="text-align: right; margin-top: 10px;">
             <button class="btn secondary btn-del-processus">Supprimer</button>

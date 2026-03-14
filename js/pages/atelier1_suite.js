@@ -4,12 +4,12 @@ import { generateNextId, confirmAction, tap, withId } from '../utils.js';
 
 function createProcessusDom(proc) {
     const fields = [
-        { label: 'Nom du processus', bind: { obj: proc, key: 'nom' } },
+        { label: 'Nom de la valeur métier', bind: { obj: proc, key: 'nom' } },
         { label: 'Description', multiline: true, bind: { obj: proc, key: 'description' } }
     ];
 
-    return withId(UI.dataCard('square', `Processus ${proc.id}`, fields, () => {
-        confirmAction(`Supprimer le processus ${proc.id} et ses événements liés ?`, () => {
+    return withId(UI.dataCard('square', `Valeur métier ${proc.id}`, fields, () => {
+        confirmAction(`Supprimer la valeur métier ${proc.id} et ses événements liés ?`, () => {
             Store.data.atelier1.processus = Store.data.atelier1.processus.filter(p => p.id !== proc.id);
             Store.data.atelier1.evenements = Store.data.atelier1.evenements.filter(e => e.processusId !== proc.id);
             Store.save();
@@ -102,7 +102,7 @@ function initEvenementsPage() {
     const erList = Store.data.atelier1.evenements;
     
     if(procList.length === 0) {
-        container.innerHTML = "<p class='full-width'><em>Veuillez d'abord créer des processus métier.</em></p>";
+        container.innerHTML = "<p class='full-width'><em>Veuillez d'abord créer des valeurs métiers.</em></p>";
         return;
     }
     
@@ -115,7 +115,7 @@ function initEvenementsPage() {
         header.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--c-bg-panel); padding:10px 15px; border-radius:var(--border-radius); border-left:4px solid var(--c-accent); margin-bottom:15px;';
 
         const title = document.createElement('h3');
-        title.textContent = `Processus ${proc.id} : ${proc.nom || '(Non nommé)'}`;
+        title.textContent = `Valeur métier ${proc.id} : ${proc.nom || '(Non nommé)'}`;
         header.appendChild(title);
 
         header.appendChild(UI.button('Ajouter ER', () => {

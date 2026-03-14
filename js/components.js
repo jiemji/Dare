@@ -137,7 +137,7 @@ export const UI = {
     },
 
     /**
-     * Creates a folding card for risk scenarios.
+     * Creates a folding card for risk scenarios and other complex objects.
      */
     foldingCard(title, options = {}) {
         const card = document.createElement('div');
@@ -147,30 +147,46 @@ export const UI = {
         const header = document.createElement('div');
         header.className = 'folding-header';
         
-        const h3 = document.createElement('h3');
-        h3.textContent = title;
-        header.appendChild(h3);
+        if (typeof title === 'string') {
+            const h3 = document.createElement('h3');
+            h3.textContent = title;
+            header.appendChild(h3);
+        } else if (title instanceof HTMLElement) {
+            header.appendChild(title);
+        }
 
         const controls = document.createElement('div');
         controls.className = 'header-controls';
         
+        // Helper to stop propagation on interactive elements in header
+        const stopProp = (el) => {
+            el.addEventListener('click', e => e.stopPropagation());
+            return el;
+        };
+
+        if (options.headerElements) {
+            options.headerElements.forEach(el => controls.appendChild(stopProp(el)));
+        }
+
         if (options.likelihood) {
-            const select = this.selectGroup('Vraisemblance', options.likelihood.value, options.likelihood.options, options.likelihood.onChange);
+            const selectGroup = this.selectGroup('Vraisemblance', options.likelihood.value, options.likelihood.options, options.likelihood.onChange);
+            selectGroup.style.marginBottom = '0';
+            const label = selectGroup.querySelector('label');
+            label.style.display = 'inline-block';
+            label.style.marginRight = '10px';
+            const select = selectGroup.querySelector('select');
+            select.style.width = 'auto';
             select.style.marginBottom = '0';
-            select.querySelector('label').style.display = 'inline-block';
-            select.querySelector('label').style.marginRight = '10px';
-            select.querySelector('select').style.width = 'auto';
-            select.querySelector('select').style.marginBottom = '0';
-            controls.appendChild(select);
-            card._likelihoodSelect = select.querySelector('select');
+            controls.appendChild(stopProp(selectGroup));
+            card._likelihoodSelect = select;
         }
 
         if (options.onDelete) {
-            const btnDel = this.button('Supprimer ce scénario', (e) => {
+            const btnDel = this.button('Supprimer', (e) => {
                 e.stopPropagation();
                 options.onDelete();
             }, 'secondary');
-            controls.appendChild(btnDel);
+            controls.appendChild(stopProp(btnDel));
         }
 
         const toggle = document.createElement('span');
@@ -188,19 +204,25 @@ export const UI = {
 
         const content = document.createElement('div');
         content.className = 'folding-content';
+        if (options.columns) content.classList.add('three-columns');
 
-        const left = document.createElement('div');
-        left.className = 'content-left';
-        if (options.contentLeft) left.appendChild(options.contentLeft);
+        if (options.content) {
+            content.appendChild(options.content);
+        } else {
+            // Legacy/Dual column support (Atelier 4)
+            const left = document.createElement('div');
+            left.className = 'content-left';
+            if (options.contentLeft) left.appendChild(options.contentLeft);
 
-        const right = document.createElement('div');
-        right.className = 'content-right';
-        if (options.contentRight) right.appendChild(options.contentRight);
+            const right = document.createElement('div');
+            right.className = 'content-right';
+            if (options.contentRight) right.appendChild(options.contentRight);
 
-        content.appendChild(left);
-        content.appendChild(right);
+            content.appendChild(left);
+            content.appendChild(right);
+        }
+
         card.appendChild(content);
-
         return card;
     }
 };
