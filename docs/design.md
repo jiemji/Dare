@@ -117,42 +117,20 @@
           
             - Composants
               
-                - Bouton : Ajouter un bien support
-                  
-                    - Fonction : ajoute une carte "Bien Support" (Carte à rabat)
-                      
-                - Carte à rabat : Bien Support # (Composant `folding-card` en 3 colonnes)
-                  
-                    - **En-tête (Visible)** :
-                      
-                        - Champs de saisie : Nom de l'actif
-                          
-                        - Liste déroulante : Type d'actif (Données provenant de `referentiels.typesActifs`)
-                          
-                        - Champs de saisie (multiligne) : Description
-                          
-                    - **Contenu repliable (3 colonnes)** :
-                      
-                        - **Colonne 1 (Dépendances)** :
-                          
-                            - Liste à cocher : Valeurs métiers supportées (Données provenant des valeurs métiers définies)
-                              
-                            - Tableau des relations :
-                              
-                                - Colonne 1 : Actifs (Liste des autres biens supports de l'inventaire)
-                                  
-                                - Colonne 2 : Protocole (Liste provenant de `protocoles`)
-                                  
-                                - Colonne 3 : Authentification (Liste provenant de `authentifications`)
-                                  
-                        - **Colonne 2 (Exigences)** :
-                          
-                            - Tableau des exigences : Liste des exigences paramétrées pour le type d'actif sélectionné.
-                              
-                        - **Colonne 3 (Constat)** :
-                          
-                            - Champs de saisie (multiligne) : Constat / Observation
-                              
+                - **Section Hébergements** :
+                    - Bouton : **Ajouter un hébergement**
+                    - Carte à rabat (2 colonnes) :
+                        - **En-tête** : Nom, Type d'hébergement (SaaS, Datacenter...), Supprimer.
+                        - **Rabat Col 1 (Exigences)** : Tableau dynamique des exigences pré-paramétrées.
+                        - **Rabat Col 2 (Constats)** : Zone de texte libre.
+
+                - **Section Actifs Supports** :
+                    - Bouton : **Ajouter un actif support**
+                    - Carte à rabat (3 colonnes) :
+                        - **En-tête** : Nom, Type d'actif, Hébergement (Lien vers la section du haut), Description.
+                        - **Rabat Col 1 (Dépendances)** : Valeurs métiers supportées et Relations.
+                        - **Rabat Col 2 (Exigences)** : Tableau des exigences de sécurité.
+                        - **Rabat Col 3 (Constat)** : Constat / Observation.
                         - Bouton : Supprimer le bien support
               
         - Page : Cartographie

@@ -235,10 +235,11 @@
         "id": "materiel",
         "label": "Matériel (Serveur, Poste, etc.)",
         "exigences": [
-          "Maintien en condition opérationnelle",
-          "Disponibilité physique",
-          "Inventaire et marquage"
-        ]
+          "Inventaire à jour",
+          "Maintenance préventive",
+          "Marquage physique"
+        ],
+        "famille": "actif"
       },
       {
         "id": "logiciel",
@@ -247,7 +248,8 @@
           "Gestion des patchs de sécurité",
           "Contrôles d'accès applicatifs",
           "Journalisation des actions"
-        ]
+        ],
+        "famille": "actif"
       },
       {
         "id": "reseau",
@@ -256,6 +258,40 @@
           "Segmentation (VLAN)",
           "Filtrage de flux (Firewall)",
           "Durcissement (Hardening)"
+        ],
+        "famille": "actif"
+      },
+      {
+        "id": "saas",
+        "label": "SaaS (Logiciel en tant que service)",
+        "famille": "hebergement",
+        "exigences": [
+          "Contrôles d'accès MFA",
+          "Chiffrement des données (repos/transit)",
+          "Journalisation des accès",
+          "Conformité SOC2/HDS"
+        ]
+      },
+      {
+        "id": "datacenter",
+        "label": "Datacenter (Infrastructure physique)",
+        "famille": "hebergement",
+        "exigences": [
+          "Sécurité physique des locaux",
+          "Redondance électrique et clim",
+          "Contrôles d'accès biométriques",
+          "Disponibilité du lien internet"
+        ]
+      },
+      {
+        "id": "cloud_prive",
+        "label": "Cloud Privé / On-premise",
+        "famille": "hebergement",
+        "exigences": [
+          "Sécurité du périmètre réseau",
+          "Durcissement Hyperviseur",
+          "Sauvegardes immuables",
+          "Monitoring 24/7"
         ]
       }
     ],
@@ -284,10 +320,9 @@
         "id": "fournisseur",
         "label": "Fournisseur / Editeur",
         "exigences": [
-          "Assurance cybersécurité",
-          "SLA / Disponibilité",
-          "Plan de réversibilité",
-          "Droit d'audit"
+          "Assurance Responsabilité Civile",
+          "Plan de Continuité d'Activité (PCA)",
+          "Certifications (ISO 27001...)"
         ]
       },
       {
@@ -317,6 +352,24 @@
           "Portail d'authentification",
           "Conditions Générales d'Utilisation",
           "Protection des données personnelles"
+        ]
+      },
+      {
+        "id": "hébergeur",
+        "label": "Hébergeur / Datacenter",
+        "exigences": [
+          "Tier III minimum",
+          "Accès contrôlé 24/7",
+          "Redondance N+1"
+        ]
+      },
+      {
+        "id": "maintenance",
+        "label": "Maintenance / Infogérance",
+        "exigences": [
+          "SLA de rétablissement (GTI/GTR)",
+          "Chiffrement des accès distants",
+          "Traçabilité des interventions"
         ]
       }
     ]
@@ -398,7 +451,8 @@
         "constat": "",
         "processusIds": [
           "VM01"
-        ]
+        ],
+        "hebergementId": "BS04"
       },
       {
         "id": "BS02",
@@ -436,7 +490,8 @@
         "processusIds": [
           "VM02",
           "VM01"
-        ]
+        ],
+        "hebergementId": "BS04"
       },
       {
         "id": "BS03",
@@ -462,7 +517,35 @@
         "constat": "",
         "processusIds": [
           "VM01"
-        ]
+        ],
+        "hebergementId": "BS04"
+      },
+      {
+        "id": "BS04",
+        "nom": "",
+        "typeId": "cloud_prive",
+        "description": "",
+        "processusIds": [],
+        "relations": [],
+        "exigences": [
+          {
+            "label": "Sécurité du périmètre réseau",
+            "info": ""
+          },
+          {
+            "label": "Durcissement Hyperviseur",
+            "info": ""
+          },
+          {
+            "label": "Sauvegardes immuables",
+            "info": ""
+          },
+          {
+            "label": "Monitoring 24/7",
+            "info": ""
+          }
+        ],
+        "constat": ""
       }
     ]
   },
@@ -604,7 +687,7 @@
               "width": 120,
               "height": 60,
               "text": "Nouveau",
-              "value": 2,
+              "value": 3,
               "laneId": "lane_1"
             },
             {
@@ -614,7 +697,7 @@
               "width": 120,
               "height": 60,
               "text": "Nouveau",
-              "value": 3,
+              "value": 1,
               "laneId": "lane_1"
             },
             {
@@ -699,7 +782,7 @@
   },
   "metadata": {
     "version": "1.0",
-    "lastSaved": "2026-03-14T22:31:31.772Z"
+    "lastSaved": "2026-03-14T23:18:08.297Z"
   },
   "settings": {
     "theme": "dark",

@@ -3,35 +3,32 @@ import { UI } from '../components.js';
 import { generateNextId, confirmAction, tap, withId } from '../utils.js';
 
 /**
- * Crée le DOM pour une carte de bien support (Format à rabat 3 colonnes)
+ * Crée le DOM pour une carte d'hébergement (Format à rabat 2 colonnes)
  */
-function createBsDom(bs, bsList) {
+function createHbDom(bs, bsList, onRefresh) {
     const typesActifs = Store.data.referentiels?.typesActifs || [];
-    const typeOpts = typesActifs.map(t => ({ value: t.id, label: t.label }));
-    const processes = Store.data.atelier1?.processus || [];
-    const protocoles = Store.data.referentiels?.protocoles || [];
-    const authentifications = Store.data.referentiels?.authentifications || [];
+    const hbTypes = typesActifs.filter(t => t.famille === 'hebergement');
+    const typeOpts = hbTypes.map(t => ({ value: t.id, label: t.label }));
 
-    // --- EN-TETE (Bandeau du haut) ---
-    // ... (header elements omitted for brevity in targetContent but I need to be careful with replace_file_content)
-    // Actually, I'll replace the whole block from line 11 to 85.
-
+    // --- EN-TETE ---
     const headerElements = [
-        tap(UI.inputGroup("Nom", null, null, { bind: { obj: bs, key: 'nom' } }), el => {
+        tap(UI.inputGroup("Nom de l'hébergement", null, null, { bind: { obj: bs, key: 'nom' } }), el => {
             el.style.width = '250px';
             el.style.margin = '0';
+            // On rafraîchit la page si le nom change pour mettre à jour les listes déroulantes ailleurs
+            const input = el.querySelector('input');
+            input.onblur = () => { onRefresh(); };
         }),
-        tap(UI.selectGroup("Type", null, [{ value: '', label: '-- Type --' }, ...typeOpts], null, { 
+        tap(UI.selectGroup("Type", null, [{ value: '', label: '-- Choisir --' }, ...typeOpts], null, { 
             bind: { obj: bs, key: 'typeId' } 
         }), el => {
             el.style.width = '200px';
             el.style.margin = '0';
             const select = el.querySelector('select');
-            const oldChange = select.onchange;
             select.onchange = (e) => {
-                if (oldChange) oldChange(e);
-                // Update requirements based on type
-                const typeDef = typesActifs.find(t => t.id === bs.typeId);
+                const val = e.target.value;
+                bs.typeId = val;
+                const typeDef = typesActifs.find(t => t.id === val);
                 bs.exigences = (typeDef?.exigences || []).map(ex => {
                     const existing = (bs.exigences || []).find(e => e.label === ex);
                     return { label: ex, info: existing?.info || '' };
@@ -39,6 +36,135 @@ function createBsDom(bs, bsList) {
                 Store.save();
                 renderExigences();
             };
+        })
+    ];
+
+    // --- CONTENU (2 Colonnes) ---
+    const content = document.createDocumentFragment();
+
+    // Colonne 1 : Exigences
+    const col1 = tap(document.createElement('div'), el => el.className = 'column');
+    const exWrapper = tap(document.createElement('div'), el => {
+        el.innerHTML = '<label>Exigences de sécurité</label>';
+        const wrapper = tap(document.createElement('div'), w => w.className = 'inner-table-wrapper');
+        el.appendChild(wrapper);
+    });
+    col1.appendChild(exWrapper);
+
+    function renderExigences() {
+        const wrapper = exWrapper.querySelector('.inner-table-wrapper');
+        wrapper.innerHTML = '';
+        if (!bs.typeId) {
+            wrapper.innerHTML = '<p style="padding:10px; font-size:12px; opacity:0.6; text-align:center;">Sélectionnez un type</p>';
+            return;
+        }
+        const table = tap(document.createElement('table'), t => t.className = 'inner-table');
+        table.innerHTML = `<thead><tr><th>Exigence</th><th>Information</th></tr></thead>`;
+        const tbody = document.createElement('tbody');
+        (bs.exigences || []).forEach(ex => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${ex.label}</td>`;
+            const tdInfo = tap(document.createElement('td'), td => {
+                td.appendChild(tap(document.createElement('input'), i => {
+                    i.type = 'text';
+                    i.value = ex.info || '';
+                    i.style.margin = '0';
+                    i.style.padding = '4px';
+                    i.style.fontSize = '11px';
+                    i.oninput = () => { ex.info = i.value; Store.save(); };
+                }));
+            });
+            tr.appendChild(tdInfo);
+            tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        wrapper.appendChild(table);
+    }
+    renderExigences();
+
+    // Colonne 2 : Constat
+    const col2 = tap(document.createElement('div'), el => el.className = 'column');
+    col2.appendChild(UI.inputGroup("Constats / Observations", null, null, { multiline: true, bind: { obj: bs, key: 'constat' } }));
+
+    content.appendChild(col1);
+    content.appendChild(col2);
+
+    // --- CARTE A RABAT ---
+    const card = UI.foldingCard(null, {
+        headerElements: headerElements,
+        content: content,
+        columns: 2,
+        onDelete: () => {
+            confirmAction(`Supprimer l'hébergement ${bs.id} ?`, () => {
+                const idx = bsList.indexOf(bs);
+                if(idx > -1) {
+                    bsList.splice(idx, 1);
+                    Store.save();
+                    onRefresh();
+                }
+            });
+        }
+    });
+
+    card.setAttribute('data-id', bs.id);
+    return card;
+}
+
+/**
+ * Crée le DOM pour une carte de bien support (Format à rabat 3 colonnes)
+ */
+function createBsDom(bs, bsList, onRefresh) {
+    const typesActifs = Store.data.referentiels?.typesActifs || [];
+    const activeTypes = typesActifs.filter(t => t.famille !== 'hebergement');
+    const typeOpts = activeTypes.map(t => ({ value: t.id, label: t.label }));
+    
+    // Liste des hébergements dispos
+    const hbs = bsList.filter(item => {
+        const t = typesActifs.find(x => x.id === item.typeId);
+        return t && t.famille === 'hebergement';
+    });
+    const hbOpts = hbs.map(h => ({ value: h.id, label: h.nom || h.id }));
+
+    const processes = Store.data.atelier1?.processus || [];
+    const protocoles = Store.data.referentiels?.protocoles || [];
+    const authentifications = Store.data.referentiels?.authentifications || [];
+
+    // --- EN-TETE (Bandeau du haut) ---
+    const headerElements = [
+        tap(UI.inputGroup("Nom", null, null, { bind: { obj: bs, key: 'nom' } }), el => {
+            el.style.width = '200px';
+            el.style.margin = '0';
+        }),
+        tap(UI.selectGroup("Type", null, [{ value: '', label: '-- Type --' }, ...typeOpts], null, { 
+            bind: { obj: bs, key: 'typeId' } 
+        }), el => {
+            el.style.width = '160px';
+            el.style.margin = '0';
+            const select = el.querySelector('select');
+            const oldChange = select.onchange;
+            select.onchange = (e) => {
+                const val = e.target.value;
+                if (oldChange) oldChange(e);
+
+                const typeDef = typesActifs.find(t => t.id === val);
+                if (typeDef && typeDef.famille === 'hebergement') {
+                    onRefresh();
+                    return;
+                }
+
+                bs.exigences = (typeDef?.exigences || []).map(ex => {
+                    const existing = (bs.exigences || []).find(e => e.label === ex);
+                    return { label: ex, info: existing?.info || '' };
+                });
+                Store.save();
+                renderExigences();
+            };
+        }),
+        tap(UI.selectGroup("Hébergement", null, [{ value: '', label: '-- Hébergement --' }, ...hbOpts], null, { 
+            bind: { obj: bs, key: 'hebergementId' } 
+        }), el => {
+            el.style.width = '180px';
+            el.style.margin = '0';
         }),
         tap(UI.inputGroup("Description", null, null, { multiline: true, bind: { obj: bs, key: 'description' } }), el => {
             el.style.flex = '1';
@@ -55,7 +181,6 @@ function createBsDom(bs, bsList) {
     // Colonne 1 : Dépendances & Relations
     const col1 = tap(document.createElement('div'), el => el.className = 'column');
     
-    // Valeurs métiers (checkboxes)
     const procGroup = tap(document.createElement('div'), el => {
         el.innerHTML = '<label>Valeurs métiers supportées</label>';
         const list = tap(document.createElement('div'), l => {
@@ -88,7 +213,6 @@ function createBsDom(bs, bsList) {
     });
     col1.appendChild(procGroup);
 
-    // Tableau des relations
     const relGroup = tap(document.createElement('div'), el => {
         el.innerHTML = '<label>Relations avec les autres actifs</label>';
         const wrapper = tap(document.createElement('div'), w => w.className = 'inner-table-wrapper');
@@ -100,8 +224,6 @@ function createBsDom(bs, bsList) {
             tbody.innerHTML = '';
             (bs.relations || []).forEach((rel, idx) => {
                 const tr = document.createElement('tr');
-                
-                // Select Actif
                 const tdActif = document.createElement('td');
                 const otherAssets = bsList.filter(x => x.id !== bs.id);
                 const sActif = tap(document.createElement('select'), s => {
@@ -114,7 +236,6 @@ function createBsDom(bs, bsList) {
                 tdActif.appendChild(sActif);
                 tr.appendChild(tdActif);
 
-                // Select Protocole
                 const tdProt = document.createElement('td');
                 const sProt = tap(document.createElement('select'), s => {
                     s.style.margin = '0';
@@ -126,7 +247,6 @@ function createBsDom(bs, bsList) {
                 tdProt.appendChild(sProt);
                 tr.appendChild(tdProt);
 
-                // Select Auth
                 const tdAuth = document.createElement('td');
                 const sAuth = tap(document.createElement('select'), s => {
                     s.style.margin = '0';
@@ -138,7 +258,6 @@ function createBsDom(bs, bsList) {
                 tdAuth.appendChild(sAuth);
                 tr.appendChild(tdAuth);
 
-                // Delete rel
                 const tdDel = document.createElement('td');
                 tdDel.appendChild(tap(UI.button('×', () => {
                     bs.relations.splice(idx, 1);
@@ -149,7 +268,6 @@ function createBsDom(bs, bsList) {
                     b.style.fontSize = '10px';
                 }));
                 tr.appendChild(tdDel);
-
                 tbody.appendChild(tr);
             });
         }
@@ -224,7 +342,7 @@ function createBsDom(bs, bsList) {
     const card = UI.foldingCard(null, {
         headerElements: headerElements,
         content: content,
-        columns: true,
+        columns: 3,
         onDelete: () => {
             confirmAction(`Supprimer le bien support ${bs.id} ?`, () => {
                 const idx = bsList.indexOf(bs);
@@ -237,23 +355,59 @@ function createBsDom(bs, bsList) {
         }
     });
     card.setAttribute('data-id', bs.id);
-    card.querySelector('h3')?.remove(); // Cleanup if UI.foldingCard added an empty h3
+    card.querySelector('h3')?.remove();
 
     return card;
 }
 
 export function init() {
-    const container = document.getElementById('bs-container');
-    const btnAdd = document.getElementById('btn-add-bs');
-    if(!container || !btnAdd) return;
+    const hbContainer = document.getElementById('hb-container');
+    const bsContainer = document.getElementById('bs-container');
+    const btnAddHb = document.getElementById('btn-add-hb');
+    const btnAddBs = document.getElementById('btn-add-bs');
+    
+    if(!hbContainer || !bsContainer || !btnAddHb || !btnAddBs) return;
 
     if (!Store.data.atelier1.inventaire) Store.data.atelier1.inventaire = [];
     const list = Store.data.atelier1.inventaire;
+    const typesActifs = Store.data.referentiels?.typesActifs || [];
 
-    container.innerHTML = '';
-    list.forEach(bs => container.appendChild(createBsDom(bs, list)));
+    function renderAll() {
+        hbContainer.innerHTML = '';
+        bsContainer.innerHTML = '';
+        
+        list.forEach(item => {
+            const typeDef = typesActifs.find(t => t.id === item.typeId);
+            if (typeDef && typeDef.famille === 'hebergement') {
+                hbContainer.appendChild(createHbDom(item, list, renderAll));
+            } else {
+                bsContainer.appendChild(createBsDom(item, list, renderAll));
+            }
+        });
+    }
 
-    btnAdd.onclick = () => {
+    renderAll();
+
+    btnAddHb.onclick = () => {
+        const hbTypes = typesActifs.filter(t => t.famille === 'hebergement');
+        const defaultType = hbTypes[0] || { id: '', exigences: [] };
+        
+        const newHB = { 
+            id: generateNextId(list, 'BS'), 
+            nom: '', 
+            typeId: defaultType.id, 
+            description: '',
+            processusIds: [],
+            relations: [],
+            exigences: (defaultType.exigences || []).map(ex => ({ label: ex, info: '' })),
+            constat: ''
+        };
+        list.push(newHB);
+        Store.save();
+        renderAll();
+    };
+
+    btnAddBs.onclick = () => {
         const newBS = { 
             id: generateNextId(list, 'BS'), 
             nom: '', 
@@ -262,10 +416,11 @@ export function init() {
             processusIds: [],
             relations: [],
             exigences: [],
-            constat: ''
+            constat: '',
+            hebergementId: ''
         };
         list.push(newBS);
         Store.save();
-        container.appendChild(createBsDom(newBS, list));
+        renderAll();
     };
 }

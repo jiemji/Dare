@@ -204,7 +204,10 @@ export const UI = {
 
         const content = document.createElement('div');
         content.className = 'folding-content';
-        if (options.columns) content.classList.add('three-columns');
+        if (options.columns) {
+            if (options.columns === 2) content.classList.add('two-columns');
+            else content.classList.add('three-columns');
+        }
 
         if (options.content) {
             if (options.content instanceof DocumentFragment) {

@@ -43,3 +43,5 @@
 - **Lessons Learned**:
   - **CSS Scoping**: Editor-specific styles (like Mermaid's) can leak and override global UI classes (e.g., `.modal`). Always use dual classes for visibility (e.g., `.hidden` + `.active`) if multiple style systems overlap.
   - **DOM Lifecycle**: Ensure all critical DOM elements are declared at the very start of `app.js` to avoid "missing element" errors during event listener attachment.
+  - **Migration de Référentiels**: Pour injecter de nouveaux types de données chez des utilisateurs ayant déjà un `localStorage`, implémenter une logique de fusion (`merge`) dans `DataStore.init()` plutôt qu'une simple vérification de présence.
+  - **Familles d'Actifs**: L'utilisation d'un attribut `famille` dans une liste plate de types permet de filtrer l'interface dynamiquement tout en conservant une structure de données simple et compatible.
